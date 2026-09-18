@@ -2,6 +2,7 @@ package dev.eigenworks;
 
 import dev.eigenworks.config.EngineeringConfig;
 import dev.eigenworks.registry.ModBlocks;
+import dev.eigenworks.simulation.EngineeringSimulation;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ public final class EigenWorks implements ModInitializer {
 	public void onInitialize() {
 		EngineeringConfig.validateDefaults();
 		ModBlocks.initialize();
+		EngineeringSimulation.initialize();
 		LOGGER.info("EigenWorks {} initialized", BuildInfo.VERSION);
 	}
 
@@ -23,4 +25,3 @@ public final class EigenWorks implements ModInitializer {
 		return Identifier.fromNamespaceAndPath(MOD_ID, path);
 	}
 }
-

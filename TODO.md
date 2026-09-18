@@ -8,19 +8,19 @@
 - [x] Add configuration skeleton and continuation documentation.
 - [x] Verify `./gradlew test` and `./gradlew build` under Java 25.
 - [x] Verify `./gradlew runClient` and mod discovery.
-- [ ] Verify world creation and block placement.
-- [ ] Commit the stable milestone.
+- [x] Verify world creation and block placement.
+- [x] Commit the stable milestone.
 
 ## Milestone 2 — Simulation and signals
 
-- [ ] Implement deterministic fixed-step scheduler with stable device ordering.
-- [ ] Enforce requested periods as multiples of the base timestep.
-- [ ] Enforce per-tick update budget and expose overload diagnostics.
-- [ ] Hook one server-authoritative scheduler service into Fabric server ticks.
-- [ ] Define immutable typed signal values and SI-unit metadata.
-- [ ] Implement source, sink, connection, latency, validity, and saturation behavior.
-- [ ] Add deterministic scheduler and signal propagation tests.
-- [ ] Add a minimal Test Bench diagnostic interaction backed by the scheduler.
+- [x] Implement deterministic fixed-step scheduler with stable device ordering.
+- [x] Enforce requested periods as multiples of the base timestep.
+- [x] Enforce per-tick update budget and expose overload diagnostics.
+- [x] Hook one server-authoritative scheduler service into Fabric server ticks.
+- [x] Define immutable typed signal values and SI-unit metadata.
+- [x] Implement source, sink, connection, latency, validity, and saturation behavior.
+- [x] Add deterministic scheduler and signal propagation tests.
+- [ ] Add a minimal Test Bench diagnostic interaction backed by the scheduler (move into first digital gameplay slice).
 
 ## Milestone 3 — Digital logic
 
