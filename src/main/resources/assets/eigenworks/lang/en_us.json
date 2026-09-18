@@ -1,4 +1,5 @@
 {
-  "block.eigenworks.engineering_test_bench": "Engineering Test Bench"
+  "block.eigenworks.engineering_test_bench": "Engineering Test Bench",
+  "message.eigenworks.diagnostic_queued": "Engineering diagnostic queued for the next simulation tick.",
+  "message.eigenworks.diagnostic_result": "Digital diagnostic: 0xC AND 0xA = %s; rising-edge counter = %s"
 }
-

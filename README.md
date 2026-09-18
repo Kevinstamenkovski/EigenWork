@@ -2,7 +2,9 @@
 
 EigenWorks is a Fabric mod for Minecraft Java Edition 26.2 that grows into a coherent engineering sandbox: signals, real programmable computers, embedded control, electrical and motor models, instrumentation, robotics, and industrial automation.
 
-The current playable baseline registers an **Engineering Test Bench** block. Underneath it, the server-authoritative deterministic scheduler and typed latency-aware signal core are implemented and unit-tested. The block remains intentionally simple until the first digital devices are connected to gameplay.
+The current playable baseline registers an **Engineering Test Bench** block. Underneath it, the server-authoritative deterministic scheduler, typed latency-aware signals, and first digital logic core are implemented and unit-tested.
+
+Empty-hand right-click the Test Bench to queue a server-side digital diagnostic. On the next engineering simulation tick it computes `0xC AND 0xA` through the real gate implementation, clocks a counter, and reports both results in chat.
 
 ## Requirements
 

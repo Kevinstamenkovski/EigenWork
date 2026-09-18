@@ -20,15 +20,19 @@
 - [x] Define immutable typed signal values and SI-unit metadata.
 - [x] Implement source, sink, connection, latency, validity, and saturation behavior.
 - [x] Add deterministic scheduler and signal propagation tests.
-- [ ] Add a minimal Test Bench diagnostic interaction backed by the scheduler (move into first digital gameplay slice).
+- [x] Add a minimal Test Bench diagnostic interaction backed by the scheduler.
 
 ## Milestone 3 — Digital logic
 
-- [ ] Implement width-checked digital words.
-- [ ] Implement NOT, AND, OR, XOR, NAND, and NOR truth behavior.
-- [ ] Implement logical clock frequency, duty cycle, enable, and phase.
-- [ ] Implement register and counter clock-edge behavior.
-- [ ] Add gameplay adapters and network topology caching.
+- [x] Implement width-checked digital words.
+- [x] Implement NOT, AND, OR, XOR, NAND, and NOR truth behavior.
+- [x] Implement logical clock frequency, duty cycle, enable, and phase.
+- [x] Implement register and counter clock-edge behavior.
+- [x] Implement explicit digital ports, propagation, and dirty topology caching.
+- [x] Add the first scheduler-backed Minecraft adapter through the Engineering Test Bench.
+- [ ] Add persistent clock, gate, register, and counter block entities.
+- [ ] Add player-created digital cable connections without world scanning.
+- [ ] Add block-entity save/load and digital propagation game tests.
 
 ## Milestone 4 — Computer and Demo A
 

@@ -2,6 +2,7 @@ package dev.eigenworks.registry;
 
 import java.util.function.Function;
 
+import dev.eigenworks.block.EngineeringTestBenchBlock;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 public final class ModBlocks {
 	public static final Block ENGINEERING_TEST_BENCH = register(
 			ModBlockItemIds.ENGINEERING_TEST_BENCH,
-			Block::new,
+			EngineeringTestBenchBlock::new,
 			BlockBehaviour.Properties.of()
 					.strength(3.0F, 6.0F)
 					.sound(SoundType.METAL)
