@@ -1,5 +1,9 @@
 {
   "block.eigenworks.engineering_test_bench": "Engineering Test Bench",
+  "block.eigenworks.digital_clock": "Digital Clock",
+  "block.eigenworks.digital_counter": "8-bit Digital Counter",
   "message.eigenworks.diagnostic_queued": "Engineering diagnostic queued for the next simulation tick.",
-  "message.eigenworks.diagnostic_result": "Digital diagnostic: 0xC AND 0xA = %s; rising-edge counter = %s"
+  "message.eigenworks.diagnostic_result": "Digital diagnostic: 0xC AND 0xA = %s; rising-edge counter = %s",
+  "message.eigenworks.digital_clock_status": "Digital clock: enabled=%s, frequency=%s Hz, output=%s (sneak-use changes frequency)",
+  "message.eigenworks.digital_counter_status": "8-bit counter value: %s (sneak-use resets)"
 }

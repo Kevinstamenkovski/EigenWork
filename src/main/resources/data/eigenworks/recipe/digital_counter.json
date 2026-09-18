@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": ["RRR", "QCQ", "III"],
+  "key": {
+    "R": "minecraft:redstone",
+    "Q": "minecraft:quartz",
+    "C": "minecraft:copper_ingot",
+    "I": "minecraft:iron_ingot"
+  },
+  "result": { "id": "eigenworks:digital_counter", "count": 1 }
+}

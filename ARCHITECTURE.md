@@ -7,20 +7,20 @@
 - `dev.eigenworks.simulation`: deterministic scheduling and device lifecycle (Milestone 2).
 - `dev.eigenworks.signal`: typed sampled values and connections (Milestone 2).
 - `dev.eigenworks.digital`: width-safe combinational logic, logical clocks, sequential devices, and cached digital topology.
-- `dev.eigenworks.block`: thin Minecraft adapters over engineering models.
+- `dev.eigenworks.block` and `dev.eigenworks.block.entity`: thin Minecraft adapters and persistent device state over engineering models.
 - Future packages follow subsystem ownership: `digital`, `computer`, `embedded`, `electrical`, `control`, `instrumentation`, `mechanical`, `robotics`, `automation`, `networking`, and `gui`.
 
 Minecraft blocks and block entities are adapters. Mathematical and engineering behavior belongs in pure Java objects with no dependency on client rendering or world traversal.
 
 ## Authority and persistence
 
-Engineering simulation runs on the logical server. Clients receive only state required for rendering and GUIs and never submit computed simulation results. Device configuration and durable state will be serialized by block entities using the Minecraft 26.2 supported serialization APIs. Programs, flash, gains, calibration, addresses, and robot parameters are durable; transient RAM and sampled display histories are opt-in by subsystem.
+Engineering simulation runs on the logical server. Clients receive only state required for rendering and GUIs and never submit computed simulation results. Device configuration and durable state are serialized by block entities through Minecraft 26.2 `ValueInput`/`ValueOutput`. Programs, flash, gains, calibration, addresses, and robot parameters are durable; transient RAM and sampled display histories are opt-in by subsystem.
 
 ## Simulation scheduler
 
-`EngineeringSimulation` owns one `EngineeringScheduler` per running logical server and advances it from `END_SERVER_TICK`. A Minecraft tick is 50 ms. The default base step is 1 ms, with devices requesting periods that are exact multiples of that step. Registrations are processed in stable insertion order under a configurable update budget. A per-tick snapshot means registrations and removals during callbacks become visible on the following tick without concurrent modification.
+`EngineeringSimulation` creates one `EngineeringScheduler` at logical-server startup and advances it from `END_SERVER_TICK`. Creating it at `SERVER_STARTING` ensures saved block entities can register while worlds load. A Minecraft tick is 50 ms. The default base step is 1 ms, with devices requesting periods that are exact multiples of that step. Registrations are processed in stable insertion order under a configurable update budget. A per-tick snapshot means registrations and removals during callbacks become visible on the following tick without concurrent modification.
 
-The clock advances even when the budget is exhausted, and the report counts missed updates explicitly. Runtime exceptions from a device become `DEVICE_UPDATE_FAILED` diagnostics while remaining devices continue. Only explicitly registered devices are processed; future block entities must register on load and unregister on unload.
+The clock advances even when the budget is exhausted, and the report counts missed updates explicitly. Runtime exceptions from a device become `DEVICE_UPDATE_FAILED` diagnostics while remaining devices continue. Only explicitly registered devices are processed. `LoadedSimulationDevice` block entities bind through Fabric's server block-entity load event, register with the owning server scheduler, and unregister on unload; no world scan is performed.
 
 ## Signals and networks
 
@@ -38,7 +38,7 @@ Signal connections are for measurement/control information. Electrical conductor
 
 `DigitalNetwork` owns registered input/output ports and directed width-checked wires. Inputs accept only one driver, outputs support fan-out, and propagation follows stable connection order. Its adjacency map is rebuilt only when a port or wire mutation marks topology dirty.
 
-The Engineering Test Bench is the first gameplay adapter. Empty-hand server interaction queues a one-shot scheduler device; on the following engineering tick it runs a real gate and counter diagnostic, reports the results, and unregisters itself. Individual configurable gate/clock/register blocks remain the next gameplay task.
+The Engineering Test Bench queues a one-shot scheduler device; on the following engineering tick it runs a real gate and counter diagnostic, reports the results, and unregisters itself. `DigitalClockBlockEntity` is the first persistent scheduled block device. It wraps `LogicalClock`, requests a 10 ms update period, supports safe selectable frequencies, and registers only while loaded. `DigitalCounterBlockEntity` wraps the event-driven eight-bit counter and persists its value. Server interactions configure or exercise the devices; world wiring, placeable gates, and registers remain pending.
 
 ## Numerical units and safety
 

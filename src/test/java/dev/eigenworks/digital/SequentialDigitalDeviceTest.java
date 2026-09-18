@@ -62,6 +62,17 @@ class SequentialDigitalDeviceTest {
 	}
 
 	@Test
+	void counterRestoresPersistedValueWithoutClocking() {
+		DigitalCounter counter = new DigitalCounter("counter", 8, ClockEdge.RISING);
+
+		counter.restoreValue(new DigitalWord(8, 173));
+
+		assertEquals(new DigitalWord(8, 173), counter.value());
+		assertThrows(IllegalArgumentException.class,
+				() -> counter.restoreValue(new DigitalWord(4, 3)));
+	}
+
+	@Test
 	void clockDrivesCounterAndPublishesTimestampedOutputs() {
 		EngineeringScheduler scheduler = new EngineeringScheduler(1_000, 1_000);
 		LogicalClock clock = new LogicalClock("clock", 1_000, 100.0, 0.5, 0.0, true);

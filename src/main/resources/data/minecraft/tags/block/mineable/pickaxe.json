@@ -1,5 +1,8 @@
 {
   "replace": false,
-  "values": ["eigenworks:engineering_test_bench"]
+  "values": [
+    "eigenworks:engineering_test_bench",
+    "eigenworks:digital_clock",
+    "eigenworks:digital_counter"
+  ]
 }
-

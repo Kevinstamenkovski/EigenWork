@@ -6,6 +6,7 @@ import java.util.Map;
 import dev.eigenworks.EigenWorks;
 import dev.eigenworks.config.EngineeringConfig;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 
@@ -17,9 +18,24 @@ public final class EngineeringSimulation {
 	}
 
 	public static void initialize() {
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> SCHEDULERS.put(server, createScheduler()));
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> SCHEDULERS.put(server, createScheduler()));
 		ServerLifecycleEvents.SERVER_STOPPED.register(SCHEDULERS::remove);
 		ServerTickEvents.END_SERVER_TICK.register(EngineeringSimulation::tick);
+		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, level) -> {
+			if (blockEntity instanceof LoadedSimulationDevice device) {
+				device.bindToLevel(level);
+				scheduler(level.getServer()).register(device);
+			}
+		});
+		ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, level) -> {
+			if (blockEntity instanceof LoadedSimulationDevice device) {
+				EngineeringScheduler scheduler = SCHEDULERS.get(level.getServer());
+				if (scheduler != null) {
+					scheduler.unregister(device.simulationId());
+				}
+				device.unbindFromLevel();
+			}
+		});
 	}
 
 	public static EngineeringScheduler scheduler(MinecraftServer server) {
@@ -49,4 +65,3 @@ public final class EngineeringSimulation {
 		}
 	}
 }
-

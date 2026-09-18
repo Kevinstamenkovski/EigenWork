@@ -7,6 +7,8 @@ import net.minecraft.resources.Identifier;
 /** Stable identifiers for blocks that also have inventory items. */
 public final class ModBlockItemIds {
 	public static final BlockItemId ENGINEERING_TEST_BENCH = create("engineering_test_bench");
+	public static final BlockItemId DIGITAL_CLOCK = create("digital_clock");
+	public static final BlockItemId DIGITAL_COUNTER = create("digital_counter");
 
 	private ModBlockItemIds() {
 	}

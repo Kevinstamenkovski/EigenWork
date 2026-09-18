@@ -2,9 +2,11 @@
 
 EigenWorks is a Fabric mod for Minecraft Java Edition 26.2 that grows into a coherent engineering sandbox: signals, real programmable computers, embedded control, electrical and motor models, instrumentation, robotics, and industrial automation.
 
-The current playable baseline registers an **Engineering Test Bench** block. Underneath it, the server-authoritative deterministic scheduler, typed latency-aware signals, and first digital logic core are implemented and unit-tested.
+The current playable baseline includes an **Engineering Test Bench**, a scheduled **Digital Clock**, and a persistent **8-bit Digital Counter**. Underneath them, the server-authoritative deterministic scheduler, typed latency-aware signals, and first digital logic core are implemented and unit-tested.
 
 Empty-hand right-click the Test Bench to queue a server-side digital diagnostic. On the next engineering simulation tick it computes `0xC AND 0xA` through the real gate implementation, clocks a counter, and reports both results in chat.
+
+Use the Digital Clock with an empty hand to enable or disable it; sneak-use cycles through 1, 2, 5, 10, and 20 Hz. Use the Digital Counter to generate one rising edge and increment its stored value; sneak-use resets it. Clock-to-counter world wiring is the next Milestone 3 feature, so these two blocks are not connected automatically yet.
 
 ## Requirements
 
@@ -33,7 +35,7 @@ Gradle automatically selects an installed JDK 25 or downloads a compatible toolc
 
 ## First launch
 
-Create a world, open the Functional Blocks creative tab, and place the Engineering Test Bench. In survival it can be crafted from copper, redstone, iron, and quartz and mined with a pickaxe.
+Create a world and open the Functional Blocks creative tab. The Engineering Test Bench, Digital Clock, and 8-bit Digital Counter can be placed there. Each also has a survival recipe and can be mined with a pickaxe.
 
 ## Engineering guides
 

@@ -30,9 +30,12 @@
 - [x] Implement register and counter clock-edge behavior.
 - [x] Implement explicit digital ports, propagation, and dirty topology caching.
 - [x] Add the first scheduler-backed Minecraft adapter through the Engineering Test Bench.
-- [ ] Add persistent clock, gate, register, and counter block entities.
+- [x] Add a persistent scheduler-backed clock block entity.
+- [x] Add a persistent event-driven eight-bit counter block entity.
+- [ ] Add persistent configurable gate and register block entities.
 - [ ] Add player-created digital cable connections without world scanning.
 - [ ] Add block-entity save/load and digital propagation game tests.
+- [ ] Manually verify clock/counter placement, interactions, and save/reload in Minecraft.
 
 ## Milestone 4 — Computer and Demo A
 

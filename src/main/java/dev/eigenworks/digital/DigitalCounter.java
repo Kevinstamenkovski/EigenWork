@@ -55,6 +55,16 @@ public final class DigitalCounter implements ClockEdgeListener {
 		resetRequested = true;
 	}
 
+	/** Restores a persisted value without synthesizing a clock edge. */
+	public void restoreValue(DigitalWord restoredValue) {
+		Objects.requireNonNull(restoredValue, "restoredValue");
+		if (restoredValue.width() != width) {
+			throw new IllegalArgumentException("Restored counter value must match counter width");
+		}
+		value = restoredValue;
+		resetRequested = false;
+	}
+
 	public SignalSource<DigitalWord> output() {
 		return output;
 	}

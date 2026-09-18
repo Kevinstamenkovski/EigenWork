@@ -3,6 +3,8 @@ package dev.eigenworks.registry;
 import java.util.function.Function;
 
 import dev.eigenworks.block.EngineeringTestBenchBlock;
+import dev.eigenworks.block.DigitalClockBlock;
+import dev.eigenworks.block.DigitalCounterBlock;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -24,6 +26,14 @@ public final class ModBlocks {
 					.strength(3.0F, 6.0F)
 					.sound(SoundType.METAL)
 					.requiresCorrectToolForDrops());
+	public static final Block DIGITAL_CLOCK = register(
+			ModBlockItemIds.DIGITAL_CLOCK,
+			DigitalClockBlock::new,
+			deviceProperties());
+	public static final Block DIGITAL_COUNTER = register(
+			ModBlockItemIds.DIGITAL_COUNTER,
+			DigitalCounterBlock::new,
+			deviceProperties());
 
 	private ModBlocks() {
 	}
@@ -48,6 +58,17 @@ public final class ModBlocks {
 
 	public static void initialize() {
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS)
-				.register(entries -> entries.accept(ENGINEERING_TEST_BENCH.asItem()));
+				.register(entries -> {
+					entries.accept(ENGINEERING_TEST_BENCH.asItem());
+					entries.accept(DIGITAL_CLOCK.asItem());
+					entries.accept(DIGITAL_COUNTER.asItem());
+				});
+	}
+
+	private static BlockBehaviour.Properties deviceProperties() {
+		return BlockBehaviour.Properties.of()
+				.strength(2.0F, 6.0F)
+				.sound(SoundType.METAL)
+				.requiresCorrectToolForDrops();
 	}
 }
