@@ -31,7 +31,7 @@ Milestone 2 — deterministic simulation core and typed signal propagation.
 
 - No known code bugs or failing tests.
 - Gradle reports deprecations originating in the current Loom/Gradle toolchain; this does not fail the build but must be revisited before Gradle 10.
-- Host default Java is 21; the verified local Java 25 path is `/home/kevin-stamenkovski/.local/share/eigenworks/jdks/jdk-25.0.4.1+1`.
+- Host default Java is 21; Gradle toolchains automatically select or provision Java 25. The verified local Java 25 path is `/home/kevin-stamenkovski/.local/share/eigenworks/jdks/jdk-25.0.4.1+1`.
 
 ## Build and Minecraft status
 

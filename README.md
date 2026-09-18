@@ -20,7 +20,7 @@ The current playable baseline registers an **Engineering Test Bench** block. Und
 
 The installable JAR is written to `build/libs/eigenworks-0.1.0.jar`. The `-sources` JAR is for development and should not be installed.
 
-If Java 25 is not the system default, set `JAVA_HOME` to a JDK 25 installation for both commands.
+Gradle automatically selects an installed JDK 25 or downloads a compatible toolchain through the Foojay resolver. The Gradle launcher itself requires Java 17 or newer.
 
 ## Installation
 
