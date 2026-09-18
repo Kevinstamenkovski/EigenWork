@@ -9,6 +9,8 @@ public final class ModBlockItemIds {
 	public static final BlockItemId ENGINEERING_TEST_BENCH = create("engineering_test_bench");
 	public static final BlockItemId DIGITAL_CLOCK = create("digital_clock");
 	public static final BlockItemId DIGITAL_COUNTER = create("digital_counter");
+	public static final BlockItemId DIGITAL_GATE = create("digital_gate");
+	public static final BlockItemId DIGITAL_REGISTER = create("digital_register");
 
 	private ModBlockItemIds() {
 	}

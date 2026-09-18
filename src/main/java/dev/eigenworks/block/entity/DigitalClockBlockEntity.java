@@ -1,7 +1,17 @@
 package dev.eigenworks.block.entity;
 
+import java.util.List;
+
 import dev.eigenworks.digital.LogicalClock;
 import dev.eigenworks.registry.ModBlockEntities;
+import dev.eigenworks.digital.DigitalPortDirection;
+import dev.eigenworks.digital.world.DigitalDeviceAddress;
+import dev.eigenworks.digital.world.DigitalInputBinding;
+import dev.eigenworks.digital.world.DigitalPortSpec;
+import dev.eigenworks.digital.world.DigitalSourceEndpoint;
+import dev.eigenworks.digital.world.DigitalWorldNetwork;
+import dev.eigenworks.digital.world.WorldDigitalDevice;
+import dev.eigenworks.signal.DigitalWord;
 import dev.eigenworks.simulation.LoadedSimulationDevice;
 import dev.eigenworks.simulation.SimulationContext;
 import net.minecraft.core.BlockPos;
@@ -12,9 +22,10 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 /** Persistent Minecraft adapter for the pure {@link LogicalClock}. */
-public final class DigitalClockBlockEntity extends BlockEntity implements LoadedSimulationDevice {
+public final class DigitalClockBlockEntity extends BlockEntity implements LoadedSimulationDevice, WorldDigitalDevice {
 	private static final long UPDATE_PERIOD_MICROS = 10_000L;
 	private static final double[] FREQUENCIES_HZ = {1.0, 2.0, 5.0, 10.0, 20.0};
+	private static final DigitalPortSpec OUTPUT = new DigitalPortSpec("output", 1, DigitalPortDirection.OUTPUT);
 
 	private double frequencyHertz = 2.0;
 	private double dutyCycle = 0.5;
@@ -23,6 +34,8 @@ public final class DigitalClockBlockEntity extends BlockEntity implements Loaded
 	private boolean levelHigh;
 	private String simulationId;
 	private LogicalClock clock;
+	private DigitalDeviceAddress digitalAddress;
+	private DigitalWorldNetwork digitalNetwork;
 
 	public DigitalClockBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.DIGITAL_CLOCK, pos, state);
@@ -63,7 +76,61 @@ public final class DigitalClockBlockEntity extends BlockEntity implements Loaded
 		levelHigh = clock.level();
 		if (previous != levelHigh) {
 			setChanged();
+			if (digitalNetwork != null) {
+				digitalNetwork.publish(this, OUTPUT.name(), outputWord(),
+						context.simulationTimeMicros(), context.deltaMicros());
+			}
 		}
+	}
+
+	@Override
+	public void bindDigitalNetwork(ServerLevel level, DigitalWorldNetwork network) {
+		digitalAddress = new DigitalDeviceAddress(level.dimension().identifier().toString(), worldPosition.asLong());
+		digitalNetwork = network;
+	}
+
+	@Override
+	public void unbindDigitalNetwork() {
+		digitalNetwork = null;
+	}
+
+	@Override
+	public DigitalDeviceAddress digitalAddress() {
+		if (digitalAddress == null) {
+			throw new IllegalStateException("Digital clock is not bound to a server level");
+		}
+		return digitalAddress;
+	}
+
+	@Override
+	public List<DigitalPortSpec> outputPorts() {
+		return List.of(OUTPUT);
+	}
+
+	@Override
+	public List<DigitalInputBinding> inputBindings() {
+		return List.of();
+	}
+
+	@Override
+	public DigitalWord outputValue(String port) {
+		requireOutputPort(port);
+		return outputWord();
+	}
+
+	@Override
+	public void connectInput(String inputPort, DigitalSourceEndpoint source) {
+		throw new IllegalArgumentException("Digital clock has no input ports");
+	}
+
+	@Override
+	public void disconnectInput(String inputPort) {
+		throw new IllegalArgumentException("Digital clock has no input ports");
+	}
+
+	@Override
+	public void acceptInput(String inputPort, DigitalWord value, long timestampMicros, long samplePeriodMicros) {
+		throw new IllegalArgumentException("Digital clock has no input ports");
 	}
 
 	public void toggleEnabled() {
@@ -136,5 +203,15 @@ public final class DigitalClockBlockEntity extends BlockEntity implements Loaded
 
 	private static double validPhase(double value) {
 		return Double.isFinite(value) ? value - Math.floor(value) : 0.0;
+	}
+
+	private DigitalWord outputWord() {
+		return new DigitalWord(1, levelHigh ? 1L : 0L);
+	}
+
+	private static void requireOutputPort(String port) {
+		if (!OUTPUT.name().equals(port)) {
+			throw new IllegalArgumentException("Unknown digital clock output: " + port);
+		}
 	}
 }

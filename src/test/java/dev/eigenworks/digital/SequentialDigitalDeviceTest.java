@@ -73,6 +73,19 @@ class SequentialDigitalDeviceTest {
 	}
 
 	@Test
+	void registerRestoresPersistedInputAndOutputWithoutClocking() {
+		DigitalRegister register = new DigitalRegister("register", 8, ClockEdge.RISING);
+
+		register.restoreState(new DigitalWord(8, 91), new DigitalWord(8, 42));
+
+		assertEquals(new DigitalWord(8, 42), register.value());
+		register.onClockEdge(edge(ClockEdge.RISING, 10));
+		assertEquals(new DigitalWord(8, 91), register.value());
+		assertThrows(IllegalArgumentException.class,
+				() -> register.restoreState(new DigitalWord(8, 1), new DigitalWord(4, 1)));
+	}
+
+	@Test
 	void clockDrivesCounterAndPublishesTimestampedOutputs() {
 		EngineeringScheduler scheduler = new EngineeringScheduler(1_000, 1_000);
 		LogicalClock clock = new LogicalClock("clock", 1_000, 100.0, 0.5, 0.0, true);

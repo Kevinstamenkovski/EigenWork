@@ -5,6 +5,8 @@ import java.util.Map;
 
 import dev.eigenworks.EigenWorks;
 import dev.eigenworks.config.EngineeringConfig;
+import dev.eigenworks.digital.world.DigitalWorldNetwork;
+import dev.eigenworks.digital.world.WorldDigitalDevice;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -13,18 +15,30 @@ import net.minecraft.server.MinecraftServer;
 /** Owns one central scheduler for each running logical server. */
 public final class EngineeringSimulation {
 	private static final Map<MinecraftServer, EngineeringScheduler> SCHEDULERS = new IdentityHashMap<>();
+	private static final Map<MinecraftServer, DigitalWorldNetwork> DIGITAL_NETWORKS = new IdentityHashMap<>();
 
 	private EngineeringSimulation() {
 	}
 
 	public static void initialize() {
-		ServerLifecycleEvents.SERVER_STARTING.register(server -> SCHEDULERS.put(server, createScheduler()));
-		ServerLifecycleEvents.SERVER_STOPPED.register(SCHEDULERS::remove);
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+			SCHEDULERS.put(server, createScheduler());
+			DIGITAL_NETWORKS.put(server, new DigitalWorldNetwork());
+		});
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			SCHEDULERS.remove(server);
+			DIGITAL_NETWORKS.remove(server);
+		});
 		ServerTickEvents.END_SERVER_TICK.register(EngineeringSimulation::tick);
 		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, level) -> {
 			if (blockEntity instanceof LoadedSimulationDevice device) {
 				device.bindToLevel(level);
 				scheduler(level.getServer()).register(device);
+			}
+			if (blockEntity instanceof WorldDigitalDevice device) {
+				DigitalWorldNetwork network = digitalNetwork(level.getServer());
+				device.bindDigitalNetwork(level, network);
+				network.register(device);
 			}
 		});
 		ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, level) -> {
@@ -35,6 +49,13 @@ public final class EngineeringSimulation {
 				}
 				device.unbindFromLevel();
 			}
+			if (blockEntity instanceof WorldDigitalDevice device) {
+				DigitalWorldNetwork network = DIGITAL_NETWORKS.get(level.getServer());
+				if (network != null) {
+					network.unregister(device);
+				}
+				device.unbindDigitalNetwork();
+			}
 		});
 	}
 
@@ -44,6 +65,14 @@ public final class EngineeringSimulation {
 			throw new IllegalStateException("Engineering scheduler is unavailable before server start or after stop");
 		}
 		return scheduler;
+	}
+
+	public static DigitalWorldNetwork digitalNetwork(MinecraftServer server) {
+		DigitalWorldNetwork network = DIGITAL_NETWORKS.get(server);
+		if (network == null) {
+			throw new IllegalStateException("Digital network is unavailable before server start or after stop");
+		}
+		return network;
 	}
 
 	private static EngineeringScheduler createScheduler() {

@@ -3,6 +3,16 @@ plugins {
 	id 'maven-publish'
 }
 
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "eigenworks-gametest"
+		enableGameTests = true
+		enableClientGameTests = false
+		eula = true
+	}
+}
+
 base {
 	archivesName = 'eigenworks'
 }

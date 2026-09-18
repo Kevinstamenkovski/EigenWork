@@ -7,6 +7,7 @@
 - `dev.eigenworks.simulation`: deterministic scheduling and device lifecycle (Milestone 2).
 - `dev.eigenworks.signal`: typed sampled values and connections (Milestone 2).
 - `dev.eigenworks.digital`: width-safe combinational logic, logical clocks, sequential devices, and cached digital topology.
+- `dev.eigenworks.digital.world`: block-device ports, persistent endpoints, player linking, and per-server cached world topology.
 - `dev.eigenworks.block` and `dev.eigenworks.block.entity`: thin Minecraft adapters and persistent device state over engineering models.
 - Future packages follow subsystem ownership: `digital`, `computer`, `embedded`, `electrical`, `control`, `instrumentation`, `mechanical`, `robotics`, `automation`, `networking`, and `gui`.
 
@@ -36,9 +37,11 @@ Signal connections are for measurement/control information. Electrical conductor
 
 `DigitalRegister` and `DigitalCounter` consume a configured edge. Reset is synchronous and has priority; register load and counter enable are independently controllable. Outputs are immutable timestamped digital samples with the clock's nominal period.
 
-`DigitalNetwork` owns registered input/output ports and directed width-checked wires. Inputs accept only one driver, outputs support fan-out, and propagation follows stable connection order. Its adjacency map is rebuilt only when a port or wire mutation marks topology dirty.
+`DigitalNetwork` owns pure registered input/output ports and directed width-checked wires. Inputs accept only one driver, outputs support fan-out, and propagation follows stable connection order. Its adjacency map is rebuilt only when a port or wire mutation marks topology dirty.
 
-The Engineering Test Bench queues a one-shot scheduler device; on the following engineering tick it runs a real gate and counter diagnostic, reports the results, and unregisters itself. `DigitalClockBlockEntity` is the first persistent scheduled block device. It wraps `LogicalClock`, requests a 10 ms update period, supports safe selectable frequencies, and registers only while loaded. `DigitalCounterBlockEntity` wraps the event-driven eight-bit counter and persists its value. Server interactions configure or exercise the devices; world wiring, placeable gates, and registers remain pending.
+`DigitalWorldNetwork` applies the same explicit model to loaded block entities. Each logical server owns one network. Devices register through block-entity load events and unregister on unload. Input block entities persist a `DigitalSourceEndpoint` containing dimension, block position, port, and width. The Digital Linking Tool keeps only an ephemeral per-player source selection; its second use validates width and dimension and writes the connection to the target. A dirty adjacency cache is rebuilt after load, unload, connect, or disconnect, never by scanning world blocks. Output changes propagate through a deterministic event queue. A 4,096-event settling guard terminates oscillating combinational loops without recursion or a server crash and increments a diagnostic counter.
+
+The Engineering Test Bench queues a one-shot scheduler device; on the following engineering tick it runs a real gate and counter diagnostic, reports the results, and unregisters itself. `DigitalClockBlockEntity` wraps `LogicalClock`, requests a 10 ms update period, supports safe selectable frequencies, and registers only while loaded. The counter, configurable combinational gate, and edge-triggered register are event-driven block entities. All four persist configuration, state, and input links through Minecraft's current value serialization API.
 
 ## Numerical units and safety
 

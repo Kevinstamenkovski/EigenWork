@@ -2,8 +2,18 @@
   "block.eigenworks.engineering_test_bench": "Engineering Test Bench",
   "block.eigenworks.digital_clock": "Digital Clock",
   "block.eigenworks.digital_counter": "8-bit Digital Counter",
+  "block.eigenworks.digital_gate": "Configurable 8-bit Gate",
+  "block.eigenworks.digital_register": "8-bit Digital Register",
+  "item.eigenworks.digital_linking_tool": "Digital Linking Tool",
   "message.eigenworks.diagnostic_queued": "Engineering diagnostic queued for the next simulation tick.",
   "message.eigenworks.diagnostic_result": "Digital diagnostic: 0xC AND 0xA = %s; rising-edge counter = %s",
   "message.eigenworks.digital_clock_status": "Digital clock: enabled=%s, frequency=%s Hz, output=%s (sneak-use changes frequency)",
-  "message.eigenworks.digital_counter_status": "8-bit counter value: %s (sneak-use resets)"
+  "message.eigenworks.digital_counter_status": "8-bit counter value: %s (sneak-use resets)",
+  "message.eigenworks.digital_gate_status": "8-bit gate: operation=%s, output=%s (sneak-use changes operation)",
+  "message.eigenworks.digital_register_status": "8-bit register value: %s (sneak-use resets)",
+  "message.eigenworks.link_not_device": "That block is not a digital device.",
+  "message.eigenworks.link_selected": "Selected output %s (%s bit). Use the tool on a compatible input device.",
+  "message.eigenworks.link_connected": "Connected output %s to input %s (%s bit).",
+  "message.eigenworks.link_disconnected": "Disconnected digital input %s.",
+  "message.eigenworks.link_error": "Digital link error: %s"
 }

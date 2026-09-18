@@ -65,6 +65,17 @@ public final class DigitalRegister implements ClockEdgeListener {
 		resetRequested = true;
 	}
 
+	/** Restores persisted input and output state without synthesizing an edge. */
+	public void restoreState(DigitalWord restoredInput, DigitalWord restoredValue) {
+		setInput(restoredInput);
+		Objects.requireNonNull(restoredValue, "restoredValue");
+		if (restoredValue.width() != width) {
+			throw new IllegalArgumentException("Restored register value must match register width");
+		}
+		value = restoredValue;
+		resetRequested = false;
+	}
+
 	public SignalSource<DigitalWord> output() {
 		return output;
 	}

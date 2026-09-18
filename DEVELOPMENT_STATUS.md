@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 3 — remaining digital-device blocks and world wiring. Placeable clock and counter devices now exist.
+Milestone 4 — computer architecture, assembler, and Demo A.
 
 ## Last completed milestone
 
-Milestone 2 — deterministic simulation core and typed signal propagation.
+Milestone 3 — playable digital logic devices and explicit world wiring.
 
 ## Completed systems
 
@@ -28,14 +28,21 @@ Milestone 2 — deterministic simulation core and typed signal propagation.
 - Placeable Digital Clock block entity with scheduler-backed 10 ms updates, enable control, 1/2/5/10/20 Hz selection, and persistent configuration/state.
 - Placeable event-driven 8-bit Digital Counter block entity with rising-edge increment, wraparound, reset, and persistent value.
 - Loaded simulation-device lifecycle using Fabric block-entity load/unload events; only loaded clocks are registered and no world scan occurs.
-- Block items, localization, models, loot tables, mining tags, creative entries, and recipes for both digital devices.
+- Persistent configurable 8-bit gate supporting NOT, AND, OR, XOR, NAND, and NOR.
+- Persistent rising-edge 8-bit register with data and clock inputs.
+- Digital Linking Tool for player-created, width-checked source-to-input connections and disconnection.
+- Per-server loaded-device digital network with cached topology, fan-out propagation, and no world scans.
+- Persistent source endpoints including dimension, block position, port name, and bus width.
+- Bounded event-queue propagation with cross-dimension rejection and an oscillating-loop safety guard.
+- Fabric server GameTests covering all device block entities, linking-tool interaction, propagation, and serialization round trips.
+- Block items, models, recipes, loot tables, localization, and creative entries for all Milestone 3 devices and the linking tool.
 
 ## Partially implemented systems
 
 - Configuration currently provides validated defaults but has no user file or screen.
 - The Engineering Test Bench is a one-shot digital diagnostic, not a configurable workstation yet.
-- Signal graphs are pure simulation objects and are not yet connected to world blocks.
-- Gate, register, cable, and configuration GUI adapters are not yet placeable. The clock and counter currently expose compact chat-based interactions.
+- Device configuration currently uses compact block interactions and chat diagnostics rather than dedicated GUIs.
+- Digital links are functional and persistent but do not yet render physical cable geometry.
 
 ## Known bugs and failing tests
 
@@ -46,9 +53,11 @@ Milestone 2 — deterministic simulation core and typed signal propagation.
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 31 passing tests covering configuration, scheduler behavior, signals, all required gates, clock edges and validation, register/counter behavior and state restoration, diagnostic results, network propagation, and topology caching.
+- Unit tests: 37 passing tests covering configuration, scheduler behavior, signals, all required gates, clock edges and validation, register/counter restoration, diagnostic results, pure and world-network propagation, width validation, disconnects, bounded cyclic propagation, and topology caching.
+- Minecraft GameTests: all 5 required tests pass (four EigenWorks tests plus the framework test), covering block creation, player linking-tool use, clock-to-counter propagation, and serialization of clock/counter/gate/register state and links.
 - `./gradlew runClient`: completed cleanly with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0.
-- Latest runtime regression (2026-09-19): client reached resource-complete title state, initialized EigenWorks, and loaded the new clock/counter resources with no EigenWorks or missing-resource errors. It was then stopped manually; no screen capture or desktop input was used. The Test Bench interaction and new clock/counter blocks have not yet been manually exercised in Minecraft.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1591 recipes without EigenWorks datapack errors, created every digital block entity, exercised the Digital Linking Tool through a mock player, propagated a rising edge, and round-tripped persistent state. All required tests passed.
+- Latest client regression (2026-09-19): EigenWorks initialized, all assets reloaded without missing-model or missing-texture warnings, 1591 recipes loaded, and the existing development world began an integrated-server launch. The client was then stopped manually; no screen capture or desktop input was used.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
 - Produced JAR: `build/libs/eigenworks-0.1.0.jar`.
@@ -63,7 +72,7 @@ Milestone 2 — deterministic simulation core and typed signal propagation.
 
 ## Temporary limitations
 
-The scheduler, signal system, digital core, placeable clock, and placeable counter are implemented. Clock-to-counter wiring does not exist yet, and block-entity save/reload has not received an automated or manual game test. CPU, electrical, control, instrumentation, and robotics gameplay is not claimed.
+Milestone 3 is complete as a functional but visually simple digital layer. Links are represented logically rather than by rendered cable blocks, and device setup uses chat interactions rather than GUIs. CPU, electrical, control, instrumentation, and robotics gameplay is not claimed.
 
 ## Relevant locations
 
@@ -77,18 +86,21 @@ The scheduler, signal system, digital core, placeable clock, and placeable count
 - Digital logic and networks: `src/main/java/dev/eigenworks/digital/`
 - Test Bench adapter: `src/main/java/dev/eigenworks/block/EngineeringTestBenchBlock.java`
 - Digital device adapters: `src/main/java/dev/eigenworks/block/` and `src/main/java/dev/eigenworks/block/entity/`
+- World digital networking: `src/main/java/dev/eigenworks/digital/world/`
+- Minecraft GameTests: `src/gametest/`
 
 ## Exact next tasks
 
-1. Manually verify clock/counter placement, interactions, and save/reload in a development world.
-2. Add persistent configurable gate and register block entities.
-3. Add a digital cable tool or explicit port-connection interaction backed by the cached network.
-4. Add save/reload and propagation game tests, then verify the first connected clock-to-counter circuit.
+1. Freeze and document the educational 8-bit instruction encoding, operand formats, flag rules, and cycle costs.
+2. Implement and test ALU carry and signed overflow for ADD and SUB.
+3. Implement byte-addressed RAM and read-only ROM.
+4. Build the first fetch/decode/execute CPU path toward Demo A (`25 + 17 = 42`).
 
 ## Commands
 
 ```bash
 ./gradlew test
+./gradlew runGameTest
 ./gradlew build
 ./gradlew runClient
 ```

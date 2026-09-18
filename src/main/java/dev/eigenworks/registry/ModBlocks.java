@@ -5,6 +5,8 @@ import java.util.function.Function;
 import dev.eigenworks.block.EngineeringTestBenchBlock;
 import dev.eigenworks.block.DigitalClockBlock;
 import dev.eigenworks.block.DigitalCounterBlock;
+import dev.eigenworks.block.DigitalGateBlock;
+import dev.eigenworks.block.DigitalRegisterBlock;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -34,6 +36,14 @@ public final class ModBlocks {
 			ModBlockItemIds.DIGITAL_COUNTER,
 			DigitalCounterBlock::new,
 			deviceProperties());
+	public static final Block DIGITAL_GATE = register(
+			ModBlockItemIds.DIGITAL_GATE,
+			DigitalGateBlock::new,
+			deviceProperties());
+	public static final Block DIGITAL_REGISTER = register(
+			ModBlockItemIds.DIGITAL_REGISTER,
+			DigitalRegisterBlock::new,
+			deviceProperties());
 
 	private ModBlocks() {
 	}
@@ -62,6 +72,8 @@ public final class ModBlocks {
 					entries.accept(ENGINEERING_TEST_BENCH.asItem());
 					entries.accept(DIGITAL_CLOCK.asItem());
 					entries.accept(DIGITAL_COUNTER.asItem());
+					entries.accept(DIGITAL_GATE.asItem());
+					entries.accept(DIGITAL_REGISTER.asItem());
 				});
 	}
 

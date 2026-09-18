@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "eigenworks-gametest",
+  "version": "1.0.0",
+  "name": "EigenWorks Game Tests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": ["dev.eigenworks.gametest.DigitalDeviceGameTests"]
+  },
+  "depends": {
+    "eigenworks": "*",
+    "fabric-gametest-api-v1": "*"
+  }
+}

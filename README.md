@@ -2,11 +2,21 @@
 
 EigenWorks is a Fabric mod for Minecraft Java Edition 26.2 that grows into a coherent engineering sandbox: signals, real programmable computers, embedded control, electrical and motor models, instrumentation, robotics, and industrial automation.
 
-The current playable baseline includes an **Engineering Test Bench**, a scheduled **Digital Clock**, and a persistent **8-bit Digital Counter**. Underneath them, the server-authoritative deterministic scheduler, typed latency-aware signals, and first digital logic core are implemented and unit-tested.
+The current playable baseline includes an **Engineering Test Bench**, scheduled **Digital Clock**, persistent **8-bit Digital Counter**, configurable **8-bit Digital Gate**, edge-triggered **8-bit Digital Register**, and **Digital Linking Tool**. Underneath them, the server-authoritative deterministic scheduler, typed latency-aware signals, and cached digital world network are implemented and tested inside Minecraft.
 
 Empty-hand right-click the Test Bench to queue a server-side digital diagnostic. On the next engineering simulation tick it computes `0xC AND 0xA` through the real gate implementation, clocks a counter, and reports both results in chat.
 
-Use the Digital Clock with an empty hand to enable or disable it; sneak-use cycles through 1, 2, 5, 10, and 20 Hz. Use the Digital Counter to generate one rising edge and increment its stored value; sneak-use resets it. Clock-to-counter world wiring is the next Milestone 3 feature, so these two blocks are not connected automatically yet.
+Use the Digital Clock with an empty hand to enable or disable it; sneak-use cycles through 1, 2, 5, 10, and 20 Hz. Use the Digital Counter to generate one rising edge and increment its stored value; sneak-use resets it. The gate toggles its manual A input on use and cycles NOT/AND/OR/XOR/NAND/NOR on sneak-use. The register captures its data input on use and resets on sneak-use.
+
+## First digital circuit
+
+1. Place a Digital Clock and an 8-bit Digital Counter.
+2. Hold the Digital Linking Tool and use it on the clock to select its one-bit output.
+3. Use the tool on the counter to connect the compatible clock input.
+4. Wait for rising clock edges and inspect the counter with an empty-hand use.
+5. Sneak-use the linking tool on an input device to remove its first connection.
+
+Connections are stored on input block entities and survive serialization. The server rebuilds a cached adjacency map only after devices load, unload, connect, or disconnect; it never searches the world every tick. No cable geometry is rendered yet.
 
 ## Requirements
 
@@ -35,11 +45,11 @@ Gradle automatically selects an installed JDK 25 or downloads a compatible toolc
 
 ## First launch
 
-Create a world and open the Functional Blocks creative tab. The Engineering Test Bench, Digital Clock, and 8-bit Digital Counter can be placed there. Each also has a survival recipe and can be mined with a pickaxe.
+Create a world and open the Functional Blocks creative tab for the blocks. The Digital Linking Tool is in Tools & Utilities. Every Milestone 3 device has a survival recipe, and all device blocks can be mined with a pickaxe.
 
 ## Engineering guides
 
-The first circuit, digital logic, CPU construction, assembly, MCU, motor-control, PID, oscilloscope, robotics, and PLC guides will be added as their corresponding playable milestones land. Incomplete systems are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
+The first digital circuit is documented above. CPU construction, assembly, MCU, motor-control, PID, oscilloscope, robotics, and PLC guides will be added as their corresponding playable milestones land. Incomplete systems are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
 
 ## Development
 

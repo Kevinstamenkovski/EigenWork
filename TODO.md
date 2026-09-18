@@ -32,10 +32,10 @@
 - [x] Add the first scheduler-backed Minecraft adapter through the Engineering Test Bench.
 - [x] Add a persistent scheduler-backed clock block entity.
 - [x] Add a persistent event-driven eight-bit counter block entity.
-- [ ] Add persistent configurable gate and register block entities.
-- [ ] Add player-created digital cable connections without world scanning.
-- [ ] Add block-entity save/load and digital propagation game tests.
-- [ ] Manually verify clock/counter placement, interactions, and save/reload in Minecraft.
+- [x] Add persistent configurable gate and register block entities.
+- [x] Add player-created digital cable connections without world scanning.
+- [x] Add block-entity save/load and digital propagation game tests.
+- [x] Verify all digital device placement, linking-tool interaction, propagation, and save/load inside Minecraft GameTests.
 
 ## Milestone 4 — Computer and Demo A
 

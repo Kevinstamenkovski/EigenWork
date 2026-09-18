@@ -3,6 +3,8 @@
   "values": [
     "eigenworks:engineering_test_bench",
     "eigenworks:digital_clock",
-    "eigenworks:digital_counter"
+    "eigenworks:digital_counter",
+    "eigenworks:digital_gate",
+    "eigenworks:digital_register"
   ]
 }
