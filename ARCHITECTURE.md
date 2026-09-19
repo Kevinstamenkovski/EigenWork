@@ -12,6 +12,7 @@
 - `dev.eigenworks.computer`: pure Eigen-8 memory, ALU, CPU, ISA, assembler, and synchronized debugger menu.
 - `dev.eigenworks.client`: client-only screens over server-owned menu data.
 - `dev.eigenworks.embedded`: pure MCU integration and GPIO/ADC/PWM/timer peripherals.
+- `dev.eigenworks.instrumentation`: bounded sampled histories, oscilloscope model/menu, and safe CSV export.
 - Future packages follow subsystem ownership: `embedded`, `electrical`, `control`, `instrumentation`, `mechanical`, `robotics`, `automation`, and `networking`.
 
 Minecraft blocks and block entities are adapters. Mathematical and engineering behavior belongs in pure Java objects with no dependency on client rendering or world traversal.
@@ -69,6 +70,14 @@ The slotless `ComputerMenu` synchronizes a bounded debugger snapshot. Run, pause
 GPIO is an eight-bit bank with separate direction, output-latch, and external-input state. The placed MCU participates in `DigitalWorldNetwork` with `gpio_in`, `gpio_out`, and `pwm0`, so topology remains explicit and cached. The ADC is a sample-and-hold quantizer with bit depth, reference voltage, minimum sample period, conversion delay, busy state, and held result. PWM uses absolute simulation time plus a quantized duty register and timestep-safe frequency choices. The periodic timer has reload, remaining-cycle, enable, interrupt-enable, overflow, and vector state. The complete register map is in `docs/EIGEN_MCU.md`; UART/SPI/I2C port ranges are reserved for Milestone 10.
 
 `MicrocontrollerBlockEntity` remains the server authority and persists flash, RAM, CPU state, all peripheral registers/state, program source, deadline count, and digital input endpoint. Books are safe source media; failed assembly never replaces flash. The client supplies no computed peripheral result.
+
+## Instrumentation architecture
+
+`SampleRingBuffer` stores a fixed number of finite timestamped samples and overwrites the oldest in constant time. `OscilloscopeModel` owns four such histories, current inputs, validity, per-channel enables, and pause state without depending on Minecraft. The initial placed oscilloscope exposes four 8-bit digital inputs and samples them every 10 ms through the central scheduler. Links use the existing cached topology; no observer searches the world.
+
+The oscilloscope menu publishes a fixed 64-point-by-four-channel snapshot plus configuration and current values. Its client screen draws stepped time-domain traces and derives visible min/max values, while all sampling and button effects remain server authoritative. Configuration/endpoints persist; history is transient and bounded by design.
+
+`CsvDataLogger` accepts immutable snapshots, sanitizes the requested filename, normalizes and verifies the target remains directly below the provided export root, and writes UTF-8 CSV. Gameplay exports are created only by explicit sneak-use under the server's `eigenworks/exports` directory. The Engineering Inspector reads adapters on the logical server and reports contextual values without client simulation.
 
 ## Planned electrical, control, and robotics architecture
 

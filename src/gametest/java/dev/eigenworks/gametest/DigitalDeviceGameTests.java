@@ -9,6 +9,7 @@ import dev.eigenworks.block.entity.DigitalGateBlockEntity;
 import dev.eigenworks.block.entity.DigitalRegisterBlockEntity;
 import dev.eigenworks.block.entity.ComputerBlockEntity;
 import dev.eigenworks.block.entity.MicrocontrollerBlockEntity;
+import dev.eigenworks.block.entity.OscilloscopeBlockEntity;
 import dev.eigenworks.computer.cpu.CpuStatus;
 import dev.eigenworks.digital.DigitalGateOperation;
 import dev.eigenworks.digital.world.DigitalWorldNetwork;
@@ -174,6 +175,31 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 			helper.assertValueEqual(0xA5, restored.gpioOutput(), "Restored GPIO output");
 			helper.assertValueEqual(512, restored.mcu().peripherals().adc().result(), "Restored ADC result");
 			helper.assertValueEqual(source, restored.mcu().programSource(), "Restored MCU source");
+			helper.succeed();
+		});
+	}
+
+	@GameTest
+	public void oscilloscopeSamplesLinkedMcuOutputAndPersistsConfiguration(GameTestHelper helper) {
+		BlockPos mcuPos = new BlockPos(3, 1, 1);
+		BlockPos scopePos = new BlockPos(4, 1, 1);
+		helper.setBlock(mcuPos, ModBlocks.MICROCONTROLLER);
+		helper.setBlock(scopePos, ModBlocks.OSCILLOSCOPE);
+		MicrocontrollerBlockEntity mcu = helper.getBlockEntity(mcuPos, MicrocontrollerBlockEntity.class);
+		OscilloscopeBlockEntity scope = helper.getBlockEntity(scopePos, OscilloscopeBlockEntity.class);
+		mcu.mcu().peripherals().gpio().setDirectionMask(0xFF);
+		mcu.mcu().peripherals().gpio().writeOutputs(0xA5);
+		DigitalWorldNetwork network = EngineeringSimulation.digitalNetwork(helper.getLevel().getServer());
+		UUID player = UUID.randomUUID();
+		network.selectFirstOutput(player, mcu);
+		helper.assertValueEqual("ch1", network.connectSelected(player, scope), "Connected oscilloscope channel");
+		scope.nextTimeScale();
+
+		helper.runAfterDelay(3, () -> {
+			helper.assertTrue(scope.model().channelHistory(0).size() > 0, "Oscilloscope must record scheduled samples");
+			helper.assertValueEqual(165.0, scope.model().channelHistory(0).newest().value(), "Sampled MCU GPIO value");
+			OscilloscopeBlockEntity restored = roundTrip(helper, scope, OscilloscopeBlockEntity.class);
+			helper.assertTrue(restored.inputBindings().getFirst().connected(), "Restored scope connection");
 			helper.succeed();
 		});
 	}

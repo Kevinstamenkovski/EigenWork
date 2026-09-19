@@ -21,5 +21,10 @@
   "message.eigenworks.computer_assembled": "Eigen-8 assembled %s bytes. Open the debugger to run it.",
   "block.eigenworks.microcontroller": "Eigen-MCU",
   "message.eigenworks.mcu_programmed": "Eigen-MCU programmed %s flash bytes. Empty-hand use to run.",
-  "message.eigenworks.mcu_status": "MCU: %s, GPIO=0x%s, ADC=%s, PWM duty=%s/255, missed deadlines=%s"
+  "message.eigenworks.mcu_status": "MCU: %s, GPIO=%s, ADC=%s, PWM duty=%s/255, missed deadlines=%s",
+  "block.eigenworks.oscilloscope": "4-channel Oscilloscope",
+  "screen.eigenworks.oscilloscope": "Engineering Oscilloscope",
+  "item.eigenworks.engineering_inspector": "Engineering Inspector",
+  "message.eigenworks.scope_exported": "Oscilloscope CSV exported to %s",
+  "message.eigenworks.scope_export_failed": "Oscilloscope export failed: %s"
 }

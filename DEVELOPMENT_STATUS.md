@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 6 — engineering inspector, oscilloscope, and data logger.
+Milestone 7 — electrical solver, motor driver, DC motor, encoder, and gearbox.
 
 ## Last completed milestone
 
-Milestone 5 — programmable MCU, GPIO, timer, ADC, PWM, and deadline accounting.
+Milestone 6 — engineering inspector, oscilloscope, and safe data logger.
 
 ## Completed systems
 
@@ -59,6 +59,13 @@ Milestone 5 — programmable MCU, GPIO, timer, ADC, PWM, and deadline accounting
 - Placeable persistent Eigen-MCU programmed safely from Minecraft books with Run/Pause, reset, and chat diagnostics.
 - Persistence for MCU source, flash, RAM, CPU state, GPIO, ADC, PWM, timer, deadline count, and digital links.
 - MCU block item, localization, model, loot table, mining tag, creative entry, survival recipe, register-map guide, and example program.
+- Handheld Engineering Inspector reporting contextual, server-owned CPU, MCU, instrumentation, and digital-device diagnostics.
+- Finite timestamped instrumentation samples and fixed-capacity ring buffers with deterministic oldest-sample eviction.
+- Four-channel placeable oscilloscope sampling actual connected 8-bit digital signals every 10 ms through the central scheduler.
+- Bounded synchronized oscilloscope GUI with channel-colored time traces, current/min/max values, pause, 16/32/64-sample windows, 1/4/8-bit vertical scales, and channel enables.
+- Safe explicit UTF-8 CSV export into `eigenworks/exports/` with sanitized names and normalized path containment.
+- Persistent oscilloscope pause/scales/channel enables and digital source endpoints; histories are intentionally transient and capped at 64 samples.
+- Oscilloscope/Inspector creative entries, models, recipes, block loot/mining data, localization, player guide, and CSV documentation.
 
 ## Partially implemented systems
 
@@ -68,6 +75,7 @@ Milestone 5 — programmable MCU, GPIO, timer, ADC, PWM, and deadline accounting
 - Digital links are functional and persistent but do not yet render physical cable geometry.
 - The debugger intentionally exposes a compact bounded snapshot rather than a full editable 64 KiB memory grid; richer memory/source views remain future UI work.
 - The MCU ADC has a real voltage input API and tested quantization, but a placeable analog cable/sensor source arrives with the electrical and instrumentation milestones.
+- The first oscilloscope accepts 8-bit digital words. Typed voltage/current/mechanical channels and triggering follow their respective physical systems.
 
 ## Known bugs and failing tests
 
@@ -78,11 +86,11 @@ Milestone 5 — programmable MCU, GPIO, timer, ADC, PWM, and deadline accounting
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 60 passing tests. Embedded coverage includes flash programming protection, assembler-authored interrupt tables, hardware interrupt injection, GPIO direction behavior, ADC quantization/delay, PWM timing, timer overflows/interrupt service, MCU peripheral programs, and real-time deadline misses, in addition to all prior systems.
-- Minecraft GameTests: all 7 required tests pass (six EigenWorks tests plus the framework test), including placed scheduled MCU execution, GPIO, ADC, PWM, and complete source/peripheral serialization alongside all prior tests.
+- Unit tests: 63 passing tests. Instrumentation coverage includes bounded ring-buffer eviction, pause/channel sampling behavior, and safe deterministic CSV output, in addition to all prior systems.
+- Minecraft GameTests: all 8 required tests pass (seven EigenWorks tests plus the framework test), including linked MCU-to-oscilloscope propagation, scheduled time-series sampling, and oscilloscope connection/config serialization alongside all prior tests.
 - `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
-- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1593 recipes without EigenWorks datapack errors, executed all digital/Computer tests plus scheduled MCU GPIO/ADC/PWM execution and persistence. All 7 required tests passed.
-- Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with the Computer/MCU models and client debugger registration present; no missing-model, missing-texture, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so rendered appearance was not visually inspected.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1595 recipes without EigenWorks datapack errors, executed all prior systems plus linked MCU-to-oscilloscope sampling and persistence. All 8 required tests passed.
+- Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with Computer/MCU/Oscilloscope/Inspector assets and both debugger/scope screen registrations present; no missing-model, missing-texture, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so rendered appearance was not visually inspected.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
 - Produced JAR: `build/libs/eigenworks-0.1.0.jar`.
@@ -97,7 +105,7 @@ Milestone 5 — programmable MCU, GPIO, timer, ADC, PWM, and deadline accounting
 
 ## Temporary limitations
 
-Milestone 5 is complete as a functional embedded platform. The ADC currently receives voltage through its server-side device API because analog cable and sensor blocks are later milestones. UART/SPI/I2C registers are reserved but their timed protocols are Milestone 10. Electrical, control, instrumentation, and robotics gameplay are not yet claimed.
+Milestone 6 is complete as functional digital instrumentation. The scope is currently digital-only and has no trigger/protocol decoding. Analog electrical quantities become connectable in Milestone 7, while protocol analysis follows Milestone 10. Electrical motors, control, and robotics gameplay are not yet claimed.
 
 ## Relevant locations
 
@@ -122,13 +130,17 @@ Milestone 5 is complete as a functional embedded platform. The ADC currently rec
 - MCU Minecraft adapter: `src/main/java/dev/eigenworks/block/MicrocontrollerBlock.java` and `block/entity/MicrocontrollerBlockEntity.java`
 - MCU register map: `docs/EIGEN_MCU.md`
 - MCU example: `examples/mcu_gpio_pwm.asm`
+- Instrumentation core/menu: `src/main/java/dev/eigenworks/instrumentation/`
+- Oscilloscope adapter/screen: `src/main/java/dev/eigenworks/block/entity/OscilloscopeBlockEntity.java` and `client/screen/OscilloscopeScreen.java`
+- Engineering Inspector: `src/main/java/dev/eigenworks/item/EngineeringInspectorItem.java`
+- Instrumentation guide: `docs/INSTRUMENTATION.md`
 
 ## Exact next tasks
 
-1. Implement the handheld engineering inspector and contextual device diagnostics.
-2. Add bounded server-owned sampled-channel ring buffers.
-3. Implement a multi-channel oscilloscope block and synchronized time-domain screen.
-4. Implement safe mod-directory CSV data logging with explicit player control.
+1. Implement guarded dense linear solving for Modified Nodal Analysis.
+2. Add DC source/resistor stamping with ground/floating/singularity diagnostics.
+3. Implement the coupled DC motor state equations with stable integration and faults.
+4. Add PWM motor driver, encoder quantization, gearbox, and their playable adapters.
 
 ## Commands
 

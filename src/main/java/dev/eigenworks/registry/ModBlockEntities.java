@@ -7,6 +7,7 @@ import dev.eigenworks.block.entity.DigitalGateBlockEntity;
 import dev.eigenworks.block.entity.DigitalRegisterBlockEntity;
 import dev.eigenworks.block.entity.ComputerBlockEntity;
 import dev.eigenworks.block.entity.MicrocontrollerBlockEntity;
+import dev.eigenworks.block.entity.OscilloscopeBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -38,6 +39,10 @@ public final class ModBlockEntities {
 			BuiltInRegistries.BLOCK_ENTITY_TYPE,
 			EigenWorks.id("microcontroller"),
 			FabricBlockEntityTypeBuilder.create(MicrocontrollerBlockEntity::new, ModBlocks.MICROCONTROLLER).build());
+	public static final BlockEntityType<OscilloscopeBlockEntity> OSCILLOSCOPE = Registry.register(
+			BuiltInRegistries.BLOCK_ENTITY_TYPE,
+			EigenWorks.id("oscilloscope"),
+			FabricBlockEntityTypeBuilder.create(OscilloscopeBlockEntity::new, ModBlocks.OSCILLOSCOPE).build());
 
 	private ModBlockEntities() {
 	}

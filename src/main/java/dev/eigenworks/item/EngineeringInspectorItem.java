@@ -1,0 +1,78 @@
+package dev.eigenworks.item;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import dev.eigenworks.block.entity.ComputerBlockEntity;
+import dev.eigenworks.block.entity.DigitalClockBlockEntity;
+import dev.eigenworks.block.entity.DigitalCounterBlockEntity;
+import dev.eigenworks.block.entity.DigitalGateBlockEntity;
+import dev.eigenworks.block.entity.DigitalRegisterBlockEntity;
+import dev.eigenworks.block.entity.MicrocontrollerBlockEntity;
+import dev.eigenworks.block.entity.OscilloscopeBlockEntity;
+import dev.eigenworks.digital.world.WorldDigitalDevice;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
+/** Handheld contextual engineering inspector; all values are read from server-owned state. */
+public final class EngineeringInspectorItem extends Item {
+	public EngineeringInspectorItem(Properties properties) { super(properties); }
+
+	@Override public InteractionResult useOn(UseOnContext context) {
+		if (context.getLevel().isClientSide()) return InteractionResult.SUCCESS;
+		Player player = context.getPlayer();
+		if (player == null) return InteractionResult.PASS;
+		BlockEntity blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
+		List<Component> lines = describe(blockEntity);
+		if (lines.isEmpty()) lines = List.of(Component.literal("No engineering diagnostics available."));
+		if (!(player instanceof ServerPlayer serverPlayer) || serverPlayer.connection != null) {
+			for (Component line : lines) player.sendSystemMessage(line);
+		}
+		return InteractionResult.SUCCESS_SERVER;
+	}
+
+	private static List<Component> describe(BlockEntity blockEntity) {
+		List<Component> lines = new ArrayList<>();
+		if (blockEntity instanceof ComputerBlockEntity computer) {
+			lines.add(Component.literal("Eigen-8 Computer"));
+			lines.add(Component.literal("CPU: %s  PC: 0x%04X  SP: 0x%04X".formatted(
+					computer.cpu().status(), computer.cpu().programCounter(), computer.cpu().stackPointer())));
+			lines.add(Component.literal("Cycles: %d  Demo[0x0020]: %d".formatted(
+					computer.cpu().totalCycles(), computer.memoryValue(ComputerBlockEntity.DEMO_RESULT_ADDRESS))));
+		} else if (blockEntity instanceof MicrocontrollerBlockEntity mcu) {
+			lines.add(Component.literal("Eigen-MCU"));
+			lines.add(Component.literal("CPU: %s  GPIO out: 0x%02X  deadlines: %d".formatted(
+					mcu.mcu().cpu().status(), mcu.gpioOutput(), mcu.mcu().missedDeadlines())));
+			lines.add(Component.literal("ADC: %d/1023  Vin: %.3f V  PWM: %.1f%% @ %.0f Hz".formatted(
+					mcu.mcu().peripherals().adc().result(), mcu.mcu().peripherals().analogInputVolts(),
+					mcu.mcu().peripherals().pwm().dutyFraction() * 100.0,
+					mcu.mcu().peripherals().pwm().frequencyHertz())));
+		} else if (blockEntity instanceof OscilloscopeBlockEntity scope) {
+			lines.add(Component.literal("4-channel Oscilloscope"));
+			for (int channel = 0; channel < 4; channel++) {
+				lines.add(Component.literal("CH%d: %.0f (%d samples)".formatted(channel + 1,
+						scope.model().currentValue(channel), scope.model().channelHistory(channel).size())));
+			}
+		} else if (blockEntity instanceof DigitalClockBlockEntity clock) {
+			lines.add(Component.literal("Digital Clock: %.1f Hz, output=%s, enabled=%s".formatted(
+					clock.frequencyHertz(), clock.levelHigh(), clock.enabled())));
+		} else if (blockEntity instanceof DigitalCounterBlockEntity counter) {
+			lines.add(Component.literal("8-bit Counter: %d (0x%02X)".formatted(counter.value(), counter.value())));
+		} else if (blockEntity instanceof DigitalGateBlockEntity gate) {
+			lines.add(Component.literal("8-bit Gate: %s, output=0x%02X".formatted(gate.operation(), gate.outputValue())));
+		} else if (blockEntity instanceof DigitalRegisterBlockEntity register) {
+			lines.add(Component.literal("8-bit Register: %d (0x%02X)".formatted(register.value(), register.value())));
+		}
+		if (blockEntity instanceof WorldDigitalDevice device) {
+			long connected = device.inputBindings().stream().filter(binding -> binding.connected()).count();
+			lines.add(Component.literal("Digital ports: %d out, %d/%d inputs connected".formatted(
+					device.outputPorts().size(), connected, device.inputBindings().size())));
+		}
+		return List.copyOf(lines);
+	}
+}

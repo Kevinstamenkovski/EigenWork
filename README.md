@@ -34,6 +34,12 @@ The **Eigen-MCU** combines Eigen-8 with persistent flash/RAM, eight direction-co
 
 The complete port register map and timing rules are in [`docs/EIGEN_MCU.md`](docs/EIGEN_MCU.md). A working GPIO/ADC/PWM program is provided at [`examples/mcu_gpio_pwm.asm`](examples/mcu_gpio_pwm.asm).
 
+## Oscilloscope and data logging
+
+Place the **4-channel Oscilloscope**, then connect an 8-bit output to `ch1`–`ch4` with the Digital Linking Tool. Empty-hand use opens its actual sampled time-domain display. Pause sampling, change the 16/32/64-sample time window, select 1/4/8-bit vertical scale, or enable channels independently. Sneak-use exports the current bounded history to `eigenworks/exports/` under the server directory.
+
+Use the **Engineering Inspector** on a Computer, MCU, oscilloscope, or digital device to read contextual server-owned diagnostics. Details and CSV format are documented in [`docs/INSTRUMENTATION.md`](docs/INSTRUMENTATION.md).
+
 ## Requirements
 
 - Minecraft Java Edition 26.2

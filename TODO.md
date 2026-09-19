@@ -59,9 +59,18 @@
 - [x] Add missed-deadline accounting for bounded MCU instruction budgets.
 - [x] Add a placeable persistent MCU with book programming and diagnostics.
 
+## Milestone 6 — Instrumentation
+
+- [x] Add a handheld contextual Engineering Inspector.
+- [x] Implement finite timestamped samples and bounded ring-buffer histories.
+- [x] Add a four-channel scheduler-backed oscilloscope connected to actual digital signals.
+- [x] Add a synchronized time-domain screen with current/min/max and channel traces.
+- [x] Add pause, time-scale, vertical-scale, and per-channel controls.
+- [x] Implement explicit safe CSV export under a mod-specific server directory.
+- [x] Persist oscilloscope configuration and input connections.
+
 ## Later milestones
 
-- [ ] Milestone 6: inspector, oscilloscope ring buffers, and safe CSV logger.
 - [ ] Milestone 7: MNA circuit core, motor driver, DC motor, encoder, and gearbox.
 - [ ] Milestone 8: protected discrete PID and motor-position Demos B/C.
 - [ ] Milestone 9: matrices, solvers, Euler/RK4, transfer function, and state space.
