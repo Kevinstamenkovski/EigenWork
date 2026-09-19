@@ -8,6 +8,7 @@
     "eigenworks:digital_register",
     "eigenworks:computer",
     "eigenworks:microcontroller",
-    "eigenworks:oscilloscope"
+    "eigenworks:oscilloscope",
+    "eigenworks:motor_rig"
   ]
 }

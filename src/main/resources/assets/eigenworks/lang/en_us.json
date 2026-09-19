@@ -26,5 +26,7 @@
   "screen.eigenworks.oscilloscope": "Engineering Oscilloscope",
   "item.eigenworks.engineering_inspector": "Engineering Inspector",
   "message.eigenworks.scope_exported": "Oscilloscope CSV exported to %s",
-  "message.eigenworks.scope_export_failed": "Oscilloscope export failed: %s"
+  "message.eigenworks.scope_export_failed": "Oscilloscope export failed: %s",
+  "block.eigenworks.motor_rig": "DC Motor Test Rig",
+  "message.eigenworks.motor_status": "Motor: %s V, %s A, speed=%s rad/s, angle=%s rad, encoder=%s, load=%s N m"
 }

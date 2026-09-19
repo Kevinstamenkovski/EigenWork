@@ -10,6 +10,7 @@ import dev.eigenworks.block.entity.DigitalGateBlockEntity;
 import dev.eigenworks.block.entity.DigitalRegisterBlockEntity;
 import dev.eigenworks.block.entity.MicrocontrollerBlockEntity;
 import dev.eigenworks.block.entity.OscilloscopeBlockEntity;
+import dev.eigenworks.block.entity.MotorRigBlockEntity;
 import dev.eigenworks.digital.world.WorldDigitalDevice;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -58,6 +59,11 @@ public final class EngineeringInspectorItem extends Item {
 				lines.add(Component.literal("CH%d: %.0f (%d samples)".formatted(channel + 1,
 						scope.model().currentValue(channel), scope.model().channelHistory(channel).size())));
 			}
+		} else if (blockEntity instanceof MotorRigBlockEntity rig) {
+			lines.add(Component.literal("DC Motor Test Rig"));
+			lines.add(Component.literal("V: %.2f V  I: %.2f A  speed: %.2f rad/s".formatted(rig.assembly().driver().outputVoltage(),rig.assembly().motor().currentAmperes(),rig.assembly().outputSpeed())));
+			lines.add(Component.literal("angle: %.3f rad  encoder: %d  load: %.2f N m".formatted(rig.assembly().outputAngle(),rig.encoderCounts(),rig.assembly().loadTorque())));
+			if(!rig.assembly().motor().faults().isEmpty())lines.add(Component.literal("Faults: "+rig.assembly().motor().faults()));
 		} else if (blockEntity instanceof DigitalClockBlockEntity clock) {
 			lines.add(Component.literal("Digital Clock: %.1f Hz, output=%s, enabled=%s".formatted(
 					clock.frequencyHertz(), clock.levelHigh(), clock.enabled())));

@@ -40,6 +40,10 @@ Place the **4-channel Oscilloscope**, then connect an 8-bit output to `ch1`–`c
 
 Use the **Engineering Inspector** on a Computer, MCU, oscilloscope, or digital device to read contextual server-owned diagnostics. Details and CSV format are documented in [`docs/INSTRUMENTATION.md`](docs/INSTRUMENTATION.md).
 
+## Motor control
+
+The **DC Motor Test Rig** is a real composed H-bridge, DC motor, 20:1 gearbox, and incremental encoder. Connect an MCU 8-bit output to its `pwm_command`; `128` is zero voltage, values above/below drive forward/reverse. Inspect live voltage, current, speed, position, encoder counts, load, and faults with the Engineering Inspector. The equations and circuit solver are documented in [`docs/ELECTRICAL_MOTOR.md`](docs/ELECTRICAL_MOTOR.md).
+
 ## Requirements
 
 - Minecraft Java Edition 26.2

@@ -8,6 +8,7 @@ import dev.eigenworks.block.entity.DigitalRegisterBlockEntity;
 import dev.eigenworks.block.entity.ComputerBlockEntity;
 import dev.eigenworks.block.entity.MicrocontrollerBlockEntity;
 import dev.eigenworks.block.entity.OscilloscopeBlockEntity;
+import dev.eigenworks.block.entity.MotorRigBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -43,6 +44,7 @@ public final class ModBlockEntities {
 			BuiltInRegistries.BLOCK_ENTITY_TYPE,
 			EigenWorks.id("oscilloscope"),
 			FabricBlockEntityTypeBuilder.create(OscilloscopeBlockEntity::new, ModBlocks.OSCILLOSCOPE).build());
+	public static final BlockEntityType<MotorRigBlockEntity> MOTOR_RIG=Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,EigenWorks.id("motor_rig"),FabricBlockEntityTypeBuilder.create(MotorRigBlockEntity::new,ModBlocks.MOTOR_RIG).build());
 
 	private ModBlockEntities() {
 	}

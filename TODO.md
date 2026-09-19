@@ -69,9 +69,19 @@
 - [x] Implement explicit safe CSV export under a mod-specific server directory.
 - [x] Persist oscilloscope configuration and input connections.
 
+## Milestone 7 — Electrical and motor
+
+- [x] Implement guarded dense linear solving with partial pivoting.
+- [x] Implement DC Modified Nodal Analysis for resistors and independent sources.
+- [x] Detect singular/floating networks and invalid component values.
+- [x] Implement coupled DC motor electrical/mechanical state equations with RK4.
+- [x] Implement motor overcurrent, stall, overspeed, invalid-supply, and saturation faults.
+- [x] Implement bidirectional PWM/H-bridge voltage command.
+- [x] Implement gearbox ratio/efficiency and rotary encoder quantization.
+- [x] Add a persistent playable MCU-to-driver-to-motor-to-gearbox-to-encoder rig.
+
 ## Later milestones
 
-- [ ] Milestone 7: MNA circuit core, motor driver, DC motor, encoder, and gearbox.
 - [ ] Milestone 8: protected discrete PID and motor-position Demos B/C.
 - [ ] Milestone 9: matrices, solvers, Euler/RK4, transfer function, and state space.
 - [ ] Milestone 10: timed UART, addressed I2C, and SPI transactions.

@@ -10,6 +10,7 @@ import dev.eigenworks.block.entity.DigitalRegisterBlockEntity;
 import dev.eigenworks.block.entity.ComputerBlockEntity;
 import dev.eigenworks.block.entity.MicrocontrollerBlockEntity;
 import dev.eigenworks.block.entity.OscilloscopeBlockEntity;
+import dev.eigenworks.block.entity.MotorRigBlockEntity;
 import dev.eigenworks.computer.cpu.CpuStatus;
 import dev.eigenworks.digital.DigitalGateOperation;
 import dev.eigenworks.digital.world.DigitalWorldNetwork;
@@ -200,6 +201,25 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 			helper.assertValueEqual(165.0, scope.model().channelHistory(0).newest().value(), "Sampled MCU GPIO value");
 			OscilloscopeBlockEntity restored = roundTrip(helper, scope, OscilloscopeBlockEntity.class);
 			helper.assertTrue(restored.inputBindings().getFirst().connected(), "Restored scope connection");
+			helper.succeed();
+		});
+	}
+
+	@GameTest
+	public void linkedPwmCommandDrivesMotorGearboxAndEncoder(GameTestHelper helper) {
+		BlockPos mcuPos=new BlockPos(3,1,1); BlockPos motorPos=new BlockPos(4,1,1);
+		helper.setBlock(mcuPos,ModBlocks.MICROCONTROLLER); helper.setBlock(motorPos,ModBlocks.MOTOR_RIG);
+		MicrocontrollerBlockEntity mcu=helper.getBlockEntity(mcuPos,MicrocontrollerBlockEntity.class);
+		MotorRigBlockEntity motor=helper.getBlockEntity(motorPos,MotorRigBlockEntity.class);
+		mcu.mcu().peripherals().gpio().setDirectionMask(0xFF); mcu.mcu().peripherals().gpio().writeOutputs(0xFF);
+		DigitalWorldNetwork network=EngineeringSimulation.digitalNetwork(helper.getLevel().getServer()); UUID player=UUID.randomUUID();
+		network.selectFirstOutput(player,mcu); helper.assertValueEqual("pwm_command",network.connectSelected(player,motor),"Connected motor command");
+		helper.runAfterDelay(20,()->{
+			helper.assertTrue(motor.assembly().motor().angularVelocityRadPerSec()>1,"Motor must accelerate from linked command");
+			helper.assertTrue(motor.encoderCounts()>0,"Output encoder must measure motion");
+			MotorRigBlockEntity restored=roundTrip(helper,motor,MotorRigBlockEntity.class);
+			helper.assertTrue(restored.inputBindings().getFirst().connected(),"Restored motor command link");
+			helper.assertValueEqual(motor.encoderCounts(),restored.encoderCounts(),"Restored encoder state");
 			helper.succeed();
 		});
 	}

@@ -13,6 +13,8 @@
 - `dev.eigenworks.client`: client-only screens over server-owned menu data.
 - `dev.eigenworks.embedded`: pure MCU integration and GPIO/ADC/PWM/timer peripherals.
 - `dev.eigenworks.instrumentation`: bounded sampled histories, oscilloscope model/menu, and safe CSV export.
+- `dev.eigenworks.electrical`: guarded Modified Nodal Analysis and linear solving.
+- `dev.eigenworks.mechanical`: DC motor, H-bridge, gearbox, encoder, and composed motor assembly.
 - Future packages follow subsystem ownership: `embedded`, `electrical`, `control`, `instrumentation`, `mechanical`, `robotics`, `automation`, and `networking`.
 
 Minecraft blocks and block entities are adapters. Mathematical and engineering behavior belongs in pure Java objects with no dependency on client rendering or world traversal.
@@ -79,9 +81,11 @@ The oscilloscope menu publishes a fixed 64-point-by-four-channel snapshot plus c
 
 `CsvDataLogger` accepts immutable snapshots, sanitizes the requested filename, normalizes and verifies the target remains directly below the provided export root, and writes UTF-8 CSV. Gameplay exports are created only by explicit sneak-use under the server's `eigenworks/exports` directory. The Engineering Inspector reads adapters on the logical server and reports contextual values without client simulation.
 
-## Planned electrical, control, and robotics architecture
+## Electrical and mechanical architecture
 
-Circuits use a guarded Modified Nodal Analysis core. Motors use the documented coupled electrical/mechanical differential equations. Control blocks operate on timestamped signals, with protected discrete PID and reusable Euler/RK4 integration. Robots cache an explicit link/joint graph and use homogeneous transforms, analytic 2-link IK, then damped least-squares Jacobian methods.
+The first circuit core is DC Modified Nodal Analysis. Resistors, independent current sources, and ideal voltage sources stamp a guarded dense system solved by partial-pivot elimination. Invalid values, near-zero resistance, non-square systems, non-finite results, and singular/floating topology produce explicit diagnostics. Dynamic and nonlinear stamps extend this same boundary later.
+
+`DcMotorModel` integrates armature current, rotor speed, and position from the coupled electrical/mechanical equations using RK4 and a guarded timestep. `HBridgeMotorDriver` maps signed PWM command to bounded voltage, `Gearbox` applies ratio/efficiency, and `RotaryEncoder` quantizes output angle. `MotorAssembly` composes them; `MotorRigBlockEntity` is the 5 ms server-scheduled adapter with explicit digital command/encoder ports and persistent state. Control blocks will consume this assembly in Milestone 8. Robots later cache an explicit link/joint graph and use homogeneous transforms, analytic 2-link IK, then damped least-squares Jacobian methods.
 
 ## GUI networking
 

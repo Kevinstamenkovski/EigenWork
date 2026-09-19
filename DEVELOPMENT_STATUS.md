@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 7 — electrical solver, motor driver, DC motor, encoder, and gearbox.
+Milestone 8 — reusable control blocks, protected PID, and motor-position Demos B/C.
 
 ## Last completed milestone
 
-Milestone 6 — engineering inspector, oscilloscope, and safe data logger.
+Milestone 7 — electrical solver and playable motor/encoder chain.
 
 ## Completed systems
 
@@ -66,6 +66,13 @@ Milestone 6 — engineering inspector, oscilloscope, and safe data logger.
 - Safe explicit UTF-8 CSV export into `eigenworks/exports/` with sanitized names and normalized path containment.
 - Persistent oscilloscope pause/scales/channel enables and digital source endpoints; histories are intentionally transient and capped at 64 samples.
 - Oscilloscope/Inspector creative entries, models, recipes, block loot/mining data, localization, player guide, and CSV documentation.
+- Guarded dense linear solver using partial-pivot Gaussian elimination and numerical singularity tolerance.
+- DC Modified Nodal Analysis with resistor, independent voltage/current source stamping, ground, source-current results, and floating/singular diagnostics.
+- Coupled DC motor current/velocity/position equations integrated with guarded RK4 at 5 ms.
+- Non-destructive overcurrent, stall, overspeed, invalid-supply, and driver-saturation motor faults.
+- Bidirectional 24 V H-bridge command, 20:1 efficiency-aware gearbox, and 4096-count/revolution output encoder.
+- Playable persistent Motor Test Rig accepting linked 8-bit MCU command and publishing 8/16-bit encoder values.
+- Engineering Inspector motor voltage/current/speed/angle/load/fault diagnostics and motor gameplay guide.
 
 ## Partially implemented systems
 
@@ -76,6 +83,7 @@ Milestone 6 — engineering inspector, oscilloscope, and safe data logger.
 - The debugger intentionally exposes a compact bounded snapshot rather than a full editable 64 KiB memory grid; richer memory/source views remain future UI work.
 - The MCU ADC has a real voltage input API and tested quantization, but a placeable analog cable/sensor source arrives with the electrical and instrumentation milestones.
 - The first oscilloscope accepts 8-bit digital words. Typed voltage/current/mechanical channels and triggering follow their respective physical systems.
+- The first MNA core is DC-only; capacitor/inductor companion models, switches, and nonlinear devices remain extensions.
 
 ## Known bugs and failing tests
 
@@ -86,11 +94,11 @@ Milestone 6 — engineering inspector, oscilloscope, and safe data logger.
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 63 passing tests. Instrumentation coverage includes bounded ring-buffer eviction, pause/channel sampling behavior, and safe deterministic CSV output, in addition to all prior systems.
-- Minecraft GameTests: all 8 required tests pass (seven EigenWorks tests plus the framework test), including linked MCU-to-oscilloscope propagation, scheduled time-series sampling, and oscilloscope connection/config serialization alongside all prior tests.
+- Unit tests: 69 passing tests. New coverage validates MNA divider/source currents, singular/floating rejection, invalid components, motor acceleration/back-EMF, H-bridge voltage, gearbox relations, encoder quantization, timestep guards, and saturation faults.
+- Minecraft GameTests: all 9 required tests pass (eight EigenWorks tests plus the framework test), including an explicit MCU-to-motor command link, scheduled physical acceleration, encoder motion, and motor state/link serialization.
 - `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
-- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1595 recipes without EigenWorks datapack errors, executed all prior systems plus linked MCU-to-oscilloscope sampling and persistence. All 8 required tests passed.
-- Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with Computer/MCU/Oscilloscope/Inspector assets and both debugger/scope screen registrations present; no missing-model, missing-texture, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so rendered appearance was not visually inspected.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1596 recipes without EigenWorks datapack errors, executed all prior systems plus linked MCU command, motor dynamics, gearbox, encoder, and persistence. All 9 required tests passed.
+- Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with Computer/MCU/Oscilloscope/Inspector/Motor Rig assets and debugger/scope screen registrations present; no missing-model, missing-texture, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so rendered appearance was not visually inspected.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
 - Produced JAR: `build/libs/eigenworks-0.1.0.jar`.
@@ -105,7 +113,7 @@ Milestone 6 — engineering inspector, oscilloscope, and safe data logger.
 
 ## Temporary limitations
 
-Milestone 6 is complete as functional digital instrumentation. The scope is currently digital-only and has no trigger/protocol decoding. Analog electrical quantities become connectable in Milestone 7, while protocol analysis follows Milestone 10. Electrical motors, control, and robotics gameplay are not yet claimed.
+Milestone 7 is complete as a functional first electrical/mechanical chain. The circuit core is currently a pure tested DC solver rather than placeable individual circuit components. The playable Motor Rig intentionally composes driver/motor/gearbox/encoder while their standalone world-network topology is deferred. Closed-loop PID control is Milestone 8.
 
 ## Relevant locations
 
@@ -134,13 +142,17 @@ Milestone 6 is complete as functional digital instrumentation. The scope is curr
 - Oscilloscope adapter/screen: `src/main/java/dev/eigenworks/block/entity/OscilloscopeBlockEntity.java` and `client/screen/OscilloscopeScreen.java`
 - Engineering Inspector: `src/main/java/dev/eigenworks/item/EngineeringInspectorItem.java`
 - Instrumentation guide: `docs/INSTRUMENTATION.md`
+- Circuit solver: `src/main/java/dev/eigenworks/electrical/`
+- Motor models: `src/main/java/dev/eigenworks/mechanical/`
+- Motor adapter: `src/main/java/dev/eigenworks/block/entity/MotorRigBlockEntity.java`
+- Electrical/motor guide: `docs/ELECTRICAL_MOTOR.md`
 
 ## Exact next tasks
 
-1. Implement guarded dense linear solving for Modified Nodal Analysis.
-2. Add DC source/resistor stamping with ground/floating/singularity diagnostics.
-3. Implement the coupled DC motor state equations with stable integration and faults.
-4. Add PWM motor driver, encoder quantization, gearbox, and their playable adapters.
+1. Implement reusable sum, gain, saturation, integrator, derivative, delay, and low-pass blocks.
+2. Implement protected discrete PID with clamp, derivative filter, and anti-windup.
+3. Add position-control mode around the existing Motor Assembly and encoder.
+4. Complete Demos B/C with a 90-degree target and oscilloscope-visible setpoint/measurement/error/output.
 
 ## Commands
 

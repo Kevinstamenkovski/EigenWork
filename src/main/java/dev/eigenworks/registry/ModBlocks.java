@@ -10,6 +10,7 @@ import dev.eigenworks.block.DigitalRegisterBlock;
 import dev.eigenworks.block.ComputerBlock;
 import dev.eigenworks.block.MicrocontrollerBlock;
 import dev.eigenworks.block.OscilloscopeBlock;
+import dev.eigenworks.block.MotorRigBlock;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -59,6 +60,7 @@ public final class ModBlocks {
 			ModBlockItemIds.OSCILLOSCOPE,
 			OscilloscopeBlock::new,
 			deviceProperties());
+	public static final Block MOTOR_RIG = register(ModBlockItemIds.MOTOR_RIG,MotorRigBlock::new,deviceProperties());
 
 	private ModBlocks() {
 	}
@@ -92,6 +94,7 @@ public final class ModBlocks {
 					entries.accept(COMPUTER.asItem());
 					entries.accept(MICROCONTROLLER.asItem());
 					entries.accept(OSCILLOSCOPE.asItem());
+					entries.accept(MOTOR_RIG.asItem());
 				});
 	}
 
