@@ -15,6 +15,7 @@ public final class ModBlockItemIds {
 	public static final BlockItemId MICROCONTROLLER = create("microcontroller");
 	public static final BlockItemId OSCILLOSCOPE = create("oscilloscope");
 	public static final BlockItemId MOTOR_RIG = create("motor_rig");
+	public static final BlockItemId MATHEMATICS_WORKSTATION = create("mathematics_workstation");
 
 	private ModBlockItemIds() {
 	}

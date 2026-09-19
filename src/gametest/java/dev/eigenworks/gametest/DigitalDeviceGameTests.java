@@ -11,6 +11,7 @@ import dev.eigenworks.block.entity.ComputerBlockEntity;
 import dev.eigenworks.block.entity.MicrocontrollerBlockEntity;
 import dev.eigenworks.block.entity.OscilloscopeBlockEntity;
 import dev.eigenworks.block.entity.MotorRigBlockEntity;
+import dev.eigenworks.block.entity.MathematicsWorkstationBlockEntity;
 import dev.eigenworks.computer.cpu.CpuStatus;
 import dev.eigenworks.digital.DigitalGateOperation;
 import dev.eigenworks.digital.world.DigitalWorldNetwork;
@@ -317,6 +318,24 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 					"Motor command must come from the MCU PWM duty register");
 			helper.succeed();
 		});
+	}
+
+	@GameTest
+	public void mathematicsWorkstationCalculatesAndPersists(GameTestHelper helper) {
+		BlockPos workstationPos = new BlockPos(3, 1, 1);
+		helper.setBlock(workstationPos, ModBlocks.MATHEMATICS_WORKSTATION);
+		MathematicsWorkstationBlockEntity workstation = helper.getBlockEntity(
+				workstationPos, MathematicsWorkstationBlockEntity.class);
+		helper.assertTrue(workstation.calculate("solve 0,2;1,3 | 4,7"),
+				"Workstation must solve a valid matrix command");
+		helper.assertValueEqual("[1.000000000, 2.000000000]", workstation.result(), "Matrix solution");
+		MathematicsWorkstationBlockEntity restored = roundTrip(
+				helper, workstation, MathematicsWorkstationBlockEntity.class);
+		helper.assertValueEqual(workstation.expression(), restored.expression(), "Restored math expression");
+		helper.assertValueEqual(workstation.result(), restored.result(), "Restored math result");
+		helper.assertTrue(!workstation.calculate("inv 1,2;2,4"), "Singular input must report an error");
+		helper.assertTrue(workstation.result().contains("MATRIX SINGULAR"), "Singular diagnostic must be useful");
+		helper.succeed();
 	}
 
 	@Override

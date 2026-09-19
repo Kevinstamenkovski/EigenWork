@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 9 — vectors, matrices, numerical integration, transfer functions, state space, and mathematics workstation.
+Milestone 10 — timed UART, addressed I2C, and SPI communication buses.
 
 ## Last completed milestone
 
-Milestone 8 — reusable control blocks, protected PID, and motor-position Demos B/C.
+Milestone 9 — vectors, matrices, numerical integration, transfer functions, state space, and mathematics workstation.
 
 ## Completed systems
 
@@ -81,6 +81,14 @@ Milestone 8 — reusable control blocks, protected PID, and motor-position Demos
 - MCU `pwm_duty` output exposing its actual eight-bit duty register to averaged power devices independently of its one-bit timed waveform.
 - Demo B Eigen-8 assembly feedback loop reading Motor Rig position through GPIO, computing proportional signed error, and commanding the H-bridge through MCU PWM.
 - Demo C protected PID response with actual setpoint, position, error, and control output sampled by the four-channel oscilloscope.
+- Immutable finite vector and dense matrix types with addition, scaling, dot product, matrix multiplication, transpose, and matrix-vector products.
+- Partial-pivot determinant and `Ax=b` solving, guarded inverse through repeated solves, dimension validation, and `MATRIX SINGULAR` diagnostics.
+- Reusable guarded Forward Euler and classical RK4 integration over vector states.
+- Continuous multi-input/multi-output state-space model implementing `x_dot=A*x+B*u`, `y=C*x+D*u`.
+- Proper SISO transfer functions converted from descending-power polynomials into controllable canonical state-space form.
+- Safe recursive-descent scalar expression parser supporting arithmetic, powers, trig, square root, exponential, and logarithm functions.
+- Placeable persistent Engineering Mathematics Workstation using Book and Quill input for scalar, vector, matrix, solve, inverse, integration, and differentiation calculations.
+- Bounded 8x8 workstation matrices, bounded numerical integration work, server-owned evaluation, useful parse/numerical diagnostics, creative entry, recipe, model, loot, and inspector support.
 
 ## Partially implemented systems
 
@@ -93,6 +101,7 @@ Milestone 8 — reusable control blocks, protected PID, and motor-position Demos
 - The first oscilloscope accepts 8-bit digital words. Typed voltage/current/mechanical channels and triggering follow their respective physical systems.
 - The first MNA core is DC-only; capacitor/inductor companion models, switches, and nonlinear devices remain extensions.
 - PID gains and the 90-degree target are fixed for the initial demonstration; editable controller configuration UI is future work.
+- The Mathematics Workstation uses a compact book-based matrix editor rather than a dedicated grid GUI; calculations and persistence are fully playable.
 
 ## Known bugs and failing tests
 
@@ -103,10 +112,10 @@ Milestone 8 — reusable control blocks, protected PID, and motor-position Demos
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 75 passing tests. New coverage validates every reusable control block, numerical guards, PID anti-windup/filtering, multi-output selection, and closed-loop 90-degree motor convergence.
-- Minecraft GameTests: all 11 required tests pass (ten EigenWorks tests plus the framework test), including programmable MCU position feedback, computed PWM motor command, protected PID convergence, four-channel oscilloscope sampling, and control-mode persistence.
+- Unit tests: 85 passing tests. New coverage validates vector/matrix algebra, determinant, pivoted solve, inverse, singularity guards, Euler/RK4 accuracy, state-space and transfer-function analytic responses, safe expression parsing, matrix commands, integration, and differentiation.
+- Minecraft GameTests: all 12 required tests pass (eleven EigenWorks tests plus the framework test), including workstation calculation, useful singular-matrix errors, and expression/result serialization.
 - `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
-- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1596 recipes without EigenWorks datapack errors, executed all prior systems plus the MCU feedback Demo B and PID/scope Demo C. All 11 required tests passed.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1597 recipes without EigenWorks datapack errors, executed all prior systems plus the mathematics workstation calculation/persistence path. All 12 required tests passed.
 - Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with Computer/MCU/Oscilloscope/Inspector/Motor Rig assets and debugger/scope screen registrations present; no missing-model, missing-texture, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so rendered appearance was not visually inspected.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
@@ -122,7 +131,7 @@ Milestone 8 — reusable control blocks, protected PID, and motor-position Demos
 
 ## Temporary limitations
 
-Milestone 8 is complete as two functional motor-control paths. Demo B uses a deliberately compact proportional assembly controller rather than PID because Eigen-8 currently has eight-bit integer arithmetic; Demo C supplies the protected floating-point PID around the same physical plant. Controller tuning/targets use fixed demonstration defaults. The circuit core remains a pure tested DC solver rather than placeable individual circuit components.
+Milestone 9 is complete. Matrix sizes in the gameplay parser are capped at 8x8 and integration at 10,000 steps for server safety. The pure APIs can represent larger systems subject to normal memory/work limits. Transfer functions are proper SISO models; improper functions and delay approximations remain future extensions.
 
 ## Relevant locations
 
@@ -157,14 +166,17 @@ Milestone 8 is complete as two functional motor-control paths. Demo B uses a del
 - Electrical/motor guide: `docs/ELECTRICAL_MOTOR.md`
 - Control blocks: `src/main/java/dev/eigenworks/control/`
 - Motor-control examples: `examples/demo_b_mcu_position.asm` and `docs/CONTROL.md`
+- Mathematics core: `src/main/java/dev/eigenworks/mathematics/`
+- Mathematics adapter: `src/main/java/dev/eigenworks/block/entity/MathematicsWorkstationBlockEntity.java`
+- Mathematics guide: `docs/MATHEMATICS.md`
 
 ## Exact next tasks
 
-1. Implement immutable vector and matrix types with dimension/finite validation.
-2. Implement matrix multiplication, transpose, determinant, and pivoted `Ax=b` solving with singularity diagnostics.
-3. Generalize Forward Euler and RK4 integrators over finite state vectors.
-4. Implement transfer-function/state-space models and validate them against analytic responses.
-5. Add a safe in-game Engineering Mathematics Workstation for scalar/vector/matrix operations.
+1. Implement timed UART framing with baud, data bits, parity, and stop-bit validation.
+2. Implement addressed I2C controller/peripheral transactions with ACK/NACK and address-conflict diagnostics.
+3. Implement SPI controller/peripheral transfers with chip selection and configured timing.
+4. Connect all three buses to MCU peripheral registers and server-owned placed bus devices.
+5. Add deterministic unit tests and Minecraft GameTests for actual timed communication and persistence.
 
 ## Commands
 

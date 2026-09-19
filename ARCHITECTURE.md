@@ -16,6 +16,7 @@
 - `dev.eigenworks.electrical`: guarded Modified Nodal Analysis and linear solving.
 - `dev.eigenworks.mechanical`: DC motor, H-bridge, gearbox, encoder, and composed motor assembly.
 - `dev.eigenworks.control`: reusable finite-safe dynamic blocks and protected discrete PID control.
+- `dev.eigenworks.mathematics`: vectors, matrices, pivoted solvers, numerical integration, dynamic-system models, and safe expression evaluation.
 - Future packages follow subsystem ownership: `mathematics`, `robotics`, `automation`, and `networking`.
 
 Minecraft blocks and block entities are adapters. Mathematical and engineering behavior belongs in pure Java objects with no dependency on client rendering or world traversal.
@@ -97,3 +98,9 @@ Pure control blocks implement weighted sum, gain, saturation, Euler integration,
 ## GUI networking
 
 GUI edits are validated server-side. The Eigen-8 debugger uses vanilla container-data synchronization for a fixed-size snapshot and menu button packets for controls; it never sends the 64 KiB RAM image to the client. Future oscilloscope and debugger histories use capped ring buffers and bounded visual update rates; packets never mirror entire unbounded histories.
+
+## Mathematics architecture
+
+`Vector` and `Matrix` own copied finite arrays and expose immutable algebra. Linear solve and determinant use Gaussian elimination with partial pivoting and an explicit singularity tolerance; inverse is implemented as repeated solves rather than unchecked adjugate formulas. `NumericalIntegrators` evaluates vector derivatives through guarded Forward Euler or classical RK4. `StateSpaceSystem` validates compatible A/B/C/D dimensions and integrates continuous state, while `TransferFunction` converts a proper SISO polynomial ratio into controllable canonical form.
+
+`MathWorkstationEngine` is a bounded recursive-descent parser rather than a script runtime. Scalar grammar supports explicit arithmetic/functions; separate commands parse vectors and matrices up to 8x8, solve systems, and perform bounded numerical integration/differentiation. `MathematicsWorkstationBlockEntity` persists only the source/result/status and evaluates on the logical server from book input. The book representation is the first in-game matrix editor; a later grid screen can remain a thin editor over this same server-owned engine.

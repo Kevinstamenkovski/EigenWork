@@ -9,6 +9,7 @@
     "eigenworks:computer",
     "eigenworks:microcontroller",
     "eigenworks:oscilloscope",
-    "eigenworks:motor_rig"
+    "eigenworks:motor_rig",
+    "eigenworks:mathematics_workstation"
   ]
 }

@@ -9,6 +9,7 @@ import dev.eigenworks.block.entity.ComputerBlockEntity;
 import dev.eigenworks.block.entity.MicrocontrollerBlockEntity;
 import dev.eigenworks.block.entity.OscilloscopeBlockEntity;
 import dev.eigenworks.block.entity.MotorRigBlockEntity;
+import dev.eigenworks.block.entity.MathematicsWorkstationBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -45,6 +46,9 @@ public final class ModBlockEntities {
 			EigenWorks.id("oscilloscope"),
 			FabricBlockEntityTypeBuilder.create(OscilloscopeBlockEntity::new, ModBlocks.OSCILLOSCOPE).build());
 	public static final BlockEntityType<MotorRigBlockEntity> MOTOR_RIG=Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,EigenWorks.id("motor_rig"),FabricBlockEntityTypeBuilder.create(MotorRigBlockEntity::new,ModBlocks.MOTOR_RIG).build());
+	public static final BlockEntityType<MathematicsWorkstationBlockEntity> MATHEMATICS_WORKSTATION = Registry.register(
+			BuiltInRegistries.BLOCK_ENTITY_TYPE, EigenWorks.id("mathematics_workstation"),
+			FabricBlockEntityTypeBuilder.create(MathematicsWorkstationBlockEntity::new, ModBlocks.MATHEMATICS_WORKSTATION).build());
 
 	private ModBlockEntities() {
 	}

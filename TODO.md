@@ -83,7 +83,7 @@
 ## Later milestones
 
 - [x] Milestone 8: protected discrete PID and motor-position Demos B/C.
-- [ ] Milestone 9: matrices, solvers, Euler/RK4, transfer function, and state space.
+- [x] Milestone 9: matrices, solvers, Euler/RK4, transfer function, state space, and mathematics workstation.
 - [ ] Milestone 10: timed UART, addressed I2C, and SPI transactions.
 - [ ] Milestone 11: robot graph, FK, analytic 2-link IK, Jacobian, and Demo D.
 - [ ] Milestone 12: conveyor, sensors, diverter, PLC scan cycle, and Demo E.

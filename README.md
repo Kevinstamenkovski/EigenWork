@@ -46,6 +46,10 @@ The **DC Motor Test Rig** is a real composed H-bridge, DC motor, 20:1 gearbox, i
 
 Demo B uses the real MCU to read motor position and calculate the PWM command in Eigen-8 assembly. Demo C uses the protected discrete PID and four scope traces. Wiring, source code, scaling, and operation are documented in [`docs/CONTROL.md`](docs/CONTROL.md); motor equations and the circuit solver are in [`docs/ELECTRICAL_MOTOR.md`](docs/ELECTRICAL_MOTOR.md).
 
+## Engineering mathematics
+
+The **Engineering Mathematics Workstation** evaluates safe expressions from a Book and Quill on the server. It supports scalar arithmetic and trig/log/exp functions, vectors, matrices, determinant, inverse, pivoted linear solves, matrix multiplication, numerical integration, and numerical differentiation. Internally, EigenWorks also provides reusable Forward Euler/RK4, transfer-function, and state-space models. Grammar and examples are in [`docs/MATHEMATICS.md`](docs/MATHEMATICS.md).
+
 ## Requirements
 
 - Minecraft Java Edition 26.2
@@ -77,7 +81,7 @@ Create a world and open the Functional Blocks creative tab for the blocks. The D
 
 ## Engineering guides
 
-The first digital circuit, CPU program, MCU motor-control loop, PID response, and oscilloscope workflow are documented above and in the linked guides. Robotics and PLC guides will be added with their playable milestones. Incomplete systems are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
+The first digital circuit, CPU program, MCU motor-control loop, PID response, oscilloscope workflow, and mathematics workstation are documented above and in the linked guides. Robotics and PLC guides will be added with their playable milestones. Incomplete systems are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
 
 ## Development
 

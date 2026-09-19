@@ -28,5 +28,6 @@
   "message.eigenworks.scope_exported": "Oscilloscope CSV exported to %s",
   "message.eigenworks.scope_export_failed": "Oscilloscope export failed: %s",
   "block.eigenworks.motor_rig": "DC Motor Test Rig",
-  "message.eigenworks.motor_status": "Motor [%s]: %s V, %s A, speed=%s rad/s, angle=%s rad, encoder=%s, error=%s rad"
+  "message.eigenworks.motor_status": "Motor [%s]: %s V, %s A, speed=%s rad/s, angle=%s rad, encoder=%s, error=%s rad",
+  "block.eigenworks.mathematics_workstation": "Engineering Mathematics Workstation"
 }
