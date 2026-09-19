@@ -10,6 +10,7 @@ import dev.eigenworks.block.entity.MicrocontrollerBlockEntity;
 import dev.eigenworks.block.entity.OscilloscopeBlockEntity;
 import dev.eigenworks.block.entity.MotorRigBlockEntity;
 import dev.eigenworks.block.entity.MathematicsWorkstationBlockEntity;
+import dev.eigenworks.block.entity.CommunicationHubBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -49,6 +50,9 @@ public final class ModBlockEntities {
 	public static final BlockEntityType<MathematicsWorkstationBlockEntity> MATHEMATICS_WORKSTATION = Registry.register(
 			BuiltInRegistries.BLOCK_ENTITY_TYPE, EigenWorks.id("mathematics_workstation"),
 			FabricBlockEntityTypeBuilder.create(MathematicsWorkstationBlockEntity::new, ModBlocks.MATHEMATICS_WORKSTATION).build());
+	public static final BlockEntityType<CommunicationHubBlockEntity> COMMUNICATION_HUB = Registry.register(
+			BuiltInRegistries.BLOCK_ENTITY_TYPE, EigenWorks.id("communication_hub"),
+			FabricBlockEntityTypeBuilder.create(CommunicationHubBlockEntity::new, ModBlocks.COMMUNICATION_HUB).build());
 
 	private ModBlockEntities() {
 	}

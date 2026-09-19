@@ -174,6 +174,9 @@ public final class MicrocontrollerBlockEntity extends BlockEntity implements Loa
 				input.getIntOr("timer_remaining", 1_000), input.getIntOr("timer_vector", 8),
 				input.getBooleanOr("timer_enabled", false), input.getBooleanOr("timer_interrupt", false),
 				input.getBooleanOr("timer_pending", false));
+		mcu.peripherals().communication().restore(
+				input.getIntOr("uart_baud", 0), input.getIntOr("i2c_address", 0x48),
+				input.getIntOr("i2c_data", 0), input.getIntOr("spi_data", 0), input.getIntOr("uart_receive", 0));
 		gpioSource = DigitalLinkStorage.read(input, "gpio_source");
 		publishedGpio = input.getIntOr("published_gpio", 0) & 0xFF;
 		publishedPwmDuty = input.getIntOr("published_pwm_duty", mcu.peripherals().pwm().dutyCode()) & 0xFF;
@@ -209,6 +212,11 @@ public final class MicrocontrollerBlockEntity extends BlockEntity implements Loa
 		output.putBoolean("timer_enabled", mcu.peripherals().timer().enabled());
 		output.putBoolean("timer_interrupt", mcu.peripherals().timer().interruptEnabled());
 		output.putBoolean("timer_pending", mcu.peripherals().timer().overflowPending());
+		output.putInt("uart_baud", mcu.peripherals().communication().uartBaudIndex());
+		output.putInt("i2c_address", mcu.peripherals().communication().i2cAddress());
+		output.putInt("i2c_data", mcu.peripherals().communication().i2cData());
+		output.putInt("spi_data", mcu.peripherals().communication().spiData());
+		output.putInt("uart_receive", 0);
 		output.putInt("published_gpio", publishedGpio);
 		output.putInt("published_pwm_duty", publishedPwmDuty);
 		output.putBoolean("pwm_high", pwmHigh);

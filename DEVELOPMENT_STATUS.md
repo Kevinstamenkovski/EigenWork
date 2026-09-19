@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 10 — timed UART, addressed I2C, and SPI communication buses.
+Milestone 11 — robot links/joints, graph, forward and inverse kinematics, Jacobian, trajectories, and Demo D.
 
 ## Last completed milestone
 
-Milestone 9 — vectors, matrices, numerical integration, transfer functions, state space, and mathematics workstation.
+Milestone 10 — timed UART, addressed I2C, SPI, MCU registers, and playable Communication Hub.
 
 ## Completed systems
 
@@ -89,6 +89,12 @@ Milestone 9 — vectors, matrices, numerical integration, transfer functions, st
 - Safe recursive-descent scalar expression parser supporting arithmetic, powers, trig, square root, exponential, and logarithm functions.
 - Placeable persistent Engineering Mathematics Workstation using Book and Quill input for scalar, vector, matrix, solve, inverse, integration, and differentiation calculations.
 - Bounded 8x8 workstation matrices, bounded numerical integration work, server-owned evaluation, useful parse/numerical diagnostics, creative entry, recipe, model, loot, and inspector support.
+- Configurable UART framing with baud, 5–8 data bits, optional even/odd parity, one/two stop bits, explicit codec validation, and baud-derived receive timing.
+- Timed single-controller I2C bus with seven-bit addressing, cached peripherals, ACK/NACK, address-conflict diagnostics, bounded transactions, and EEPROM-like memory device.
+- Timed full-duplex SPI with explicit chip selection, cached peripherals, clock-derived completion, conflict/missing-device diagnostics, and bounded transfers.
+- Eigen-MCU port registers `0x40`–`0x61` for CPU-driven UART, I2C, and SPI data/control/status operations.
+- Persistent MCU communication configuration with local UART loopback, addressed I2C register peripheral, and deterministic SPI inversion peripheral.
+- Placeable server-scheduled UART/I2C/SPI Communication Hub with selectable protocols, actual delayed transactions, persistence, inspector diagnostics, creative entry, recipe, model, and loot.
 
 ## Partially implemented systems
 
@@ -102,6 +108,7 @@ Milestone 9 — vectors, matrices, numerical integration, transfer functions, st
 - The first MNA core is DC-only; capacitor/inductor companion models, switches, and nonlinear devices remain extensions.
 - PID gains and the 90-degree target are fixed for the initial demonstration; editable controller configuration UI is future work.
 - The Mathematics Workstation uses a compact book-based matrix editor rather than a dedicated grid GUI; calculations and persistence are fully playable.
+- Communication buses currently run inside each controller/hub; arbitrary multi-block protocol cable geometry and logic-analyzer decoding remain later extensions.
 
 ## Known bugs and failing tests
 
@@ -112,10 +119,10 @@ Milestone 9 — vectors, matrices, numerical integration, transfer functions, st
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 85 passing tests. New coverage validates vector/matrix algebra, determinant, pivoted solve, inverse, singularity guards, Euler/RK4 accuracy, state-space and transfer-function analytic responses, safe expression parsing, matrix commands, integration, and differentiation.
-- Minecraft GameTests: all 12 required tests pass (eleven EigenWorks tests plus the framework test), including workstation calculation, useful singular-matrix errors, and expression/result serialization.
+- Unit tests: 90 passing tests. New coverage validates UART frame/parity/timing, I2C address/ACK/NACK/conflict/memory behavior, SPI chip select/full-duplex timing, MCU communication registers, and CPU-authored communication operations.
+- Minecraft GameTests: all 13 required tests pass (twelve EigenWorks tests plus the framework test), including scheduled UART, I2C, and SPI Hub transactions and communication-state serialization.
 - `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
-- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1597 recipes without EigenWorks datapack errors, executed all prior systems plus the mathematics workstation calculation/persistence path. All 12 required tests passed.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1598 recipes without EigenWorks datapack errors, executed all prior systems plus all three timed Communication Hub protocols and persistence. All 13 required tests passed.
 - Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with Computer/MCU/Oscilloscope/Inspector/Motor Rig assets and debugger/scope screen registrations present; no missing-model, missing-texture, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so rendered appearance was not visually inspected.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
@@ -131,7 +138,7 @@ Milestone 9 — vectors, matrices, numerical integration, transfer functions, st
 
 ## Temporary limitations
 
-Milestone 9 is complete. Matrix sizes in the gameplay parser are capped at 8x8 and integration at 10,000 steps for server safety. The pure APIs can represent larger systems subject to normal memory/work limits. Transfer functions are proper SISO models; improper functions and delay approximations remain future extensions.
+Milestone 10 is complete. UART, I2C, and SPI have real logical timing and protocol semantics but do not yet share physical multi-block cable topology. The MCU peripherals use deterministic local devices so assembly programs can perform and poll real transactions now; the placed Hub provides direct gameplay diagnostics for each bus.
 
 ## Relevant locations
 
@@ -169,14 +176,18 @@ Milestone 9 is complete. Matrix sizes in the gameplay parser are capped at 8x8 a
 - Mathematics core: `src/main/java/dev/eigenworks/mathematics/`
 - Mathematics adapter: `src/main/java/dev/eigenworks/block/entity/MathematicsWorkstationBlockEntity.java`
 - Mathematics guide: `docs/MATHEMATICS.md`
+- Communication cores: `src/main/java/dev/eigenworks/networking/`
+- MCU bus adapter: `src/main/java/dev/eigenworks/embedded/McuCommunicationController.java`
+- Communication Hub: `src/main/java/dev/eigenworks/block/entity/CommunicationHubBlockEntity.java`
+- Communication guide: `docs/COMMUNICATION.md`
 
 ## Exact next tasks
 
-1. Implement timed UART framing with baud, data bits, parity, and stop-bit validation.
-2. Implement addressed I2C controller/peripheral transactions with ACK/NACK and address-conflict diagnostics.
-3. Implement SPI controller/peripheral transfers with chip selection and configured timing.
-4. Connect all three buses to MCU peripheral registers and server-owned placed bus devices.
-5. Add deterministic unit tests and Minecraft GameTests for actual timed communication and persistence.
+1. Implement revolute/prismatic joints, rigid links, and a cached robot topology graph.
+2. Implement homogeneous transforms and validate two-link forward kinematics analytically.
+3. Implement analytic two-link inverse kinematics with reachability/elbow branches.
+4. Implement translational Jacobian, damped least-squares numerical IK, and singularity diagnostics.
+5. Implement trapezoidal joint trajectories and a placeable 2-DOF Robot Arm completing Demo D.
 
 ## Commands
 

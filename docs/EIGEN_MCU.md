@@ -22,8 +22,16 @@ Program flash occupies `0x0000`–`0x7FFF`. CPU stores to that region fault beca
 | `32` | Timer control | R/W | Bit 0 enable, bit 1 interrupt enable |
 | `33` | Timer status | R/W | Bit 0 overflow; write bit 0 to clear |
 | `34` | Timer vector | R/W | Eigen-8 interrupt vector number |
+| `40` | UART data | R/W | Write begins TX; read consumes looped-back RX byte |
+| `41` | UART status | R | Bit 0 busy, bit 1 receive ready |
+| `42` | UART baud | R/W | Selector 0/1/2/3 = 9600/19200/57600/115200 baud |
+| `50` | I2C address | R/W | Seven-bit peripheral address |
+| `51` | I2C data | R/W | One-byte write/read register |
+| `52` | I2C control/status | R/W | Write bit 0 starts write, bit 1 starts read; read busy/complete/NACK bits 0/1/2 |
+| `60` | SPI data | R/W | MOSI byte before transfer, MISO byte after transfer |
+| `61` | SPI control/status | R/W | Write bit 0 starts CS0 transfer; read busy/complete bits 0/1 |
 
-Ports `0x40` onward are reserved for the UART, SPI, I2C, and later communication milestones.
+Ports not listed remain reserved for later communication channels, CAN, and DMA.
 
 ## GPIO and digital links
 
@@ -42,6 +50,10 @@ The pure peripheral API accepts the physical voltage. A placeable analog sensor/
 PWM phase is derived from absolute simulation time, so it is deterministic across server ticks. The selected rates are representable by the 1 ms engineering timestep. Future motor drivers can consume the duty fraction directly, avoiding pulse aliasing.
 
 The timer advances only by CPU cycles actually consumed. Each overflow reloads the counter and raises a pending status bit. With interrupt enable set, it requests the configured hardware vector; Eigen-8 services one pending interrupt before the next instruction by pushing the PC and loading the big-endian vector-table address.
+
+## UART, I2C, and SPI
+
+The MCU contains the same timed protocol cores used by the placed Communication Hub. UART register writes frame 8-N-1 data and make it readable only after the selected baud-derived line time. I2C uses a 100 kHz controller and a seven-bit register peripheral at `0x48`, with explicit busy, complete, ACK/NACK behavior. SPI uses a 1 MHz controller, explicit CS0, full-duplex one-byte transfer, and a demonstration peripheral that returns bitwise-inverted data. Software must inspect status before starting a second transaction; overlapping requests produce a stable peripheral fault rather than silently replacing work. See [`COMMUNICATION.md`](COMMUNICATION.md).
 
 ## Minecraft interaction and persistence
 

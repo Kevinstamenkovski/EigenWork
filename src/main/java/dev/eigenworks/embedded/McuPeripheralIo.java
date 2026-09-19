@@ -18,11 +18,20 @@ public final class McuPeripheralIo implements CpuIo {
 	public static final int TIMER_CONTROL = 0x32;
 	public static final int TIMER_STATUS = 0x33;
 	public static final int TIMER_VECTOR = 0x34;
+	public static final int UART_DATA = 0x40;
+	public static final int UART_STATUS = 0x41;
+	public static final int UART_BAUD = 0x42;
+	public static final int I2C_ADDRESS = 0x50;
+	public static final int I2C_DATA = 0x51;
+	public static final int I2C_CONTROL_STATUS = 0x52;
+	public static final int SPI_DATA = 0x60;
+	public static final int SPI_CONTROL_STATUS = 0x61;
 
 	private final GpioBank8 gpio = new GpioBank8();
 	private final AdcConverter adc = new AdcConverter(10, 5.0, 100L);
 	private final PwmChannel pwm = new PwmChannel();
 	private final CycleTimer timer = new CycleTimer();
+	private final McuCommunicationController communication = new McuCommunicationController();
 	private double analogInputVolts;
 	private long currentTimeMicros;
 
@@ -43,6 +52,14 @@ public final class McuPeripheralIo implements CpuIo {
 			case TIMER_CONTROL -> (timer.enabled() ? 1 : 0) | (timer.interruptEnabled() ? 2 : 0);
 			case TIMER_STATUS -> timer.overflowPending() ? 1 : 0;
 			case TIMER_VECTOR -> timer.interruptVector();
+			case UART_DATA -> communication.readUartData();
+			case UART_STATUS -> communication.uartStatus();
+			case UART_BAUD -> communication.uartBaudIndex();
+			case I2C_ADDRESS -> communication.i2cAddress();
+			case I2C_DATA -> communication.i2cData();
+			case I2C_CONTROL_STATUS -> communication.i2cStatus();
+			case SPI_DATA -> communication.spiData();
+			case SPI_CONTROL_STATUS -> communication.spiStatus();
 			default -> 0;
 		};
 	}
@@ -62,6 +79,13 @@ public final class McuPeripheralIo implements CpuIo {
 			case TIMER_CONTROL -> { timer.setEnabled((value & 1) != 0); timer.setInterruptEnabled((value & 2) != 0); }
 			case TIMER_STATUS -> { if ((value & 1) != 0) timer.clearOverflow(); }
 			case TIMER_VECTOR -> timer.setInterruptVector(value);
+			case UART_DATA -> communication.transmitUart(value);
+			case UART_BAUD -> communication.setUartBaudIndex(value & 3);
+			case I2C_ADDRESS -> communication.setI2cAddress(value & 0x7F);
+			case I2C_DATA -> communication.setI2cData(value);
+			case I2C_CONTROL_STATUS -> { if ((value & 1) != 0) communication.startI2c(false); else if ((value & 2) != 0) communication.startI2c(true); }
+			case SPI_DATA -> communication.setSpiData(value);
+			case SPI_CONTROL_STATUS -> { if ((value & 1) != 0) communication.startSpi(); }
 			default -> { }
 		}
 	}
@@ -69,6 +93,7 @@ public final class McuPeripheralIo implements CpuIo {
 	public void advanceTime(long simulationTimeMicros) {
 		currentTimeMicros = simulationTimeMicros;
 		adc.advance(simulationTimeMicros);
+		communication.advance(simulationTimeMicros);
 	}
 
 	public void setAnalogInputVolts(double value) {
@@ -81,6 +106,7 @@ public final class McuPeripheralIo implements CpuIo {
 	public AdcConverter adc() { return adc; }
 	public PwmChannel pwm() { return pwm; }
 	public CycleTimer timer() { return timer; }
+	public McuCommunicationController communication() { return communication; }
 
 	private static int requirePort(int value) {
 		if (value < 0 || value > 0xFF) throw new IllegalArgumentException("MCU port must be 0..255");

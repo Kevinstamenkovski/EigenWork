@@ -74,4 +74,28 @@ class EigenMicrocontrollerTest {
 		mcu.simulate(2_000, 1_000);
 		assertEquals(99, mcu.cpu().registerValue(7));
 	}
+
+	@Test
+	void cpuUsesUartI2cAndSpiPortRegisters() {
+		EigenMicrocontroller mcu = new EigenMicrocontroller();
+		assertTrue(mcu.assembleAndProgram("""
+			LOAD R0, 0x5A
+			OUT 0x40, R0
+			LOAD R0, 0x33
+			OUT 0x51, R0
+			LOAD R0, 1
+			OUT 0x52, R0
+			LOAD R0, 0x0F
+			OUT 0x60, R0
+			LOAD R0, 1
+			OUT 0x61, R0
+			HALT
+			""").successful());
+		mcu.run();
+		mcu.simulate(1_000, 1_000);
+		mcu.simulate(3_000, 1_000);
+		assertEquals(0x5A, mcu.peripherals().read(0x40));
+		assertEquals(0xF0, mcu.peripherals().read(0x60));
+		assertTrue((mcu.peripherals().read(0x52) & 2) != 0);
+	}
 }

@@ -17,6 +17,7 @@
 - `dev.eigenworks.mechanical`: DC motor, H-bridge, gearbox, encoder, and composed motor assembly.
 - `dev.eigenworks.control`: reusable finite-safe dynamic blocks and protected discrete PID control.
 - `dev.eigenworks.mathematics`: vectors, matrices, pivoted solvers, numerical integration, dynamic-system models, and safe expression evaluation.
+- `dev.eigenworks.networking`: timed UART framing, addressed I2C transactions, and chip-selected SPI transfers.
 - Future packages follow subsystem ownership: `mathematics`, `robotics`, `automation`, and `networking`.
 
 Minecraft blocks and block entities are adapters. Mathematical and engineering behavior belongs in pure Java objects with no dependency on client rendering or world traversal.
@@ -104,3 +105,9 @@ GUI edits are validated server-side. The Eigen-8 debugger uses vanilla container
 `Vector` and `Matrix` own copied finite arrays and expose immutable algebra. Linear solve and determinant use Gaussian elimination with partial pivoting and an explicit singularity tolerance; inverse is implemented as repeated solves rather than unchecked adjugate formulas. `NumericalIntegrators` evaluates vector derivatives through guarded Forward Euler or classical RK4. `StateSpaceSystem` validates compatible A/B/C/D dimensions and integrates continuous state, while `TransferFunction` converts a proper SISO polynomial ratio into controllable canonical form.
 
 `MathWorkstationEngine` is a bounded recursive-descent parser rather than a script runtime. Scalar grammar supports explicit arithmetic/functions; separate commands parse vectors and matrices up to 8x8, solve systems, and perform bounded numerical integration/differentiation. `MathematicsWorkstationBlockEntity` persists only the source/result/status and evaluates on the logical server from book input. The book representation is the first in-game matrix editor; a later grid screen can remain a thin editor over this same server-owned engine.
+
+## Communication architecture
+
+UART framing is explicit and configurable by baud, data width, parity, and stop count. `TimedUartLink` holds at most one frame and releases it only after calculated line duration. `I2cBus` caches peripherals by seven-bit address, rejects conflicts, calculates transaction duration from address/data/ACK clocks, and completes with ACK/NACK. `SpiBus` caches peripherals by chip select and schedules full-duplex results from configured clock rate and byte count. All three reject overlapping work and malformed parameters.
+
+`McuCommunicationController` integrates these pure engines behind Eigen-8 ports `0x40`–`0x61`; the CPU initiates work and polls status rather than receiving instantaneous values. The initial UART is a local loopback, I2C targets a register peripheral at `0x48`, and SPI CS0 targets a deterministic inversion peripheral. `CommunicationHubBlockEntity` is a 1 ms loaded server-scheduled adapter exposing all three protocols through block interaction and persistent diagnostics. Physical multi-block protocol cabling will reuse explicit registered topology in a later extension rather than scanning the world.

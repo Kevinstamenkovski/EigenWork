@@ -10,7 +10,7 @@ import dev.eigenworks.computer.memory.FlashMemory;
 import dev.eigenworks.computer.memory.MemoryBus;
 import dev.eigenworks.computer.memory.RamMemory;
 
-/** Eigen-8 CPU integrated with flash, RAM, GPIO, ADC, PWM, and a cycle timer. */
+/** Eigen-8 CPU integrated with flash, RAM, GPIO, ADC, PWM, timer, UART, I2C, and SPI. */
 public final class EigenMicrocontroller {
 	public static final int FLASH_SIZE = 0x8000;
 	public static final int RAM_BASE = 0x8000;

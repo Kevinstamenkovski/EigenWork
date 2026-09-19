@@ -12,6 +12,7 @@ import dev.eigenworks.block.entity.MicrocontrollerBlockEntity;
 import dev.eigenworks.block.entity.OscilloscopeBlockEntity;
 import dev.eigenworks.block.entity.MotorRigBlockEntity;
 import dev.eigenworks.block.entity.MathematicsWorkstationBlockEntity;
+import dev.eigenworks.block.entity.CommunicationHubBlockEntity;
 import dev.eigenworks.digital.world.WorldDigitalDevice;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -71,6 +72,11 @@ public final class EngineeringInspectorItem extends Item {
 			lines.add(Component.literal("Engineering Mathematics Workstation"));
 			lines.add(Component.literal("Expression: " + workstation.expression()));
 			lines.add(Component.literal("Result: " + workstation.result()));
+		} else if (blockEntity instanceof CommunicationHubBlockEntity hub) {
+			lines.add(Component.literal("Communication Hub: " + hub.selectedProtocol()));
+			lines.add(Component.literal("Status: " + hub.result()));
+			lines.add(Component.literal("UART selector: %d  I2C: 0x%02X  SPI data: 0x%02X".formatted(
+					hub.communication().uartBaudIndex(), hub.communication().i2cAddress(), hub.communication().spiData())));
 		} else if (blockEntity instanceof DigitalClockBlockEntity clock) {
 			lines.add(Component.literal("Digital Clock: %.1f Hz, output=%s, enabled=%s".formatted(
 					clock.frequencyHertz(), clock.levelHigh(), clock.enabled())));

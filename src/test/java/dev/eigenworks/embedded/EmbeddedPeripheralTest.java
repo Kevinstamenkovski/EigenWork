@@ -50,4 +50,27 @@ class EmbeddedPeripheralTest {
 		assertTrue(timer.overflowPending());
 		assertEquals(100, timer.remainingCycles());
 	}
+
+	@Test
+	void communicationRegistersCompleteTimedLoopbackTransactions() {
+		McuCommunicationController communication = new McuCommunicationController();
+		communication.advance(1_000);
+		communication.transmitUart(0x5A);
+		assertEquals(1, communication.uartStatus() & 1);
+		communication.advance(3_000);
+		assertEquals(0x5A, communication.readUartData());
+
+		communication.setI2cData(0x6C);
+		communication.startI2c(false);
+		communication.advance(4_000);
+		communication.startI2c(true);
+		communication.advance(5_000);
+		assertEquals(0x6C, communication.i2cData());
+		assertEquals(2, communication.i2cStatus() & 2);
+
+		communication.setSpiData(0x0F);
+		communication.startSpi();
+		communication.advance(6_000);
+		assertEquals(0xF0, communication.spiData());
+	}
 }

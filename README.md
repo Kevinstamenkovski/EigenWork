@@ -50,6 +50,10 @@ Demo B uses the real MCU to read motor position and calculate the PWM command in
 
 The **Engineering Mathematics Workstation** evaluates safe expressions from a Book and Quill on the server. It supports scalar arithmetic and trig/log/exp functions, vectors, matrices, determinant, inverse, pivoted linear solves, matrix multiplication, numerical integration, and numerical differentiation. Internally, EigenWorks also provides reusable Forward Euler/RK4, transfer-function, and state-space models. Grammar and examples are in [`docs/MATHEMATICS.md`](docs/MATHEMATICS.md).
 
+## Communication buses
+
+The **UART / I2C / SPI Communication Hub** runs actual timed bus diagnostics under the server scheduler. Empty-hand use starts the selected protocol and sneak-use cycles protocols. Eigen-MCU programs access the same UART framing, I2C addressing/ACK, and SPI chip-select engines through ports `0x40`–`0x61`. Timing, register examples, and current physical-wiring limits are documented in [`docs/COMMUNICATION.md`](docs/COMMUNICATION.md) and [`docs/EIGEN_MCU.md`](docs/EIGEN_MCU.md).
+
 ## Requirements
 
 - Minecraft Java Edition 26.2
@@ -81,7 +85,7 @@ Create a world and open the Functional Blocks creative tab for the blocks. The D
 
 ## Engineering guides
 
-The first digital circuit, CPU program, MCU motor-control loop, PID response, oscilloscope workflow, and mathematics workstation are documented above and in the linked guides. Robotics and PLC guides will be added with their playable milestones. Incomplete systems are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
+The first digital circuit, CPU program, MCU motor-control loop, PID response, oscilloscope workflow, mathematics workstation, and timed communication buses are documented above and in the linked guides. Robotics and PLC guides will be added with their playable milestones. Incomplete systems are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
 
 ## Development
 

@@ -12,6 +12,7 @@ import dev.eigenworks.block.entity.MicrocontrollerBlockEntity;
 import dev.eigenworks.block.entity.OscilloscopeBlockEntity;
 import dev.eigenworks.block.entity.MotorRigBlockEntity;
 import dev.eigenworks.block.entity.MathematicsWorkstationBlockEntity;
+import dev.eigenworks.block.entity.CommunicationHubBlockEntity;
 import dev.eigenworks.computer.cpu.CpuStatus;
 import dev.eigenworks.digital.DigitalGateOperation;
 import dev.eigenworks.digital.world.DigitalWorldNetwork;
@@ -336,6 +337,32 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 		helper.assertTrue(!workstation.calculate("inv 1,2;2,4"), "Singular input must report an error");
 		helper.assertTrue(workstation.result().contains("MATRIX SINGULAR"), "Singular diagnostic must be useful");
 		helper.succeed();
+	}
+
+	@GameTest
+	public void communicationHubExecutesAllTimedBusesAndPersists(GameTestHelper helper) {
+		BlockPos hubPos = new BlockPos(3, 1, 1);
+		helper.setBlock(hubPos, ModBlocks.COMMUNICATION_HUB);
+		CommunicationHubBlockEntity hub = helper.getBlockEntity(hubPos, CommunicationHubBlockEntity.class);
+		helper.assertTrue(hub.startDiagnostic(), "UART diagnostic must start");
+		helper.runAfterDelay(2, () -> {
+			helper.assertTrue(hub.result().contains("UART RX 0x55"), "UART must complete after frame time");
+			hub.nextProtocol();
+			helper.assertTrue(hub.startDiagnostic(), "I2C diagnostic must start");
+			helper.runAfterDelay(2, () -> {
+				helper.assertTrue(hub.result().contains("I2C ACK"), "Addressed I2C peripheral must acknowledge");
+				hub.nextProtocol();
+				helper.assertTrue(hub.startDiagnostic(), "SPI diagnostic must start");
+				helper.runAfterDelay(2, () -> {
+					helper.assertTrue(hub.result().contains("SPI MISO 0xF0"), "Selected SPI peripheral must respond");
+					CommunicationHubBlockEntity restored = roundTrip(helper, hub, CommunicationHubBlockEntity.class);
+					helper.assertValueEqual(CommunicationHubBlockEntity.Protocol.SPI, restored.selectedProtocol(),
+							"Restored selected protocol");
+					helper.assertValueEqual(hub.result(), restored.result(), "Restored communication result");
+					helper.succeed();
+				});
+			});
+		});
 	}
 
 	@Override
