@@ -4,6 +4,8 @@
 
 The initial electrical core uses Modified Nodal Analysis (MNA). Ground is node `0`; other nodes are numbered from `1`. Resistors stamp conductance, current sources stamp the right-hand side, and ideal DC voltage sources add branch-current unknowns. The dense solver uses Gaussian elimination with partial pivoting and a `1e-12` singularity tolerance.
 
+`TransientMnaCircuit` extends the same node/branch formulation across time. Capacitors use the backward-Euler conductance `C/dt` plus their prior terminal voltage; inductors add a branch-current unknown with companion resistance `L/dt` and prior current. Shockley diodes are solved by bounded Newton linearization. A timestep is committed only after convergence, so a singular, non-finite, or non-convergent solve cannot partially advance circuit history. The initial state is de-energized and timesteps are constrained to 1 ns through 1 s.
+
 Inputs reject NaN, infinity, invalid nodes, and resistance below `1 µOhm`. Singular/floating networks report `MATRIX SINGULAR OR FLOATING NODE` instead of destabilizing the server. The current scope is DC resistors plus independent voltage/current sources; dynamic RLC companion models and nonlinear devices remain later electrical expansions.
 
 ## DC motor

@@ -105,6 +105,7 @@
 - [x] Milestone 16: bounded 2x2 matrix grid/editor with determinant/inverse execution.
 - [x] Milestone 16: live PLC I/O monitor with item, emergency-stop, and scan-period controls.
 - [x] Milestone 16: Advanced Console bitrate, latency, IK damping, module, and run controls.
-- [ ] Integrate capacitor/inductor companion stamps and nonlinear diode iterations into general MNA networks.
+- [x] Milestone 17: integrate capacitor/inductor companion stamps into stateful transient MNA networks.
+- [x] Milestone 17: add guarded Shockley-diode Newton iteration and convergence diagnostics.
 - [ ] Add articulated multi-block robot rendering and six-axis robot topology.
 - [ ] Add a distributable release workflow and compatibility matrix for future Minecraft/Fabric updates.

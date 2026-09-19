@@ -3,8 +3,7 @@ package dev.eigenworks.block.entity;
 import dev.eigenworks.computer.accelerator.FloatingPointUnit;
 import dev.eigenworks.computer.accelerator.MatrixAccelerator;
 import dev.eigenworks.computer.accelerator.AdvancedConsoleMenu;
-import dev.eigenworks.electrical.RcTransient;
-import dev.eigenworks.electrical.RlTransient;
+import dev.eigenworks.electrical.TransientMnaCircuit;
 import dev.eigenworks.mathematics.Matrix;
 import dev.eigenworks.mathematics.Vector;
 import dev.eigenworks.networking.CanBus;
@@ -53,7 +52,15 @@ public final class AdvancedEngineeringConsoleBlockEntity extends BlockEntity imp
 	}
 	private String diagnoseFpu() { var value = new FloatingPointUnit().execute(FloatingPointUnit.Operation.SQRT, 2, 0); lastCycles = value.cycles(); return "sqrt(2)=%.9f, %d cycles".formatted(value.value(), lastCycles); }
 	private String diagnoseMatrix() { var value = new MatrixAccelerator(8).multiply(new Matrix(new double[][] {{1, 2}, {3, 4}}), new Vector(5, 6)); lastCycles = value.cycles(); return "A*v=[%.1f, %.1f], %d cycles".formatted(value.value().get(0), value.value().get(1), lastCycles); }
-	private String diagnoseCircuit() { RcTransient rc = new RcTransient(1_000, 0.001, 0); RlTransient rl = new RlTransient(10, 0.1, 0); for (int i = 0; i < 100; i++) { rc.step(5, 0.01); rl.step(20, 0.01); } lastCycles = 100; return "RC=%.3f V, RL=%.3f A after 1 s".formatted(rc.voltage(), rl.current()); }
+	private String diagnoseCircuit() {
+		TransientMnaCircuit rc = new TransientMnaCircuit(2).voltageSource(1, 0, 5).resistor(1, 2, 1_000).capacitor(2, 0, 0.001);
+		TransientMnaCircuit diode = new TransientMnaCircuit(2).voltageSource(1, 0, 5).resistor(1, 2, 1_000).diode(2, 0);
+		double capacitorVoltage = 0;
+		for (int i = 0; i < 100; i++) capacitorVoltage = rc.step(0.01).voltage(2);
+		var nonlinear = diode.step(0.001);
+		lastCycles = 100 + nonlinear.newtonIterations();
+		return "MNA RC=%.3f V, diode=%.3f V (%d Newton iterations)".formatted(capacitorVoltage, nonlinear.voltage(2), nonlinear.newtonIterations());
+	}
 	private String diagnoseRobot() { PlanarThreeLinkKinematics arm = new PlanarThreeLinkKinematics(1, 1, .5); var ik = arm.inverse(1.4, 1, new Vector(.2, .2, .2), ikDamping, 500, 1e-5); if (!ik.converged()) throw new IllegalStateException(ik.diagnostic()); var pose = arm.forward(ik.joints()); lastCycles = ik.iterations(); return "3R IK=(%.3f, %.3f) m, iterations=%d".formatted(pose.xMeters(), pose.yMeters(), lastCycles); }
 	public void nextBitrate(){bitrate=switch(bitrate){case 125_000->250_000;case 250_000->500_000;case 500_000->1_000_000;default->125_000;};setChanged();}public void nextLatency(){latencyMicros=switch(latencyMicros){case 0->20_000;case 20_000->80_000;default->0;};setChanged();}public void nextDamping(){ikDamping=ikDamping<.03?.08:ikDamping<.1?.2:.02;setChanged();}
 	public int bitrate(){return bitrate;}public int latencyMicros(){return latencyMicros;}public double ikDamping(){return ikDamping;}

@@ -88,7 +88,7 @@ The oscilloscope menu publishes a fixed 64-point-by-four-channel snapshot plus c
 
 ## Electrical and mechanical architecture
 
-The first circuit core is DC Modified Nodal Analysis. Resistors, independent current sources, and ideal voltage sources stamp a guarded dense system solved by partial-pivot elimination. Invalid values, near-zero resistance, non-square systems, non-finite results, and singular/floating topology produce explicit diagnostics. Dynamic and nonlinear stamps extend this same boundary later.
+The circuit core provides both DC and stateful transient Modified Nodal Analysis. Resistors, independent current sources, and ideal voltage sources use conventional MNA stamps. Capacitors and inductors use backward-Euler companion stamps and commit history only after an accepted step. Shockley diodes are linearized with bounded-exponent, voltage-limited Newton iteration. Every iteration uses the guarded partial-pivot solver; invalid values, unsafe timesteps, non-finite results, singular/floating topology, and non-convergence produce explicit diagnostics without corrupting prior state.
 
 `DcMotorModel` integrates armature current, rotor speed, and position from the coupled electrical/mechanical equations using RK4 and a guarded timestep. `HBridgeMotorDriver` maps signed PWM command to bounded voltage, `Gearbox` applies ratio/efficiency, and `RotaryEncoder` quantizes output angle. `MotorAssembly` composes them; `MotorRigBlockEntity` is the 5 ms server-scheduled adapter with explicit digital command/encoder/control-diagnostic ports and persistent state.
 
@@ -132,7 +132,7 @@ UART framing is explicit and configurable by baud, data width, parity, and stop 
 
 `FloatingPointUnit` and `MatrixAccelerator` return both guarded results and logical cycle charges. The FPU rejects domain, divide-by-zero, and non-finite faults. The matrix unit delegates arithmetic to the immutable numerical core and enforces an explicit dimension ceiling before work begins. They are optional logical devices rather than transistor- or nanosecond-level emulation.
 
-`RcTransient` and `RlTransient` use backward-Euler companion equations for stable first-order dynamic circuits. `PlanarThreeLinkKinematics` extends the robot math to a redundant 3R chain with a 2x3 Jacobian and damped least-squares updates solved through the pivoted matrix core. `AdvancedEngineeringConsoleBlockEntity` is the persistent, server-authoritative gameplay adapter: interactions execute bounded diagnostics and store only selected module/result/accounting state. It never accepts client-computed engineering results.
+`RcTransient` and `RlTransient` remain convenient first-order models, while `TransientMnaCircuit` composes resistive, source, capacitor, inductor, and diode stamps into arbitrary bounded networks. `PlanarThreeLinkKinematics` extends the robot math to a redundant 3R chain with a 2x3 Jacobian and damped least-squares updates solved through the pivoted matrix core. `AdvancedEngineeringConsoleBlockEntity` is the persistent, server-authoritative gameplay adapter: interactions execute bounded diagnostics, including the general transient MNA engine, and store only selected module/result/accounting state. It never accepts client-computed engineering results.
 
 ## Physical CAN topology
 

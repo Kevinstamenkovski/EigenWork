@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 17 — dynamic and nonlinear Modified Nodal Analysis.
+Milestone 18 — articulated multi-block six-axis robotics.
 
 ## Last completed milestone
 
-Milestone 16 — bounded matrix, PLC I/O, and Advanced Console editors.
+Milestone 17 — dynamic and nonlinear Modified Nodal Analysis.
 
 ## Completed systems
 
@@ -128,6 +128,10 @@ Milestone 16 — bounded matrix, PLC I/O, and Advanced Console editors.
 - Persistent 2x2 matrix grid with bounded edits, determinant/inverse selection, and server execution.
 - Live PLC input/output image, scan-period/count, workpiece, and emergency-stop screen.
 - Persistent Advanced Console CAN bitrate, latency, IK damping, module, and run controls.
+- Stateful general transient MNA with backward-Euler capacitor and inductor companion stamps.
+- Guarded Shockley-diode Newton iteration with voltage/exponent limiting and explicit convergence failure.
+- Transactional circuit timesteps: history advances only after a finite, converged solution.
+- Advanced Console transient diagnostic now exercises composed RC and nonlinear diode MNA networks.
 
 ## Partially implemented systems
 
@@ -138,9 +142,9 @@ Milestone 16 — bounded matrix, PLC I/O, and Advanced Console editors.
 - The debugger intentionally exposes a compact bounded snapshot rather than a full editable 64 KiB memory grid; richer memory/source views remain future UI work.
 - The MCU ADC has a real voltage input API and tested quantization, but a placeable analog cable/sensor source arrives with the electrical and instrumentation milestones.
 - The first oscilloscope accepts 8-bit digital words. Typed voltage/current/mechanical channels and triggering follow their respective physical systems.
-- The general MNA builder remains DC-only; tested RC/RL backward-Euler companion models exist separately, while switches and nonlinear devices remain extensions.
+- General MNA supports resistors, independent sources, capacitors, inductors, and Shockley diodes; switches, controlled sources, and transistor models remain extensions.
 - PID gains and target are editable and persistent; output limits, derivative-filter time, and sample period remain fixed safe implementation parameters.
-- The Mathematics Workstation uses a compact book-based matrix editor rather than a dedicated grid GUI; calculations and persistence are fully playable.
+- The Mathematics Workstation provides both book commands and a dedicated bounded 2x2 grid GUI; larger matrix input remains book-based.
 - CAN has arbitrary branching multi-block cable topology; UART/I2C/SPI remain local to controllers/hubs, and protocol-analyzer decoding remains an extension.
 - Robot Arms are blocks containing articulated server state; separate multi-block link geometry, 6-DOF topology, and animated rendering are future presentation/topology work.
 - The first Factory Cell integrates conveyor/sensors/diverter in one block; separate visible conveyor segments and moving Minecraft item entities are future presentation/topology work.
@@ -154,7 +158,7 @@ Milestone 16 — bounded matrix, PLC I/O, and Advanced Console editors.
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 114 passing tests. New coverage validates parameter schemas, bounds/defaults/steps, rejected atomic controller configuration, and controller reconstruction.
+- Unit tests: 119 passing tests. New coverage validates RC/RL companion history, nonlinear diode convergence and bias behavior, unsafe timesteps, and singular transient networks.
 - Minecraft GameTests: all 19 required tests pass (eighteen EigenWorks tests plus the framework test), including all Milestone 16 editor actions and persistence.
 - `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
 - Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1603 recipes without EigenWorks datapack errors, executed all prior systems plus server-validated Motor Rig configuration/persistence. All 18 required tests passed.
@@ -173,7 +177,7 @@ Milestone 16 — bounded matrix, PLC I/O, and Advanced Console editors.
 
 ## Temporary limitations
 
-Milestones 1–16 are complete as functional vertical slices. Editors use bounded action packets instead of trusting client numeric input. Eigen-8 CAN I/O, nonlinear general circuit solving, and six-axis animated robots remain explicit extensions.
+Milestones 1–17 are complete as functional vertical slices. Editors use bounded action packets instead of trusting client numeric input. Eigen-8 CAN I/O, controlled-source/transistor circuit models, and six-axis animated robots remain explicit extensions.
 
 ## Relevant locations
 
@@ -225,6 +229,7 @@ Milestones 1–16 are complete as functional vertical slices. Editors use bounde
 - CAN/impairment engines: `src/main/java/dev/eigenworks/networking/CanBus.java` and `ImpairedLink.java`
 - FPU/matrix accelerators: `src/main/java/dev/eigenworks/computer/accelerator/`
 - RC/RL transients: `src/main/java/dev/eigenworks/electrical/RcTransient.java` and `RlTransient.java`
+- General transient/nonlinear MNA: `src/main/java/dev/eigenworks/electrical/TransientMnaCircuit.java`
 - 3-link robotics: `src/main/java/dev/eigenworks/robotics/PlanarThreeLinkKinematics.java`
 - Advanced Console: `src/main/java/dev/eigenworks/block/entity/AdvancedEngineeringConsoleBlockEntity.java`
 - Advanced systems guide: `docs/ADVANCED_ENGINEERING.md`
@@ -237,9 +242,9 @@ Milestones 1–16 are complete as functional vertical slices. Editors use bounde
 
 ## Exact next tasks
 
-1. Integrate capacitor and inductor backward-Euler companion stamps into transient MNA.
-2. Add bounded Newton iteration for nonlinear diode networks with convergence diagnostics.
-3. Add articulated multi-block rendering and general 6-DOF robot topology.
+1. Add general serial-chain forward kinematics and Jacobians for up to six axes.
+2. Add loaded multi-block robot joint topology without world scans.
+3. Add articulated joint visualization and Minecraft topology/persistence regression.
 4. Complete distributable release workflow and compatibility matrix.
 
 ## Commands

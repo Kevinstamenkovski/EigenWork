@@ -20,7 +20,7 @@ The matrix accelerator performs dot products, matrix-vector products, and matrix
 
 ## Transient circuits
 
-Series RC and RL models use backward Euler, which remains stable at practical positive timesteps. The RC state is capacitor voltage and the RL state is inductor current. Invalid component values, non-positive timesteps, and non-finite state are rejected. These companion-style models extend the DC MNA foundation without claiming full nonlinear SPICE compatibility.
+Series RC and RL convenience models use backward Euler, while the general transient MNA engine stamps capacitors and inductors into arbitrary source/resistor networks. It also solves Shockley diodes with guarded Newton iteration, voltage limiting, exponent limiting, and explicit non-convergence diagnostics. Invalid component values, unsafe timesteps, singular topology, and non-finite state are rejected. This is a deliberately bounded educational solver, not a claim of full SPICE compatibility.
 
 ## Advanced robotics
 
@@ -28,4 +28,4 @@ Series RC and RL models use backward Euler, which remains stable at practical po
 
 ## Current limits
 
-The console is a diagnostic integration block rather than a cable router. Milestone 14 adds separately placed physical CAN nodes/cables using the same protocol engine; impairments remain message-level, accelerators are not memory-mapped into Eigen-8, and RC/RL models are standalone transient companions rather than stamps in the DC MNA builder. These are explicit extension points, not simulated claims of full industrial hardware.
+The console is a diagnostic integration block rather than a cable router. Milestone 14 adds separately placed physical CAN nodes/cables using the same protocol engine; impairments remain message-level and accelerators are not memory-mapped into Eigen-8. The transient solver supports the documented component set but not controlled sources, semiconductor families beyond the diode, or adaptive timesteps. These are explicit extension points, not simulated claims of full industrial hardware.
