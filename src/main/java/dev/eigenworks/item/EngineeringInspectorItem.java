@@ -61,6 +61,8 @@ public final class EngineeringInspectorItem extends Item {
 			}
 		} else if (blockEntity instanceof MotorRigBlockEntity rig) {
 			lines.add(Component.literal("DC Motor Test Rig"));
+			lines.add(Component.literal("Mode: %s  target: %.3f rad  error: %.3f rad".formatted(
+					rig.controlMode(), rig.controllerSnapshot().reference(), rig.controllerSnapshot().error())));
 			lines.add(Component.literal("V: %.2f V  I: %.2f A  speed: %.2f rad/s".formatted(rig.assembly().driver().outputVoltage(),rig.assembly().motor().currentAmperes(),rig.assembly().outputSpeed())));
 			lines.add(Component.literal("angle: %.3f rad  encoder: %d  load: %.2f N m".formatted(rig.assembly().outputAngle(),rig.encoderCounts(),rig.assembly().loadTorque())));
 			if(!rig.assembly().motor().faults().isEmpty())lines.add(Component.literal("Faults: "+rig.assembly().motor().faults()));

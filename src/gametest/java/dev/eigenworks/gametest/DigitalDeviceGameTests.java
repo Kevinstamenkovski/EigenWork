@@ -224,6 +224,101 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 		});
 	}
 
+	@GameTest(maxTicks = 120)
+	public void protectedPidControlsMotorToNinetyDegreesAndFeedsScope(GameTestHelper helper) {
+		BlockPos motorPos = new BlockPos(3, 1, 1);
+		BlockPos scopePos = new BlockPos(4, 1, 1);
+		helper.setBlock(motorPos, ModBlocks.MOTOR_RIG);
+		helper.setBlock(scopePos, ModBlocks.OSCILLOSCOPE);
+		MotorRigBlockEntity motor = helper.getBlockEntity(motorPos, MotorRigBlockEntity.class);
+		OscilloscopeBlockEntity scope = helper.getBlockEntity(scopePos, OscilloscopeBlockEntity.class);
+		motor.toggleControlMode();
+
+		DigitalWorldNetwork network = EngineeringSimulation.digitalNetwork(helper.getLevel().getServer());
+		UUID player = UUID.randomUUID();
+		for (int channel = 0; channel < 4; channel++) {
+			if (channel == 0) network.selectFirstOutput(player, motor);
+			else network.selectNextOutput(player, motor);
+			helper.assertValueEqual("ch" + (channel + 1), network.connectSelected(player, scope),
+					"Connected control diagnostic channel");
+		}
+
+		helper.runAfterDelay(100, () -> {
+			helper.assertValueEqual(MotorRigBlockEntity.ControlMode.POSITION_90_DEGREES, motor.controlMode(),
+					"Motor control mode");
+			helper.assertTrue(Math.abs(motor.assembly().outputAngle() - Math.PI / 2) < 0.1,
+					"Protected PID must settle the motor near 90 degrees");
+			helper.assertTrue(Math.abs(motor.controllerSnapshot().error()) < 0.1,
+					"Controller error must be bounded");
+			for (int channel = 0; channel < 4; channel++) {
+				helper.assertTrue(scope.model().channelHistory(channel).size() > 0,
+						"Oscilloscope must sample control channel " + (channel + 1));
+			}
+			MotorRigBlockEntity restored = roundTrip(helper, motor, MotorRigBlockEntity.class);
+			helper.assertValueEqual(MotorRigBlockEntity.ControlMode.POSITION_90_DEGREES, restored.controlMode(),
+					"Restored closed-loop mode");
+			helper.succeed();
+		});
+	}
+
+	@GameTest(maxTicks = 120)
+	public void mcuReadsMotorPositionAndComputesPwmCommand(GameTestHelper helper) {
+		BlockPos mcuPos = new BlockPos(3, 1, 1);
+		BlockPos motorPos = new BlockPos(4, 1, 1);
+		helper.setBlock(mcuPos, ModBlocks.MICROCONTROLLER);
+		helper.setBlock(motorPos, ModBlocks.MOTOR_RIG);
+		MicrocontrollerBlockEntity mcu = helper.getBlockEntity(mcuPos, MicrocontrollerBlockEntity.class);
+		MotorRigBlockEntity motor = helper.getBlockEntity(motorPos, MotorRigBlockEntity.class);
+		String source = """
+			LOAD R1, 191
+			LOAD R4, 128
+			LOAD R5, 1
+			OUT 0x21, R5
+			loop:
+			IN R0, 0x02
+			CMP R0, R1
+			JE stopped
+			JL forward
+			SUB R3, R0, R1
+			SHR R3, R3
+			SUB R2, R4, R3
+			OUT 0x20, R2
+			JMP loop
+			forward:
+			SUB R3, R1, R0
+			SHR R3, R3
+			ADD R2, R4, R3
+			OUT 0x20, R2
+			JMP loop
+			stopped:
+			OUT 0x20, R4
+			JMP loop
+			""";
+		helper.assertTrue(mcu.assembleAndLoad(source).successful(), "Demo B MCU program must assemble");
+
+		DigitalWorldNetwork network = EngineeringSimulation.digitalNetwork(helper.getLevel().getServer());
+		UUID player = UUID.randomUUID();
+		network.selectFirstOutput(player, motor);
+		network.selectNextOutput(player, motor);
+		helper.assertValueEqual("gpio_in", network.connectSelected(player, mcu), "Motor position feedback to MCU");
+		network.selectFirstOutput(player, mcu);
+		network.selectNextOutput(player, mcu);
+		helper.assertValueEqual("pwm_command", network.connectSelected(player, motor), "MCU PWM command to motor");
+		mcu.toggleRunPause();
+
+		helper.runAfterDelay(100, () -> {
+			helper.assertTrue(mcu.mcu().cpu().totalInstructions() > 100,
+					"MCU must execute the feedback algorithm");
+			helper.assertTrue(Math.abs(motor.assembly().outputAngle() - Math.PI / 2) < 0.15,
+					"MCU-computed command must bring the motor near 90 degrees; angle="
+							+ motor.assembly().outputAngle() + ", command=" + motor.commandCode()
+							+ ", input=" + mcu.mcu().peripherals().gpio().externalInputs());
+			helper.assertTrue(motor.commandCode() > 0 && motor.commandCode() < 255,
+					"Motor command must come from the MCU PWM duty register");
+			helper.succeed();
+		});
+	}
+
 	@Override
 	public void invokeTestMethod(GameTestHelper helper, Method method) throws ReflectiveOperationException {
 		helper.setBlock(CLOCK_POS, ModBlocks.DIGITAL_CLOCK);

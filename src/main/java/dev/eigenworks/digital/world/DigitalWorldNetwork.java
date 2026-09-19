@@ -55,6 +55,24 @@ public final class DigitalWorldNetwork {
 		return endpoint;
 	}
 
+	/** Cycles the selected output when a multi-output source is clicked repeatedly. */
+	public DigitalSourceEndpoint selectNextOutput(UUID playerId, WorldDigitalDevice device) {
+		Objects.requireNonNull(playerId, "playerId");
+		List<DigitalPortSpec> outputs = device.outputPorts().stream()
+				.filter(port -> port.direction() == DigitalPortDirection.OUTPUT)
+				.toList();
+		if (outputs.isEmpty()) throw new IllegalArgumentException("Device has no digital output");
+		DigitalSourceEndpoint current = selections.get(playerId);
+		int currentIndex = -1;
+		if (current != null && current.device().equals(device.digitalAddress())) {
+			for (int index = 0; index < outputs.size(); index++) if (outputs.get(index).name().equals(current.port())) currentIndex = index;
+		}
+		DigitalPortSpec output = outputs.get((currentIndex + 1) % outputs.size());
+		DigitalSourceEndpoint endpoint = new DigitalSourceEndpoint(device.digitalAddress(), output.name(), output.width());
+		selections.put(playerId, endpoint);
+		return endpoint;
+	}
+
 	public DigitalSourceEndpoint selection(UUID playerId) {
 		return selections.get(playerId);
 	}

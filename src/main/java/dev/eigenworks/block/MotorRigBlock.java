@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-/** Integrated first motor test rig with configurable load. */
+/** Integrated motor test rig with direct PWM and closed-loop 90-degree modes. */
 public final class MotorRigBlock extends BaseEntityBlock {
 	public static final MapCodec<MotorRigBlock> CODEC=simpleCodec(MotorRigBlock::new);
 	public MotorRigBlock(Properties properties){super(properties);}
@@ -23,8 +23,8 @@ public final class MotorRigBlock extends BaseEntityBlock {
 	@Override protected InteractionResult useWithoutItem(BlockState state,Level level,BlockPos pos,Player player,BlockHitResult hit){
 		if(level.isClientSide())return InteractionResult.SUCCESS;
 		if(!(level.getBlockEntity(pos) instanceof MotorRigBlockEntity rig))return InteractionResult.PASS;
-		if(player.isShiftKeyDown())rig.resetRig();else rig.nextLoad();
-		player.sendSystemMessage(Component.translatable("message.eigenworks.motor_status",rig.assembly().driver().outputVoltage(),rig.assembly().motor().currentAmperes(),rig.assembly().outputSpeed(),rig.assembly().outputAngle(),rig.encoderCounts(),rig.assembly().loadTorque()));
+		if(player.isShiftKeyDown())rig.resetRig();else rig.toggleControlMode();
+		player.sendSystemMessage(Component.translatable("message.eigenworks.motor_status",rig.controlMode().name(),rig.assembly().driver().outputVoltage(),rig.assembly().motor().currentAmperes(),rig.assembly().outputSpeed(),rig.assembly().outputAngle(),rig.encoderCounts(),rig.controllerSnapshot().error()));
 		return InteractionResult.SUCCESS_SERVER;
 	}
 }

@@ -36,13 +36,15 @@ The complete port register map and timing rules are in [`docs/EIGEN_MCU.md`](doc
 
 ## Oscilloscope and data logging
 
-Place the **4-channel Oscilloscope**, then connect an 8-bit output to `ch1`–`ch4` with the Digital Linking Tool. Empty-hand use opens its actual sampled time-domain display. Pause sampling, change the 16/32/64-sample time window, select 1/4/8-bit vertical scale, or enable channels independently. Sneak-use exports the current bounded history to `eigenworks/exports/` under the server directory.
+Place the **4-channel Oscilloscope**, then connect an 8-bit output to `ch1`–`ch4` with the Digital Linking Tool. Repeated uses on a selected multi-output source cycle its available ports. Empty-hand use opens its actual sampled time-domain display. Pause sampling, change the 16/32/64-sample time window, select 1/4/8-bit vertical scale, or enable channels independently. Sneak-use exports the current bounded history to `eigenworks/exports/` under the server directory.
 
 Use the **Engineering Inspector** on a Computer, MCU, oscilloscope, or digital device to read contextual server-owned diagnostics. Details and CSV format are documented in [`docs/INSTRUMENTATION.md`](docs/INSTRUMENTATION.md).
 
 ## Motor control
 
-The **DC Motor Test Rig** is a real composed H-bridge, DC motor, 20:1 gearbox, and incremental encoder. Connect an MCU 8-bit output to its `pwm_command`; `128` is zero voltage, values above/below drive forward/reverse. Inspect live voltage, current, speed, position, encoder counts, load, and faults with the Engineering Inspector. The equations and circuit solver are documented in [`docs/ELECTRICAL_MOTOR.md`](docs/ELECTRICAL_MOTOR.md).
+The **DC Motor Test Rig** is a real composed H-bridge, DC motor, 20:1 gearbox, incremental encoder, and optional protected PID. Connect the MCU's 8-bit `pwm_duty` to `pwm_command`; `128` is zero voltage, values above/below drive forward/reverse. Empty-hand use toggles its built-in 90-degree PID demonstration, and sneak-use resets it. The rig publishes oscilloscope-ready setpoint, position, error, and control channels.
+
+Demo B uses the real MCU to read motor position and calculate the PWM command in Eigen-8 assembly. Demo C uses the protected discrete PID and four scope traces. Wiring, source code, scaling, and operation are documented in [`docs/CONTROL.md`](docs/CONTROL.md); motor equations and the circuit solver are in [`docs/ELECTRICAL_MOTOR.md`](docs/ELECTRICAL_MOTOR.md).
 
 ## Requirements
 
@@ -75,7 +77,7 @@ Create a world and open the Functional Blocks creative tab for the blocks. The D
 
 ## Engineering guides
 
-The first digital circuit and first CPU program are documented above. MCU, motor-control, PID, oscilloscope, robotics, and PLC guides will be added as their corresponding playable milestones land. Incomplete systems are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
+The first digital circuit, CPU program, MCU motor-control loop, PID response, and oscilloscope workflow are documented above and in the linked guides. Robotics and PLC guides will be added with their playable milestones. Incomplete systems are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
 
 ## Development
 

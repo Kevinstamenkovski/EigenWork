@@ -18,6 +18,6 @@ and `dtheta/dt = omega`. The coupled state `[i, omega, theta]` is integrated by 
 
 ## Playable Motor Test Rig
 
-The rig composes a 24 V bidirectional H-bridge, DC motor, 20:1 gearbox, and 4096-count/revolution output encoder. Its 8-bit `pwm_command` input uses `128` as zero, `255` as full positive voltage, and `0` as full negative voltage. Outputs are `encoder_low` (8 bit, oscilloscope-compatible) and `encoder_counts` (16 bit).
+The rig composes a 24 V bidirectional H-bridge, DC motor, 20:1 gearbox, and 4096-count/revolution output encoder. Its 8-bit `pwm_command` input uses `128` as zero, `255` as full positive voltage, and `0` as full negative voltage. Outputs include oscilloscope-compatible 8-bit `setpoint`, `position`, `error`, `control_output`, and `encoder_low`, plus 16-bit `encoder_counts`.
 
-Connect an MCU `gpio_out` to `pwm_command` with the Digital Linking Tool. Empty-hand use cycles load torque through 0.5, 2.0, and 0 N m; sneak-use resets the dynamic state. The Engineering Inspector reports voltage, current, speed, angle, encoder counts, load, and active motor faults. Motor state and the command link persist.
+Connect an MCU `pwm_duty` to `pwm_command` with the Digital Linking Tool for programmable direct control. Empty-hand use toggles between direct PWM and the built-in protected 90-degree PID demonstration; sneak-use resets the dynamic state. Repeated linking-tool uses on the same source cycle across its outputs. The Engineering Inspector reports mode, error, voltage, current, speed, angle, encoder counts, load, and active motor faults. Motor state, mode, and command link persist.

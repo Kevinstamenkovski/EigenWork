@@ -32,6 +32,7 @@ public final class MicrocontrollerBlockEntity extends BlockEntity implements Loa
 	private static final long UPDATE_PERIOD_MICROS = 1_000L;
 	private static final DigitalPortSpec GPIO_INPUT = new DigitalPortSpec("gpio_in", 8, DigitalPortDirection.INPUT);
 	private static final DigitalPortSpec GPIO_OUTPUT = new DigitalPortSpec("gpio_out", 8, DigitalPortDirection.OUTPUT);
+	private static final DigitalPortSpec PWM_DUTY_OUTPUT = new DigitalPortSpec("pwm_duty", 8, DigitalPortDirection.OUTPUT);
 	private static final DigitalPortSpec PWM_OUTPUT = new DigitalPortSpec("pwm0", 1, DigitalPortDirection.OUTPUT);
 
 	private final EigenMicrocontroller mcu = new EigenMicrocontroller();
@@ -41,6 +42,7 @@ public final class MicrocontrollerBlockEntity extends BlockEntity implements Loa
 	private DigitalDeviceAddress digitalAddress;
 	private DigitalWorldNetwork digitalNetwork;
 	private int publishedGpio;
+	private int publishedPwmDuty;
 	private boolean pwmHigh;
 
 	public MicrocontrollerBlockEntity(BlockPos pos, BlockState state) {
@@ -67,10 +69,15 @@ public final class MicrocontrollerBlockEntity extends BlockEntity implements Loa
 			lastDiagnostic = "CONTROL DEADLINE MISSED";
 		}
 		int nextGpio = mcu.peripherals().gpio().outputLatch() & mcu.peripherals().gpio().directionMask();
+		int nextPwmDuty = mcu.peripherals().pwm().dutyCode();
 		boolean nextPwm = mcu.peripherals().pwm().levelAt(context.simulationTimeMicros());
 		if (nextGpio != publishedGpio) {
 			publishedGpio = nextGpio;
 			publish(GPIO_OUTPUT, new DigitalWord(8, publishedGpio), context);
+		}
+		if (nextPwmDuty != publishedPwmDuty) {
+			publishedPwmDuty = nextPwmDuty;
+			publish(PWM_DUTY_OUTPUT, new DigitalWord(8, publishedPwmDuty), context);
 		}
 		if (nextPwm != pwmHigh) {
 			pwmHigh = nextPwm;
@@ -116,10 +123,11 @@ public final class MicrocontrollerBlockEntity extends BlockEntity implements Loa
 		if (digitalAddress == null) throw new IllegalStateException("Microcontroller is not bound to a digital network");
 		return digitalAddress;
 	}
-	@Override public List<DigitalPortSpec> outputPorts() { return List.of(GPIO_OUTPUT, PWM_OUTPUT); }
+	@Override public List<DigitalPortSpec> outputPorts() { return List.of(GPIO_OUTPUT, PWM_DUTY_OUTPUT, PWM_OUTPUT); }
 	@Override public List<DigitalInputBinding> inputBindings() { return List.of(new DigitalInputBinding(GPIO_INPUT, gpioSource)); }
 	@Override public DigitalWord outputValue(String port) {
 		if (GPIO_OUTPUT.name().equals(port)) return new DigitalWord(8, publishedGpio);
+		if (PWM_DUTY_OUTPUT.name().equals(port)) return new DigitalWord(8, publishedPwmDuty);
 		if (PWM_OUTPUT.name().equals(port)) return new DigitalWord(1, pwmHigh ? 1 : 0);
 		throw new IllegalArgumentException("Unknown MCU output: " + port);
 	}
@@ -168,6 +176,7 @@ public final class MicrocontrollerBlockEntity extends BlockEntity implements Loa
 				input.getBooleanOr("timer_pending", false));
 		gpioSource = DigitalLinkStorage.read(input, "gpio_source");
 		publishedGpio = input.getIntOr("published_gpio", 0) & 0xFF;
+		publishedPwmDuty = input.getIntOr("published_pwm_duty", mcu.peripherals().pwm().dutyCode()) & 0xFF;
 		pwmHigh = input.getBooleanOr("pwm_high", false);
 	}
 
@@ -201,6 +210,7 @@ public final class MicrocontrollerBlockEntity extends BlockEntity implements Loa
 		output.putBoolean("timer_interrupt", mcu.peripherals().timer().interruptEnabled());
 		output.putBoolean("timer_pending", mcu.peripherals().timer().overflowPending());
 		output.putInt("published_gpio", publishedGpio);
+		output.putInt("published_pwm_duty", publishedPwmDuty);
 		output.putBoolean("pwm_high", pwmHigh);
 		DigitalLinkStorage.write(output, "gpio_source", gpioSource);
 	}

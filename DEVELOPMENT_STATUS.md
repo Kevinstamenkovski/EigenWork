@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 8 — reusable control blocks, protected PID, and motor-position Demos B/C.
+Milestone 9 — vectors, matrices, numerical integration, transfer functions, state space, and mathematics workstation.
 
 ## Last completed milestone
 
-Milestone 7 — electrical solver and playable motor/encoder chain.
+Milestone 8 — reusable control blocks, protected PID, and motor-position Demos B/C.
 
 ## Completed systems
 
@@ -73,6 +73,14 @@ Milestone 7 — electrical solver and playable motor/encoder chain.
 - Bidirectional 24 V H-bridge command, 20:1 efficiency-aware gearbox, and 4096-count/revolution output encoder.
 - Playable persistent Motor Test Rig accepting linked 8-bit MCU command and publishing 8/16-bit encoder values.
 - Engineering Inspector motor voltage/current/speed/angle/load/fault diagnostics and motor gameplay guide.
+- Finite-safe reusable weighted sum, gain, saturation, Euler integrator, filtered derivative, whole-sample delay, and first-order low-pass control blocks.
+- Protected discrete PID with configured sample period, derivative-on-measurement, first-order derivative filtering, output clamp, conditional-integration anti-windup, and observable P/I/D terms.
+- Server-owned 100 Hz position controller around the 200 Hz Motor Assembly plant with a persistent 90-degree demonstration mode.
+- Motor Rig diagnostic outputs for setpoint, position, error, controller output, encoder low byte, and full encoder counts.
+- Multi-output Digital Linking Tool selection by repeated use on the selected source.
+- MCU `pwm_duty` output exposing its actual eight-bit duty register to averaged power devices independently of its one-bit timed waveform.
+- Demo B Eigen-8 assembly feedback loop reading Motor Rig position through GPIO, computing proportional signed error, and commanding the H-bridge through MCU PWM.
+- Demo C protected PID response with actual setpoint, position, error, and control output sampled by the four-channel oscilloscope.
 
 ## Partially implemented systems
 
@@ -84,6 +92,7 @@ Milestone 7 — electrical solver and playable motor/encoder chain.
 - The MCU ADC has a real voltage input API and tested quantization, but a placeable analog cable/sensor source arrives with the electrical and instrumentation milestones.
 - The first oscilloscope accepts 8-bit digital words. Typed voltage/current/mechanical channels and triggering follow their respective physical systems.
 - The first MNA core is DC-only; capacitor/inductor companion models, switches, and nonlinear devices remain extensions.
+- PID gains and the 90-degree target are fixed for the initial demonstration; editable controller configuration UI is future work.
 
 ## Known bugs and failing tests
 
@@ -94,10 +103,10 @@ Milestone 7 — electrical solver and playable motor/encoder chain.
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 69 passing tests. New coverage validates MNA divider/source currents, singular/floating rejection, invalid components, motor acceleration/back-EMF, H-bridge voltage, gearbox relations, encoder quantization, timestep guards, and saturation faults.
-- Minecraft GameTests: all 9 required tests pass (eight EigenWorks tests plus the framework test), including an explicit MCU-to-motor command link, scheduled physical acceleration, encoder motion, and motor state/link serialization.
+- Unit tests: 75 passing tests. New coverage validates every reusable control block, numerical guards, PID anti-windup/filtering, multi-output selection, and closed-loop 90-degree motor convergence.
+- Minecraft GameTests: all 11 required tests pass (ten EigenWorks tests plus the framework test), including programmable MCU position feedback, computed PWM motor command, protected PID convergence, four-channel oscilloscope sampling, and control-mode persistence.
 - `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
-- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1596 recipes without EigenWorks datapack errors, executed all prior systems plus linked MCU command, motor dynamics, gearbox, encoder, and persistence. All 9 required tests passed.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1596 recipes without EigenWorks datapack errors, executed all prior systems plus the MCU feedback Demo B and PID/scope Demo C. All 11 required tests passed.
 - Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with Computer/MCU/Oscilloscope/Inspector/Motor Rig assets and debugger/scope screen registrations present; no missing-model, missing-texture, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so rendered appearance was not visually inspected.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
@@ -113,7 +122,7 @@ Milestone 7 — electrical solver and playable motor/encoder chain.
 
 ## Temporary limitations
 
-Milestone 7 is complete as a functional first electrical/mechanical chain. The circuit core is currently a pure tested DC solver rather than placeable individual circuit components. The playable Motor Rig intentionally composes driver/motor/gearbox/encoder while their standalone world-network topology is deferred. Closed-loop PID control is Milestone 8.
+Milestone 8 is complete as two functional motor-control paths. Demo B uses a deliberately compact proportional assembly controller rather than PID because Eigen-8 currently has eight-bit integer arithmetic; Demo C supplies the protected floating-point PID around the same physical plant. Controller tuning/targets use fixed demonstration defaults. The circuit core remains a pure tested DC solver rather than placeable individual circuit components.
 
 ## Relevant locations
 
@@ -146,13 +155,16 @@ Milestone 7 is complete as a functional first electrical/mechanical chain. The c
 - Motor models: `src/main/java/dev/eigenworks/mechanical/`
 - Motor adapter: `src/main/java/dev/eigenworks/block/entity/MotorRigBlockEntity.java`
 - Electrical/motor guide: `docs/ELECTRICAL_MOTOR.md`
+- Control blocks: `src/main/java/dev/eigenworks/control/`
+- Motor-control examples: `examples/demo_b_mcu_position.asm` and `docs/CONTROL.md`
 
 ## Exact next tasks
 
-1. Implement reusable sum, gain, saturation, integrator, derivative, delay, and low-pass blocks.
-2. Implement protected discrete PID with clamp, derivative filter, and anti-windup.
-3. Add position-control mode around the existing Motor Assembly and encoder.
-4. Complete Demos B/C with a 90-degree target and oscilloscope-visible setpoint/measurement/error/output.
+1. Implement immutable vector and matrix types with dimension/finite validation.
+2. Implement matrix multiplication, transpose, determinant, and pivoted `Ax=b` solving with singularity diagnostics.
+3. Generalize Forward Euler and RK4 integrators over finite state vectors.
+4. Implement transfer-function/state-space models and validate them against analytic responses.
+5. Add a safe in-game Engineering Mathematics Workstation for scalar/vector/matrix operations.
 
 ## Commands
 

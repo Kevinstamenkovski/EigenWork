@@ -72,6 +72,20 @@ class DigitalWorldNetworkTest {
 		assertEquals(1, network.unstableCascadeCount());
 	}
 
+	@Test
+	void repeatedSourceSelectionCyclesAcrossOutputs() {
+		DigitalWorldNetwork network = new DigitalWorldNetwork();
+		FakeDevice source = new FakeDevice("multi",
+				List.of(new DigitalPortSpec("first", 8, DigitalPortDirection.OUTPUT),
+						new DigitalPortSpec("second", 16, DigitalPortDirection.OUTPUT)),
+				List.of(), new DigitalWord(8, 0));
+		UUID player = UUID.randomUUID();
+
+		assertEquals("first", network.selectFirstOutput(player, source).port());
+		assertEquals("second", network.selectNextOutput(player, source).port());
+		assertEquals("first", network.selectNextOutput(player, source).port());
+	}
+
 	private static final class FakeDevice implements WorldDigitalDevice {
 		private final DigitalDeviceAddress address;
 		private final List<DigitalPortSpec> outputs;

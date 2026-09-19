@@ -27,7 +27,7 @@ Ports `0x40` onward are reserved for the UART, SPI, I2C, and later communication
 
 ## GPIO and digital links
 
-The Minecraft block exposes an 8-bit `gpio_in` connection and an 8-bit `gpio_out` connection. Direction bits control which external inputs appear in the CPU pin register. It also exposes a one-bit `pwm0` output. All links use the cached digital network and are created with the Digital Linking Tool; no world scanning occurs.
+The Minecraft block exposes an 8-bit `gpio_in` connection, an 8-bit `gpio_out` connection, an 8-bit `pwm_duty` command, and a one-bit `pwm0` waveform. Direction bits control which external inputs appear in the CPU pin register. `pwm_duty` exposes the duty register to averaged power devices such as the Motor Rig, while `pwm0` exposes the timed logic waveform. All links use the cached digital network and are created with the Digital Linking Tool; no world scanning occurs.
 
 ## ADC
 

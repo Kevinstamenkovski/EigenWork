@@ -15,7 +15,8 @@
 - `dev.eigenworks.instrumentation`: bounded sampled histories, oscilloscope model/menu, and safe CSV export.
 - `dev.eigenworks.electrical`: guarded Modified Nodal Analysis and linear solving.
 - `dev.eigenworks.mechanical`: DC motor, H-bridge, gearbox, encoder, and composed motor assembly.
-- Future packages follow subsystem ownership: `embedded`, `electrical`, `control`, `instrumentation`, `mechanical`, `robotics`, `automation`, and `networking`.
+- `dev.eigenworks.control`: reusable finite-safe dynamic blocks and protected discrete PID control.
+- Future packages follow subsystem ownership: `mathematics`, `robotics`, `automation`, and `networking`.
 
 Minecraft blocks and block entities are adapters. Mathematical and engineering behavior belongs in pure Java objects with no dependency on client rendering or world traversal.
 
@@ -45,7 +46,7 @@ Signal connections are for measurement/control information. Electrical conductor
 
 `DigitalNetwork` owns pure registered input/output ports and directed width-checked wires. Inputs accept only one driver, outputs support fan-out, and propagation follows stable connection order. Its adjacency map is rebuilt only when a port or wire mutation marks topology dirty.
 
-`DigitalWorldNetwork` applies the same explicit model to loaded block entities. Each logical server owns one network. Devices register through block-entity load events and unregister on unload. Input block entities persist a `DigitalSourceEndpoint` containing dimension, block position, port, and width. The Digital Linking Tool keeps only an ephemeral per-player source selection; its second use validates width and dimension and writes the connection to the target. A dirty adjacency cache is rebuilt after load, unload, connect, or disconnect, never by scanning world blocks. Output changes propagate through a deterministic event queue. A 4,096-event settling guard terminates oscillating combinational loops without recursion or a server crash and increments a diagnostic counter.
+`DigitalWorldNetwork` applies the same explicit model to loaded block entities. Each logical server owns one network. Devices register through block-entity load events and unregister on unload. Input block entities persist a `DigitalSourceEndpoint` containing dimension, block position, port, and width. The Digital Linking Tool keeps only an ephemeral per-player source selection; repeated use on the same source cycles its ordered output ports, and use on another device validates width/dimension before writing the connection. A dirty adjacency cache is rebuilt after load, unload, connect, or disconnect, never by scanning world blocks. Output changes propagate through a deterministic event queue. A 4,096-event settling guard terminates oscillating combinational loops without recursion or a server crash and increments a diagnostic counter.
 
 The Engineering Test Bench queues a one-shot scheduler device; on the following engineering tick it runs a real gate and counter diagnostic, reports the results, and unregisters itself. `DigitalClockBlockEntity` wraps `LogicalClock`, requests a 10 ms update period, supports safe selectable frequencies, and registers only while loaded. The counter, configurable combinational gate, and edge-triggered register are event-driven block entities. All four persist configuration, state, and input links through Minecraft's current value serialization API.
 
@@ -85,7 +86,13 @@ The oscilloscope menu publishes a fixed 64-point-by-four-channel snapshot plus c
 
 The first circuit core is DC Modified Nodal Analysis. Resistors, independent current sources, and ideal voltage sources stamp a guarded dense system solved by partial-pivot elimination. Invalid values, near-zero resistance, non-square systems, non-finite results, and singular/floating topology produce explicit diagnostics. Dynamic and nonlinear stamps extend this same boundary later.
 
-`DcMotorModel` integrates armature current, rotor speed, and position from the coupled electrical/mechanical equations using RK4 and a guarded timestep. `HBridgeMotorDriver` maps signed PWM command to bounded voltage, `Gearbox` applies ratio/efficiency, and `RotaryEncoder` quantizes output angle. `MotorAssembly` composes them; `MotorRigBlockEntity` is the 5 ms server-scheduled adapter with explicit digital command/encoder ports and persistent state. Control blocks will consume this assembly in Milestone 8. Robots later cache an explicit link/joint graph and use homogeneous transforms, analytic 2-link IK, then damped least-squares Jacobian methods.
+`DcMotorModel` integrates armature current, rotor speed, and position from the coupled electrical/mechanical equations using RK4 and a guarded timestep. `HBridgeMotorDriver` maps signed PWM command to bounded voltage, `Gearbox` applies ratio/efficiency, and `RotaryEncoder` quantizes output angle. `MotorAssembly` composes them; `MotorRigBlockEntity` is the 5 ms server-scheduled adapter with explicit digital command/encoder/control-diagnostic ports and persistent state.
+
+## Control architecture
+
+Pure control blocks implement weighted sum, gain, saturation, Euler integration, filtered differentiation, whole-sample delay, and first-order low-pass filtering. `PidController` samples at a declared fixed period, differentiates the measurement rather than the setpoint, filters that derivative, clamps output, and conditionally freezes its integral when error would drive saturation further. Every update returns an immutable snapshot containing reference, measurement, error, P/I/D terms, output, and saturation.
+
+`MotorPositionController` applies the protected PID at 10 ms to the 5 ms `MotorAssembly` plant. The Motor Rig can switch between external centered PWM and an internal 90-degree position demonstration. Its setpoint, measurement, error, and controller output are published every 10 ms as bounded 8-bit scope channels. Demo B instead keeps the rig in external mode: motor position feeds MCU GPIO, actual Eigen-8 instructions calculate the control error, and the MCU `pwm_duty` register drives the motor command. Demo C uses the reusable PID. Both paths remain server authoritative and are covered by Minecraft GameTests. Robots later cache an explicit link/joint graph and use homogeneous transforms, analytic 2-link IK, then damped least-squares Jacobian methods.
 
 ## GUI networking
 

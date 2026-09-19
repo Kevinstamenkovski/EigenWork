@@ -43,6 +43,10 @@ public final class DigitalLinkingToolItem extends Item {
 				DigitalSourceEndpoint selected = network.selectFirstOutput(player.getUUID(), device);
 				notifyPlayer(player, Component.translatable(
 						"message.eigenworks.link_selected", selected.port(), selected.width()));
+			} else if (selection.device().equals(device.digitalAddress())) {
+				DigitalSourceEndpoint selected = network.selectNextOutput(player.getUUID(), device);
+				notifyPlayer(player, Component.translatable(
+						"message.eigenworks.link_selected", selected.port(), selected.width()));
 			} else {
 				String inputPort = network.connectSelected(player.getUUID(), device);
 				notifyPlayer(player, Component.translatable(
