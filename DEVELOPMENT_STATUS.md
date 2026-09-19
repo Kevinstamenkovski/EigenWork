@@ -2,7 +2,7 @@
 
 ## Current milestone
 
-Maintenance — all planned milestones are complete; EigenWorks 0.2.1 adds grouped Creative tabs and a full player guide.
+Maintenance — all planned milestones are complete; EigenWorks 0.2.1 now includes grouped Creative tabs, a full player guide, and an optional complete industrial resource pack.
 
 ## Last completed milestone
 
@@ -143,6 +143,8 @@ Milestone 19 — distributable release workflow and final regression.
 - Versioned compatibility matrix, upgrade procedure, and changelog for EigenWorks 0.2.1.
 - Four dedicated subsystem Creative tabs containing all 19 EigenWorks blocks/tools exactly once.
 - Detailed player guide covering installation, item discovery, every playable device, wiring, programming, demos, persistence, and troubleshooting.
+- Optional Minecraft 26.2 EigenWorks Industrial resource pack with distinct artwork for all 17 blocks and two handheld tools, custom thin-cable/joint geometry preservation, an original pack icon, and a reproducible Java/AWT atlas pipeline.
+- Resource-pack build and verification scripts producing a directly installable ZIP and checking format 88, all expected model/texture counts, and archive integrity.
 
 ## Partially implemented systems
 
@@ -177,6 +179,8 @@ Milestone 19 — distributable release workflow and final regression.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
 - Produced JAR: `build/libs/eigenworks-0.2.1.jar`; SHA-256: `4b9da519b641fe287f7a7e7368b99cc9af62b467ed4f50cee36cd877b86cc7f9`.
+- Optional visual pack: `resourcepacks/eigenworks-industrial-resource-pack-0.2.1.zip`; SHA-256: `636842aa5c967bec24a84353c0065068fa68202ec127ed1b6a2bba4c36235786`. Standalone validation passes with 17 block textures, two transparent item textures, 19 matching models, a 128x128 icon, Minecraft 26.2 resource format 88, and a clean ZIP integrity test.
+- Resource-pack artwork has been inspected as a generated atlas and pack icon; activation inside the Minecraft Resource Packs screen has not yet been manually visual-regression tested.
 
 ## Architectural decisions
 
@@ -196,6 +200,8 @@ Milestones 1–19 are complete as functional vertical slices. Editors use bounde
 - Registries: `src/main/java/dev/eigenworks/registry/`
 - Configuration: `src/main/java/dev/eigenworks/config/EngineeringConfig.java`
 - Assets/data: `src/main/resources/`
+- Optional resource-pack source/distribution: `resourcepacks/EigenWorks-Industrial-0.2.1/` and `resourcepacks/eigenworks-industrial-resource-pack-0.2.1.zip`
+- Resource-pack atlas/tooling: `art/resource_pack/eigenworks_industrial_atlas.png`, `tools/ResourcePackTextureBuilder.java`, and `scripts/build-resource-pack.sh`
 - Tests: `src/test/java/`
 - Scheduler: `src/main/java/dev/eigenworks/simulation/`
 - Signals and units: `src/main/java/dev/eigenworks/signal/`
@@ -256,8 +262,9 @@ Milestones 1–19 are complete as functional vertical slices. Editors use bounde
 ## Exact next tasks
 
 1. Optionally create and push tag `v0.2.1` when a public GitHub Release is desired; the workflow will publish the verified JAR.
-2. Visually inspect a placed articulated joint in a normal client world and tune presentation if desired.
-3. Choose the next extension from the documented limitations before beginning a new milestone.
+2. Enable the optional EigenWorks Industrial pack in a normal client, inspect representative devices/tools, and tune individual UV presentation if desired.
+3. Visually inspect a placed articulated joint in a normal client world and tune presentation if desired.
+4. Choose the next extension from the documented limitations before beginning a new milestone.
 
 ## Commands
 
@@ -266,4 +273,6 @@ Milestones 1–19 are complete as functional vertical slices. Editors use bounde
 ./gradlew runGameTest
 ./gradlew build
 ./gradlew runClient
+./scripts/build-resource-pack.sh
+./scripts/verify-resource-pack.sh
 ```

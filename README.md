@@ -88,6 +88,15 @@ Place **Configurable CAN Node** blocks and join them with thin **CAN Cable** seg
 
 The installable JAR is written to `build/libs/eigenworks-0.2.1.jar`. The `-sources` JAR is for development and should not be installed. `./scripts/verify-release.sh` performs the complete build, checks embedded compatibility metadata/assets, and prints the release SHA-256.
 
+The optional industrial resource pack is built reproducibly with:
+
+```bash
+./scripts/build-resource-pack.sh
+./scripts/verify-resource-pack.sh
+```
+
+Its ready-to-install ZIP is written to `resourcepacks/eigenworks-industrial-resource-pack-0.2.1.zip`. The source atlas, deterministic Java slicer, models, and generated textures are kept in the repository.
+
 Gradle automatically selects an installed JDK 25 or downloads a compatible toolchain through the Foojay resolver. The Gradle launcher itself requires Java 17 or newer.
 
 ## Installation
@@ -96,6 +105,8 @@ Gradle automatically selects an installed JDK 25 or downloads a compatible toolc
 2. Install Fabric API 0.160.0+26.2 in `.minecraft/mods/`.
 3. Copy `build/libs/eigenworks-0.2.1.jar` into `.minecraft/mods/`.
 4. Launch the Minecraft 26.2 Fabric profile.
+
+For the optional custom device artwork, also copy `resourcepacks/eigenworks-industrial-resource-pack-0.2.1.zip` into `.minecraft/resourcepacks/`, then enable **EigenWorks Industrial** under **Options > Resource Packs**. Do not put the resource-pack ZIP in `mods`; it changes presentation only and does not replace the mod JAR.
 
 ## First launch
 

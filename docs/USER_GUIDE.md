@@ -11,6 +11,23 @@ Install these files in the active profile's `.minecraft/mods/` directory:
 
 Use Minecraft 26.2, Fabric Loader 0.19.5 or newer for 26.2, and Java 25. Do not install the `-sources.jar`. At startup, `logs/latest.log` should contain `EigenWorks 0.2.1 initialized`.
 
+### Optional industrial resource pack
+
+EigenWorks ships a separate, optional visual pack with unique dark-steel,
+copper, cyan-display, and hazard-yellow artwork for all 17 device blocks and
+both handheld tools. Install it separately from the mod:
+
+1. Copy `eigenworks-industrial-resource-pack-0.2.1.zip` to
+   `.minecraft/resourcepacks/` without extracting it.
+2. Start Minecraft and open **Options > Resource Packs**.
+3. Move **EigenWorks Industrial** into the selected-packs column and apply.
+
+The mod JAR and Fabric API must remain in `.minecraft/mods/`. The resource pack
+contains visuals only, so worlds and engineering behavior are unchanged when it
+is enabled or disabled. If vanilla copper textures still appear, confirm the
+pack is selected and placed above any other pack that overrides the
+`eigenworks` namespace.
+
 In a world with commands enabled, this command is a direct registration check:
 
 ```mcfunction

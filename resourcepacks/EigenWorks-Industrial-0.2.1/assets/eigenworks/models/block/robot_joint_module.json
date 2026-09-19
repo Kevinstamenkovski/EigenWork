@@ -1,0 +1,7 @@
+{
+  "textures":{"body":"eigenworks:block/robot_joint_module","joint":"eigenworks:block/robot_joint_module","particle":"eigenworks:block/robot_joint_module"},
+  "elements":[
+    {"from":[2,0,2],"to":[14,5,14],"faces":{"down":{"texture":"#body"},"up":{"texture":"#body"},"north":{"texture":"#body"},"south":{"texture":"#body"},"west":{"texture":"#body"},"east":{"texture":"#body"}}},
+    {"from":[4,5,4],"to":[12,13,12],"faces":{"down":{"texture":"#joint"},"up":{"texture":"#joint"},"north":{"texture":"#joint"},"south":{"texture":"#joint"},"west":{"texture":"#joint"},"east":{"texture":"#joint"}}}
+  ]
+}

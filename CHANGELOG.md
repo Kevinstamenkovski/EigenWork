@@ -5,6 +5,7 @@
 - Organized all 19 blocks/tools into four dedicated subsystem Creative tabs with no duplication.
 - Added a comprehensive player guide covering installation, every device, wiring, programming, demos, diagnostics, persistence, and troubleshooting.
 - Added a Minecraft GameTest that builds the custom tab contents and verifies complete one-to-one item coverage.
+- Added the optional EigenWorks Industrial resource pack with unique textures for all 17 blocks and two tools, an original pack icon, reproducible atlas slicer/packager, and validation script.
 
 ## 0.2.0 — 2026-09-19
 
