@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 11 — robot links/joints, graph, forward and inverse kinematics, Jacobian, trajectories, and Demo D.
+Milestone 12 — conveyor, sensors, diverter, PLC scan cycle, Structured Text, and Demo E.
 
 ## Last completed milestone
 
-Milestone 10 — timed UART, addressed I2C, SPI, MCU registers, and playable Communication Hub.
+Milestone 11 — robot topology, FK/IK/Jacobian, trajectories, and playable Demo D.
 
 ## Completed systems
 
@@ -95,6 +95,13 @@ Milestone 10 — timed UART, addressed I2C, SPI, MCU registers, and playable Com
 - Eigen-MCU port registers `0x40`–`0x61` for CPU-driven UART, I2C, and SPI data/control/status operations.
 - Persistent MCU communication configuration with local UART loopback, addressed I2C register peripheral, and deterministic SPI inversion peripheral.
 - Placeable server-scheduled UART/I2C/SPI Communication Hub with selectable protocols, actual delayed transactions, persistence, inspector diagnostics, creative entry, recipe, model, and loot.
+- Explicit serial robot topology graph with revolute/prismatic joints, rigid links, engineering limits, and cached cumulative transforms.
+- Four-by-four homogeneous transforms and forward kinematics validated against analytical two-link equations.
+- Analytical two-link inverse kinematics with elbow branches, reachability guards, and stable diagnostics.
+- Translational Jacobian, planar manipulability/singularity metric, and damped-least-squares numerical IK with bounded steps.
+- Constant-velocity linear and acceleration-limited triangular/trapezoidal point-to-point joint trajectories.
+- Placeable persistent 2-DOF Planar Robot Arm with Cartesian presets/inputs, joint/end-effector outputs, 10 ms scheduled motion, inspector diagnostics, and unreachable-target handling.
+- Demo D computes real IK for `(1, 1) m`, follows bounded joint trajectories, reaches the target, and exposes non-singular diagnostics.
 
 ## Partially implemented systems
 
@@ -109,6 +116,7 @@ Milestone 10 — timed UART, addressed I2C, SPI, MCU registers, and playable Com
 - PID gains and the 90-degree target are fixed for the initial demonstration; editable controller configuration UI is future work.
 - The Mathematics Workstation uses a compact book-based matrix editor rather than a dedicated grid GUI; calculations and persistence are fully playable.
 - Communication buses currently run inside each controller/hub; arbitrary multi-block protocol cable geometry and logic-analyzer decoding remain later extensions.
+- The first Robot Arm is one block containing articulated server state; separate multi-block link geometry and animated rendering are future presentation/topology work.
 
 ## Known bugs and failing tests
 
@@ -119,10 +127,10 @@ Milestone 10 — timed UART, addressed I2C, SPI, MCU registers, and playable Com
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 90 passing tests. New coverage validates UART frame/parity/timing, I2C address/ACK/NACK/conflict/memory behavior, SPI chip select/full-duplex timing, MCU communication registers, and CPU-authored communication operations.
-- Minecraft GameTests: all 13 required tests pass (twelve EigenWorks tests plus the framework test), including scheduled UART, I2C, and SPI Hub transactions and communication-state serialization.
+- Unit tests: 97 passing tests. New coverage validates transform caching, analytical FK, both IK branches, unreachable targets, Jacobian/manipulability, damped-least-squares convergence, linear/trapezoidal trajectories, and complete Cartesian arm motion.
+- Minecraft GameTests: all 14 required tests pass (thirteen EigenWorks tests plus the framework test), including Demo D IK, scheduled trajectory completion, Cartesian tolerance, singularity margin, unreachable-target rejection, and joint persistence.
 - `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
-- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1598 recipes without EigenWorks datapack errors, executed all prior systems plus all three timed Communication Hub protocols and persistence. All 13 required tests passed.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1599 recipes without EigenWorks datapack errors, executed all prior systems plus Robot Arm Demo D and persistence. All 14 required tests passed.
 - Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with Computer/MCU/Oscilloscope/Inspector/Motor Rig assets and debugger/scope screen registrations present; no missing-model, missing-texture, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so rendered appearance was not visually inspected.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
@@ -138,7 +146,7 @@ Milestone 10 — timed UART, addressed I2C, SPI, MCU registers, and playable Com
 
 ## Temporary limitations
 
-Milestone 10 is complete. UART, I2C, and SPI have real logical timing and protocol semantics but do not yet share physical multi-block cable topology. The MCU peripherals use deterministic local devices so assembly programs can perform and poll real transactions now; the placed Hub provides direct gameplay diagnostics for each bus.
+Milestone 11 is complete. The robot graph supports arbitrary serial joint/link counts for FK, while analytical IK and the playable adapter intentionally target the first two-revolute-joint planar arm. Rotational 3D Jacobian terms, collision, and articulated rendering remain later advanced-robotics extensions.
 
 ## Relevant locations
 
@@ -180,14 +188,17 @@ Milestone 10 is complete. UART, I2C, and SPI have real logical timing and protoc
 - MCU bus adapter: `src/main/java/dev/eigenworks/embedded/McuCommunicationController.java`
 - Communication Hub: `src/main/java/dev/eigenworks/block/entity/CommunicationHubBlockEntity.java`
 - Communication guide: `docs/COMMUNICATION.md`
+- Robotics core: `src/main/java/dev/eigenworks/robotics/`
+- Robot adapter: `src/main/java/dev/eigenworks/block/entity/RobotArmBlockEntity.java`
+- Robotics guide: `docs/ROBOTICS.md`
 
 ## Exact next tasks
 
-1. Implement revolute/prismatic joints, rigid links, and a cached robot topology graph.
-2. Implement homogeneous transforms and validate two-link forward kinematics analytically.
-3. Implement analytic two-link inverse kinematics with reachability/elbow branches.
-4. Implement translational Jacobian, damped least-squares numerical IK, and singularity diagnostics.
-5. Implement trapezoidal joint trajectories and a placeable 2-DOF Robot Arm completing Demo D.
+1. Implement server-scheduled conveyor item progression and photoelectric/proximity sensing.
+2. Implement a deterministic PLC scan cycle with digital/analog I/O, timers, and counters.
+3. Implement a bounded Structured Text-inspired parser/interpreter for IF/ELSE assignments.
+4. Add diverter behavior controlled by PLC output and an emergency-stop input.
+5. Complete Demo E with a sensed item routed by PLC logic, persistence, tests, and player documentation.
 
 ## Commands
 

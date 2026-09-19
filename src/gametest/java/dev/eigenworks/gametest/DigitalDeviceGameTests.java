@@ -13,6 +13,7 @@ import dev.eigenworks.block.entity.OscilloscopeBlockEntity;
 import dev.eigenworks.block.entity.MotorRigBlockEntity;
 import dev.eigenworks.block.entity.MathematicsWorkstationBlockEntity;
 import dev.eigenworks.block.entity.CommunicationHubBlockEntity;
+import dev.eigenworks.block.entity.RobotArmBlockEntity;
 import dev.eigenworks.computer.cpu.CpuStatus;
 import dev.eigenworks.digital.DigitalGateOperation;
 import dev.eigenworks.digital.world.DigitalWorldNetwork;
@@ -362,6 +363,26 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 					helper.succeed();
 				});
 			});
+		});
+	}
+
+	@GameTest(maxTicks = 80)
+	public void planarRobotComputesIkAndMovesToCartesianTarget(GameTestHelper helper) {
+		BlockPos robotPos = new BlockPos(3, 1, 1);
+		helper.setBlock(robotPos, ModBlocks.ROBOT_ARM);
+		RobotArmBlockEntity robot = helper.getBlockEntity(robotPos, RobotArmBlockEntity.class);
+		helper.assertTrue(robot.commandTarget(1, 1), "Demo D target must be reachable");
+		helper.runAfterDelay(50, () -> {
+			var pose = robot.arm().endEffector();
+			helper.assertTrue(Math.abs(pose.xMeters() - 1) < 0.01 && Math.abs(pose.yMeters() - 1) < 0.01,
+					"Robot trajectory must reach IK target");
+			helper.assertTrue(robot.arm().manipulability() > 0.5,
+					"Target configuration must remain away from singularity");
+			RobotArmBlockEntity restored = roundTrip(helper, robot, RobotArmBlockEntity.class);
+			helper.assertValueEqual(robot.arm().joint1(), restored.arm().joint1(), "Restored shoulder angle");
+			helper.assertValueEqual(robot.arm().joint2(), restored.arm().joint2(), "Restored elbow angle");
+			helper.assertTrue(!robot.commandTarget(3, 0), "Unreachable target must be rejected without crashing");
+			helper.succeed();
 		});
 	}
 

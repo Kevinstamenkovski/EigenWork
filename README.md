@@ -54,6 +54,10 @@ The **Engineering Mathematics Workstation** evaluates safe expressions from a Bo
 
 The **UART / I2C / SPI Communication Hub** runs actual timed bus diagnostics under the server scheduler. Empty-hand use starts the selected protocol and sneak-use cycles protocols. Eigen-MCU programs access the same UART framing, I2C addressing/ACK, and SPI chip-select engines through ports `0x40`–`0x61`. Timing, register examples, and current physical-wiring limits are documented in [`docs/COMMUNICATION.md`](docs/COMMUNICATION.md) and [`docs/EIGEN_MCU.md`](docs/EIGEN_MCU.md).
 
+## Robotics
+
+The **2-DOF Planar Robot Arm** has explicit joints/links, homogeneous-transform forward kinematics, analytic and damped-least-squares IK, a Jacobian/singularity metric, and bounded joint trajectories. Empty-hand use cycles Cartesian targets and sneak-use resets it. Target and diagnostic ports connect through the Digital Linking Tool. Demo D and all scaling/kinematics details are in [`docs/ROBOTICS.md`](docs/ROBOTICS.md).
+
 ## Requirements
 
 - Minecraft Java Edition 26.2
@@ -85,7 +89,7 @@ Create a world and open the Functional Blocks creative tab for the blocks. The D
 
 ## Engineering guides
 
-The first digital circuit, CPU program, MCU motor-control loop, PID response, oscilloscope workflow, mathematics workstation, and timed communication buses are documented above and in the linked guides. Robotics and PLC guides will be added with their playable milestones. Incomplete systems are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
+The first digital circuit, CPU program, MCU motor-control loop, PID response, oscilloscope workflow, mathematics workstation, timed communication buses, and robot arm are documented above and in the linked guides. The PLC guide will be added with its playable milestone. Incomplete systems are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
 
 ## Development
 

@@ -13,6 +13,7 @@ import dev.eigenworks.block.entity.OscilloscopeBlockEntity;
 import dev.eigenworks.block.entity.MotorRigBlockEntity;
 import dev.eigenworks.block.entity.MathematicsWorkstationBlockEntity;
 import dev.eigenworks.block.entity.CommunicationHubBlockEntity;
+import dev.eigenworks.block.entity.RobotArmBlockEntity;
 import dev.eigenworks.digital.world.WorldDigitalDevice;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -77,6 +78,13 @@ public final class EngineeringInspectorItem extends Item {
 			lines.add(Component.literal("Status: " + hub.result()));
 			lines.add(Component.literal("UART selector: %d  I2C: 0x%02X  SPI data: 0x%02X".formatted(
 					hub.communication().uartBaudIndex(), hub.communication().i2cAddress(), hub.communication().spiData())));
+		} else if (blockEntity instanceof RobotArmBlockEntity robot) {
+			var pose = robot.arm().endEffector();
+			lines.add(Component.literal("2-DOF Planar Robot Arm"));
+			lines.add(Component.literal("q1: %.3f rad  q2: %.3f rad".formatted(robot.arm().joint1(), robot.arm().joint2())));
+			lines.add(Component.literal("end: (%.3f, %.3f) m  target: (%.3f, %.3f) m".formatted(
+					pose.xMeters(), pose.yMeters(), robot.arm().targetX(), robot.arm().targetY())));
+			lines.add(Component.literal("manipulability: %.5f  %s".formatted(robot.arm().manipulability(), robot.arm().diagnostic())));
 		} else if (blockEntity instanceof DigitalClockBlockEntity clock) {
 			lines.add(Component.literal("Digital Clock: %.1f Hz, output=%s, enabled=%s".formatted(
 					clock.frequencyHertz(), clock.levelHigh(), clock.enabled())));

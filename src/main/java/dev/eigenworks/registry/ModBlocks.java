@@ -13,6 +13,7 @@ import dev.eigenworks.block.OscilloscopeBlock;
 import dev.eigenworks.block.MotorRigBlock;
 import dev.eigenworks.block.MathematicsWorkstationBlock;
 import dev.eigenworks.block.CommunicationHubBlock;
+import dev.eigenworks.block.RobotArmBlock;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -67,6 +68,7 @@ public final class ModBlocks {
 			ModBlockItemIds.MATHEMATICS_WORKSTATION, MathematicsWorkstationBlock::new, deviceProperties());
 	public static final Block COMMUNICATION_HUB = register(
 			ModBlockItemIds.COMMUNICATION_HUB, CommunicationHubBlock::new, deviceProperties());
+	public static final Block ROBOT_ARM = register(ModBlockItemIds.ROBOT_ARM, RobotArmBlock::new, deviceProperties());
 
 	private ModBlocks() {
 	}
@@ -103,6 +105,7 @@ public final class ModBlocks {
 					entries.accept(MOTOR_RIG.asItem());
 					entries.accept(MATHEMATICS_WORKSTATION.asItem());
 					entries.accept(COMMUNICATION_HUB.asItem());
+					entries.accept(ROBOT_ARM.asItem());
 				});
 	}
 
