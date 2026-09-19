@@ -28,4 +28,4 @@ Series RC and RL models use backward Euler, which remains stable at practical po
 
 ## Current limits
 
-The console is a diagnostic integration block, not a universal cable router. CAN currently uses in-memory attached nodes, impairments are message-level, accelerators are not memory-mapped into Eigen-8, and RC/RL models are standalone transient companions rather than stamps in the DC MNA builder. These are explicit extension points, not simulated claims of full industrial hardware.
+The console is a diagnostic integration block rather than a cable router. Milestone 14 adds separately placed physical CAN nodes/cables using the same protocol engine; impairments remain message-level, accelerators are not memory-mapped into Eigen-8, and RC/RL models are standalone transient companions rather than stamps in the DC MNA builder. These are explicit extension points, not simulated claims of full industrial hardware.

@@ -2,7 +2,7 @@
 
 EigenWorks is a Fabric mod for Minecraft Java Edition 26.2 that grows into a coherent engineering sandbox: signals, real programmable computers, embedded control, electrical and motor models, instrumentation, robotics, and industrial automation.
 
-The current playable foundation spans all thirteen planned milestones: scheduled digital devices, a real programmable **Eigen-8 Computer** and MCU, instrumentation, electrical/motor control, engineering mathematics, timed buses, robot kinematics, PLC automation, and advanced diagnostics. Underneath them, pure guarded engineering models are adapted into persistent, server-authoritative Minecraft blocks and tested both as Java units and inside Minecraft GameTests.
+The current playable foundation spans fourteen completed milestones: scheduled digital devices, a real programmable **Eigen-8 Computer** and MCU, instrumentation, electrical/motor control, engineering mathematics, timed buses, robot kinematics, PLC automation, advanced diagnostics, and physical multi-block CAN networks. Underneath them, pure guarded engineering models are adapted into persistent, server-authoritative Minecraft blocks and tested both as Java units and inside Minecraft GameTests.
 
 Empty-hand right-click the Test Bench to queue a server-side digital diagnostic. On the next engineering simulation tick it computes `0xC AND 0xA` through the real gate implementation, clocks a counter, and reports both results in chat.
 
@@ -65,6 +65,10 @@ The **Programmable PLC Factory Cell** combines a conveyor, photoelectric and pro
 ## Advanced engineering
 
 The **Advanced Engineering Console** provides playable server-side diagnostics for timed CAN arbitration/retry, deterministic network latency/loss/bandwidth/timeouts, a cycle-accounted FPU, a bounded matrix accelerator, stable RC/RL transients, and damped-least-squares 3-link robot IK. Empty-hand use runs the selected module and sneak-use cycles modules. Models, numerical protections, and honest scope limits are documented in [`docs/ADVANCED_ENGINEERING.md`](docs/ADVANCED_ENGINEERING.md).
+
+## Physical CAN networks
+
+Place **Configurable CAN Node** blocks and join them with thin **CAN Cable** segments. Empty-hand use transmits a real timed frame; sneak-use selects its identifier. Branching loaded cable topology is cached and rebuilt only when blocks load/unload, and the Engineering Inspector reports connection and traffic state. See [`docs/PHYSICAL_CAN.md`](docs/PHYSICAL_CAN.md).
 
 ## Requirements
 

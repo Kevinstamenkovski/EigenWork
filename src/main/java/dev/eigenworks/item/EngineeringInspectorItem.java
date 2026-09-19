@@ -16,6 +16,8 @@ import dev.eigenworks.block.entity.CommunicationHubBlockEntity;
 import dev.eigenworks.block.entity.RobotArmBlockEntity;
 import dev.eigenworks.block.entity.FactoryCellBlockEntity;
 import dev.eigenworks.block.entity.AdvancedEngineeringConsoleBlockEntity;
+import dev.eigenworks.block.entity.CanCableBlockEntity;
+import dev.eigenworks.block.entity.CanNodeBlockEntity;
 import dev.eigenworks.digital.world.WorldDigitalDevice;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -100,6 +102,12 @@ public final class EngineeringInspectorItem extends Item {
 			lines.add(Component.literal("Advanced Engineering Console: " + console.selectedModule()));
 			lines.add(Component.literal("Status: " + console.result()));
 			lines.add(Component.literal("Logical cycles/iterations: %d  successful: %s".formatted(console.lastCycles(), console.successful())));
+		} else if (blockEntity instanceof CanNodeBlockEntity node) {
+			lines.add(Component.literal("Physical CAN Node"));
+			lines.add(Component.literal("Connected: %s  TX identifier: 0x%03X".formatted(node.connected(), node.identifier())));
+			lines.add(Component.literal("Frames TX: %d  RX: %d  %s".formatted(node.transmitCount(), node.receiveCount(), node.diagnostic())));
+		} else if (blockEntity instanceof CanCableBlockEntity) {
+			lines.add(Component.literal("Physical CAN Cable (500 kbit/s component)"));
 		} else if (blockEntity instanceof DigitalClockBlockEntity clock) {
 			lines.add(Component.literal("Digital Clock: %.1f Hz, output=%s, enabled=%s".formatted(
 					clock.frequencyHertz(), clock.levelHigh(), clock.enabled())));

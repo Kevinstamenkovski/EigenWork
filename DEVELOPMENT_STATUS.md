@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-All thirteen planned milestones are complete. Current work is release hardening and expansion of the playable topology/UI layer.
+Milestone 15 planning — editable engineering configuration screens. Milestone 14 physical CAN networking is stable and complete.
 
 ## Last completed milestone
 
-Milestone 13 — CAN, network imperfections, FPU, matrix accelerator, transient circuits, advanced robotics, and a playable integration console.
+Milestone 14 — physical rendered CAN cables, persistent nodes, and cached multi-block bus topology.
 
 ## Completed systems
 
@@ -114,20 +114,25 @@ Milestone 13 — CAN, network imperfections, FPU, matrix accelerator, transient 
 - Backward-Euler series RC/RL transient state models with parameter, timestep, and non-finite-state protection.
 - Redundant three-link planar forward kinematics, 2x3 Jacobian, manipulability, and bounded damped-least-squares inverse kinematics.
 - Placeable persistent Advanced Engineering Console executing all Milestone 13 diagnostics on the server, with inspector support, recipe/assets/loot, and serialization GameTest.
+- Thin placeable six-way CAN Cable geometry with matching collision shape, recipe, loot, localization, and creative entry.
+- Per-server loaded-element CAN registry with dimension/position addresses, dirty topology flagging, and cached branching connected components.
+- Automatic cable/node registration and removal through block-entity chunk lifecycle events; steady-state transmission never scans the world.
+- Central 1 ms-quantized advancement of each physical 500 kbit/s CAN component from the authoritative server tick.
+- Persistent Configurable CAN Node with selectable 11-bit transmit ID, incrementing diagnostic payload, timed frame delivery, receive counters, and inspector diagnostics.
 
 ## Partially implemented systems
 
 - Configuration currently provides validated defaults but has no user file or screen.
 - The Engineering Test Bench is a one-shot digital diagnostic, not a configurable workstation yet.
 - Device configuration currently uses compact block interactions and chat diagnostics rather than dedicated GUIs.
-- Digital links are functional and persistent but do not yet render physical cable geometry.
+- Digital logic links remain abstract and persistent; physical rendered cabling now exists for CAN only.
 - The debugger intentionally exposes a compact bounded snapshot rather than a full editable 64 KiB memory grid; richer memory/source views remain future UI work.
 - The MCU ADC has a real voltage input API and tested quantization, but a placeable analog cable/sensor source arrives with the electrical and instrumentation milestones.
 - The first oscilloscope accepts 8-bit digital words. Typed voltage/current/mechanical channels and triggering follow their respective physical systems.
 - The general MNA builder remains DC-only; tested RC/RL backward-Euler companion models exist separately, while switches and nonlinear devices remain extensions.
 - PID gains and the 90-degree target are fixed for the initial demonstration; editable controller configuration UI is future work.
 - The Mathematics Workstation uses a compact book-based matrix editor rather than a dedicated grid GUI; calculations and persistence are fully playable.
-- Communication buses currently run inside each controller/hub/console; arbitrary multi-block protocol cable geometry and logic-analyzer decoding remain later extensions.
+- CAN has arbitrary branching multi-block cable topology; UART/I2C/SPI remain local to controllers/hubs, and protocol-analyzer decoding remains an extension.
 - Robot Arms are blocks containing articulated server state; separate multi-block link geometry, 6-DOF topology, and animated rendering are future presentation/topology work.
 - The first Factory Cell integrates conveyor/sensors/diverter in one block; separate visible conveyor segments and moving Minecraft item entities are future presentation/topology work.
 
@@ -140,11 +145,11 @@ Milestone 13 — CAN, network imperfections, FPU, matrix accelerator, transient 
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 109 passing tests. New coverage validates CAN arbitration/retry, impairment latency/loss/timeout, FPU faults/cycles, accelerator bounds/results, RC/RL transients, and 3-link IK.
-- Minecraft GameTests: all 16 required tests pass (fifteen EigenWorks tests plus the framework test), including every Advanced Engineering Console module and persistence.
+- Unit tests: 111 passing tests. New coverage validates cached cable components, physical-cable requirements, frame delivery without steady-state cache rebuilds, and disconnection invalidation.
+- Minecraft GameTests: all 17 required tests pass (sixteen EigenWorks tests plus the framework test), including physical CAN placement, timed delivery, and node persistence.
 - `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
-- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1601 recipes without EigenWorks datapack errors, executed all prior systems plus every advanced diagnostic and persistence. All 16 required tests passed.
-- Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with the Advanced Engineering Console and all prior assets registered; no missing-model, missing-texture, datapack, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so rendered appearance was not visually inspected.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1603 recipes without EigenWorks datapack errors, executed all prior systems plus physical CAN placement/transmission/persistence. All 17 required tests passed.
+- Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with CAN Cable/Node and all prior assets registered; no missing-model, missing-texture, datapack, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so rendered appearance was not visually inspected.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
 - Produced JAR: `build/libs/eigenworks-0.1.0.jar`.
@@ -159,7 +164,7 @@ Milestone 13 — CAN, network imperfections, FPU, matrix accelerator, transient 
 
 ## Temporary limitations
 
-All planned milestones are complete as functional vertical slices. This is an engineering-sandbox foundation, not a claim that every future item in the master vision is feature-complete: physical cable rendering, multi-block machines, six-axis animated robots, richer configuration GUIs, nonlinear general circuit solving, CAN cabling, and protocol analysis remain explicit release extensions.
+Milestones 1–14 are complete as functional vertical slices. CAN cable arms are deliberately rendered as a static six-way cross rather than dynamically hiding unused branches. Eigen-8 CAN memory-mapped I/O, electrical termination, richer configuration GUIs, nonlinear general circuit solving, and six-axis animated robots remain explicit release extensions.
 
 ## Relevant locations
 
@@ -214,14 +219,17 @@ All planned milestones are complete as functional vertical slices. This is an en
 - 3-link robotics: `src/main/java/dev/eigenworks/robotics/PlanarThreeLinkKinematics.java`
 - Advanced Console: `src/main/java/dev/eigenworks/block/entity/AdvancedEngineeringConsoleBlockEntity.java`
 - Advanced systems guide: `docs/ADVANCED_ENGINEERING.md`
+- Physical CAN topology: `src/main/java/dev/eigenworks/networking/world/`
+- CAN Cable/Node adapters: `src/main/java/dev/eigenworks/block/entity/CanCableBlockEntity.java` and `CanNodeBlockEntity.java`
+- Physical CAN guide: `docs/PHYSICAL_CAN.md`
 
 ## Exact next tasks
 
-1. Add physical rendered cable geometry and a cached multi-block CAN topology.
-2. Add editable screens for PID, matrices, PLC I/O, and advanced diagnostic parameters.
-3. Integrate capacitor/inductor companion stamps and bounded nonlinear diode iteration into the general MNA solver.
-4. Add articulated multi-block rendering and general 6-DOF robot topology.
-5. Establish a tagged release workflow after player-facing balance and multiplayer soak testing.
+1. Define one reusable validated server-owned parameter-edit protocol and menu abstraction.
+2. Add the first editable screen for Motor Rig PID gains and target angle.
+3. Extend the same pattern to matrix, PLC I/O, and advanced-console parameters.
+4. Integrate capacitor/inductor companion stamps and bounded nonlinear diode iteration into general MNA.
+5. Add articulated multi-block rendering and general 6-DOF robot topology.
 
 ## Commands
 

@@ -1,0 +1,1 @@
+{"type":"minecraft:crafting_shaped","category":"redstone","pattern":["CRC","QGQ","CRC"],"key":{"C":"minecraft:copper_ingot","R":"minecraft:redstone","Q":"minecraft:quartz","G":"minecraft:gold_ingot"},"result":{"id":"eigenworks:can_node","count":1}}

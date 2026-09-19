@@ -95,7 +95,10 @@
 
 ## Post-milestone release backlog
 
-- [ ] Add physical rendered cable geometry and multi-block CAN topology.
+- [x] Milestone 14: add physical rendered CAN cable geometry and loaded block registration.
+- [x] Milestone 14: build cached branching multi-block components without per-tick world scans.
+- [x] Milestone 14: add persistent configurable CAN nodes with timed frame delivery and inspector diagnostics.
+- [x] Milestone 14: verify placement, communication, and save/load with Minecraft GameTests.
 - [ ] Add configurable device screens for PID gains, matrices, PLC I/O, and console parameters.
 - [ ] Integrate capacitor/inductor companion stamps and nonlinear diode iterations into general MNA networks.
 - [ ] Add articulated multi-block robot rendering and six-axis robot topology.

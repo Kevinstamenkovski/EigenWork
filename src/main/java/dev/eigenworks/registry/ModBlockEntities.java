@@ -14,6 +14,8 @@ import dev.eigenworks.block.entity.CommunicationHubBlockEntity;
 import dev.eigenworks.block.entity.RobotArmBlockEntity;
 import dev.eigenworks.block.entity.FactoryCellBlockEntity;
 import dev.eigenworks.block.entity.AdvancedEngineeringConsoleBlockEntity;
+import dev.eigenworks.block.entity.CanCableBlockEntity;
+import dev.eigenworks.block.entity.CanNodeBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -65,6 +67,12 @@ public final class ModBlockEntities {
 	public static final BlockEntityType<AdvancedEngineeringConsoleBlockEntity> ADVANCED_ENGINEERING_CONSOLE = Registry.register(
 			BuiltInRegistries.BLOCK_ENTITY_TYPE, EigenWorks.id("advanced_engineering_console"),
 			FabricBlockEntityTypeBuilder.create(AdvancedEngineeringConsoleBlockEntity::new, ModBlocks.ADVANCED_ENGINEERING_CONSOLE).build());
+	public static final BlockEntityType<CanCableBlockEntity> CAN_CABLE = Registry.register(
+			BuiltInRegistries.BLOCK_ENTITY_TYPE, EigenWorks.id("can_cable"),
+			FabricBlockEntityTypeBuilder.create(CanCableBlockEntity::new, ModBlocks.CAN_CABLE).build());
+	public static final BlockEntityType<CanNodeBlockEntity> CAN_NODE = Registry.register(
+			BuiltInRegistries.BLOCK_ENTITY_TYPE, EigenWorks.id("can_node"),
+			FabricBlockEntityTypeBuilder.create(CanNodeBlockEntity::new, ModBlocks.CAN_NODE).build());
 
 	private ModBlockEntities() {
 	}

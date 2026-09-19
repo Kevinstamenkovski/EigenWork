@@ -16,6 +16,7 @@ import dev.eigenworks.block.entity.CommunicationHubBlockEntity;
 import dev.eigenworks.block.entity.RobotArmBlockEntity;
 import dev.eigenworks.block.entity.FactoryCellBlockEntity;
 import dev.eigenworks.block.entity.AdvancedEngineeringConsoleBlockEntity;
+import dev.eigenworks.block.entity.CanNodeBlockEntity;
 import dev.eigenworks.automation.RouteOutcome;
 import dev.eigenworks.computer.cpu.CpuStatus;
 import dev.eigenworks.digital.DigitalGateOperation;
@@ -432,6 +433,27 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 				restored.selectedModule(), "Restored advanced module");
 		helper.assertValueEqual(console.result(), restored.result(), "Restored advanced diagnostic");
 		helper.succeed();
+	}
+
+	@GameTest(maxTicks = 20)
+	public void physicalCanCableConnectsNodesTransmitsAndPersists(GameTestHelper helper) {
+		BlockPos senderPos = new BlockPos(3, 1, 1), cablePos = new BlockPos(4, 1, 1), receiverPos = new BlockPos(5, 1, 1);
+		helper.setBlock(senderPos, ModBlocks.CAN_NODE); helper.setBlock(cablePos, ModBlocks.CAN_CABLE); helper.setBlock(receiverPos, ModBlocks.CAN_NODE);
+		CanNodeBlockEntity sender = helper.getBlockEntity(senderPos, CanNodeBlockEntity.class);
+		CanNodeBlockEntity receiver = helper.getBlockEntity(receiverPos, CanNodeBlockEntity.class);
+		helper.runAfterDelay(1, () -> {
+			helper.assertTrue(sender.connected() && receiver.connected(), "Cable topology must connect both loaded CAN nodes");
+			helper.assertTrue(sender.transmit(), "Connected CAN node must queue a frame");
+			helper.runAfterDelay(2, () -> {
+				helper.assertValueEqual(1, receiver.receiveCount(), "Receiver frame count");
+				helper.assertValueEqual(0x100, receiver.lastReceivedIdentifier(), "Received CAN identifier");
+				helper.assertValueEqual(1, receiver.lastReceivedValue(), "Received CAN payload");
+				CanNodeBlockEntity restored = roundTrip(helper, receiver, CanNodeBlockEntity.class);
+				helper.assertValueEqual(1, restored.receiveCount(), "Persisted CAN receive count");
+				helper.assertValueEqual(0x100, restored.lastReceivedIdentifier(), "Persisted CAN identifier");
+				helper.succeed();
+			});
+		});
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 .gradle/
 build/
 run/
+logs/
 out/
 .idea/
 *.iml
@@ -11,4 +12,3 @@ out/
 .settings/
 .vscode/
 hs_err_pid*
-
