@@ -28,6 +28,7 @@ import dev.eigenworks.digital.DigitalGateOperation;
 import dev.eigenworks.digital.world.DigitalWorldNetwork;
 import dev.eigenworks.registry.ModBlocks;
 import dev.eigenworks.registry.ModItems;
+import dev.eigenworks.registry.ModCreativeTabs;
 import dev.eigenworks.signal.DigitalWord;
 import dev.eigenworks.simulation.EngineeringSimulation;
 import net.fabricmc.fabric.api.gametest.v1.CustomTestMethodInvoker;
@@ -45,6 +46,32 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 	private static final BlockPos CLOCK_POS = new BlockPos(1, 1, 1);
 	private static final BlockPos COUNTER_POS = new BlockPos(2, 1, 1);
+
+	@GameTest
+	public void creativeTabsGroupEveryEigenWorksItemExactlyOnce(GameTestHelper helper) {
+		var tabs = java.util.List.of(
+				ModCreativeTabs.TOOLS_AND_DIGITAL,
+				ModCreativeTabs.COMPUTING_AND_ANALYSIS,
+				ModCreativeTabs.CONTROL_AND_ROBOTICS,
+				ModCreativeTabs.COMMUNICATIONS);
+		java.util.Set<net.minecraft.world.item.Item> unique = new java.util.HashSet<>();
+		int displayed = 0;
+		for (var tab : tabs) {
+			tab.buildContents(new net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters(
+					helper.getLevel().enabledFeatures(), true, helper.getLevel().registryAccess()));
+			helper.assertTrue(tab.hasAnyItems(), "Each EigenWorks Creative tab must contain items");
+			for (ItemStack stack : tab.getDisplayItems()) {
+				displayed++;
+				helper.assertTrue(unique.add(stack.getItem()), "An EigenWorks item must not be duplicated across subsystem tabs");
+			}
+		}
+		helper.assertValueEqual(19, displayed, "All registered EigenWorks blocks and tools in grouped tabs");
+		helper.assertTrue(unique.contains(ModBlocks.COMPUTER.asItem()), "Computing tab must contain the Eigen-8 Computer");
+		helper.assertTrue(unique.contains(ModItems.ENGINEERING_INSPECTOR), "Tools tab must contain the Engineering Inspector");
+		helper.assertTrue(unique.contains(ModBlocks.ROBOT_JOINT_MODULE.asItem()), "Robotics tab must contain the articulated joint");
+		helper.assertTrue(unique.contains(ModBlocks.CAN_CABLE.asItem()), "Communications tab must contain CAN cable");
+		helper.succeed();
+	}
 
 	@GameTest
 	public void clockToCounterConnectionPropagatesAndPersists(GameTestHelper helper) {

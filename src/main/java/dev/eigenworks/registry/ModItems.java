@@ -3,12 +3,10 @@ package dev.eigenworks.registry;
 import dev.eigenworks.EigenWorks;
 import dev.eigenworks.item.DigitalLinkingToolItem;
 import dev.eigenworks.item.EngineeringInspectorItem;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 
 /** Registration boundary for standalone engineering items. */
@@ -31,10 +29,6 @@ public final class ModItems {
 	}
 
 	public static void initialize() {
-		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
-				.register(entries -> {
-					entries.accept(DIGITAL_LINKING_TOOL);
-					entries.accept(ENGINEERING_INSPECTOR);
-				});
+		// Class loading performs standalone item registration.
 	}
 }

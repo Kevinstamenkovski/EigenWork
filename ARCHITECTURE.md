@@ -102,6 +102,8 @@ Pure control blocks implement weighted sum, gain, saturation, Euler integration,
 
 GUI edits are validated server-side. The Eigen-8 debugger uses vanilla container-data synchronization for a fixed-size snapshot and menu button packets for controls; it never sends the 64 KiB RAM image to the client. Motor, matrix, PLC, and Advanced Console menus reuse the same bounded button-packet pattern: clients identify an action while the server owns schemas, accepted values, execution, and persistence. Fixed-point `ContainerData` sends only bounded telemetry/configuration integers. Oscilloscope histories use capped ring buffers and bounded visual update rates; packets never mirror entire unbounded histories.
 
+Creative inventory discovery is owned by `ModCreativeTabs`. Four Fabric-backed category tabs group all registered blocks and standalone tools by subsystem. Items are deliberately listed exactly once across these tabs; registration does not depend on injection into changing vanilla categories. A Minecraft GameTest explicitly builds all four tab contents and verifies complete, duplicate-free coverage.
+
 ## Mathematics architecture
 
 `Vector` and `Matrix` own copied finite arrays and expose immutable algebra. Linear solve and determinant use Gaussian elimination with partial pivoting and an explicit singularity tolerance; inverse is implemented as repeated solves rather than unchecked adjugate formulas. `NumericalIntegrators` evaluates vector derivatives through guarded Forward Euler or classical RK4. `StateSpaceSystem` validates compatible A/B/C/D dimensions and integrates continuous state, while `TransferFunction` converts a proper SISO polynomial ratio into controllable canonical form.

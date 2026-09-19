@@ -1,6 +1,6 @@
 # Advanced engineering systems
 
-Milestone 13 adds bounded advanced models without bypassing the engineering simulation. The **Advanced Engineering Console** is available in the Functional Blocks tab and is crafted from a Communication Hub, redstone, quartz, and gold. Empty-hand use runs the selected server-side diagnostic; sneak-use selects the next module. The Engineering Inspector reports its last result and logical work count.
+Milestone 13 adds bounded advanced models without bypassing the engineering simulation. The **Advanced Engineering Console** is available in **EigenWorks: Computing & Analysis** and is crafted from a Communication Hub, redstone, quartz, and gold. Empty-hand use opens its server-authoritative parameter/diagnostic screen; sneak-use selects the next module. The Engineering Inspector reports its last result and logical work count.
 
 ## CAN
 

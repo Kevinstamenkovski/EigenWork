@@ -2,7 +2,7 @@
 
 ## Current milestone
 
-Maintenance — all planned milestones are complete; EigenWorks 0.2.0 is release-ready.
+Maintenance — all planned milestones are complete; EigenWorks 0.2.1 adds grouped Creative tabs and a full player guide.
 
 ## Last completed milestone
 
@@ -140,7 +140,9 @@ Milestone 19 — distributable release workflow and final regression.
 - GitHub Actions Java 25 build workflow running unit tests, Minecraft GameTests, and distributable validation on pushes and pull requests.
 - Tag-gated release workflow that requires `vX.Y.Z` to match the project version and publishes only the installable JAR.
 - Reproducible release verifier checking embedded Fabric metadata, required classes/assets/data, sources artifact, and SHA-256.
-- Versioned compatibility matrix, upgrade procedure, and changelog for EigenWorks 0.2.0.
+- Versioned compatibility matrix, upgrade procedure, and changelog for EigenWorks 0.2.1.
+- Four dedicated subsystem Creative tabs containing all 19 EigenWorks blocks/tools exactly once.
+- Detailed player guide covering installation, item discovery, every playable device, wiring, programming, demos, persistence, and troubleshooting.
 
 ## Partially implemented systems
 
@@ -168,13 +170,13 @@ Milestone 19 — distributable release workflow and final regression.
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
 - Unit tests: 122 passing tests. New coverage validates six-axis DH forward kinematics, geometric Jacobians, dimension bounds, and non-finite joint rejection.
-- Minecraft GameTests: all 20 required tests pass (nineteen EigenWorks tests plus the framework test), including six-block robot topology, articulation, cache reuse, and persistence.
-- `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.2.0; it was stopped manually after resource reload.
-- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1604 recipes without EigenWorks datapack errors, and executed all systems. All 20 required tests passed.
-- Latest client regression (2026-09-19): EigenWorks initialized with the articulated joint renderer and completed resource reload without missing-model/texture or EigenWorks exceptions. The client was then stopped manually; no desktop input was used, so a placed moving joint was not visually inspected in-world.
+- Minecraft GameTests: all 21 required tests pass (twenty EigenWorks tests plus the framework test), including complete duplicate-free custom Creative tab coverage.
+- `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.2.1; it was stopped manually after resource reload.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1604 recipes without EigenWorks datapack errors, and executed all systems. All 21 required tests passed.
+- Latest client regression (2026-09-19): EigenWorks 0.2.1 initialized with all four custom Creative tabs and completed resource reload without missing-model/texture or EigenWorks exceptions. Tab membership was verified by GameTest; no desktop input was used for manual visual inspection.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
-- Produced JAR: `build/libs/eigenworks-0.2.0.jar`; final clean-build SHA-256: `045daa2821e028899fd1fe00eaad9168a804ce414823c3407be6798d0c641064`.
+- Produced JAR: `build/libs/eigenworks-0.2.1.jar`; SHA-256: `4b9da519b641fe287f7a7e7368b99cc9af62b467ed4f50cee36cd877b86cc7f9`.
 
 ## Architectural decisions
 
@@ -253,7 +255,7 @@ Milestones 1–19 are complete as functional vertical slices. Editors use bounde
 
 ## Exact next tasks
 
-1. Optionally create and push tag `v0.2.0` when a public GitHub Release is desired; the workflow will publish the verified JAR.
+1. Optionally create and push tag `v0.2.1` when a public GitHub Release is desired; the workflow will publish the verified JAR.
 2. Visually inspect a placed articulated joint in a normal client world and tune presentation if desired.
 3. Choose the next extension from the documented limitations before beginning a new milestone.
 

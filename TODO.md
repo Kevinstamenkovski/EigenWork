@@ -110,3 +110,4 @@
 - [x] Milestone 18: add general one-to-six-axis DH forward kinematics and 6xN geometric Jacobians.
 - [x] Milestone 18: add cached loaded multi-block robot topology, persistence, inspection, and articulated link rendering.
 - [x] Milestone 19: add Java 25 CI, tagged release publishing, compatibility matrix, changelog, and reproducible JAR verification.
+- [x] Maintenance 0.2.1: group every custom item into dedicated subsystem Creative tabs and add a detailed player guide.

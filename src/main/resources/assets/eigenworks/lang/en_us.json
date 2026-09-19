@@ -40,5 +40,9 @@
   "screen.eigenworks.advanced_console": "Advanced Engineering Parameters",
   "block.eigenworks.can_cable": "CAN Cable",
   "block.eigenworks.can_node": "Programmable CAN Node",
-  "block.eigenworks.robot_joint_module": "Articulated Robot Joint Module"
+  "block.eigenworks.robot_joint_module": "Articulated Robot Joint Module",
+  "itemGroup.eigenworks.tools_and_digital": "EigenWorks: Tools & Digital",
+  "itemGroup.eigenworks.computing_and_analysis": "EigenWorks: Computing & Analysis",
+  "itemGroup.eigenworks.control_and_robotics": "EigenWorks: Control & Robotics",
+  "itemGroup.eigenworks.communications": "EigenWorks: Communications"
 }

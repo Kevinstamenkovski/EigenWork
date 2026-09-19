@@ -2,7 +2,9 @@
 
 EigenWorks is a Fabric mod for Minecraft Java Edition 26.2 that grows into a coherent engineering sandbox: signals, real programmable computers, embedded control, electrical and motor models, instrumentation, robotics, and industrial automation.
 
-The current playable foundation spans eighteen completed milestones: scheduled digital devices, a real programmable **Eigen-8 Computer** and MCU, instrumentation, configurable electrical/motor control, transient/nonlinear circuit analysis, engineering mathematics with a matrix editor, timed buses, planar and six-axis robot kinematics, PLC automation with live I/O, advanced diagnostics, physical multi-block CAN/robot networks, and server-validated engineering GUIs. Underneath them, pure guarded engineering models are adapted into persistent, server-authoritative Minecraft blocks and tested both as Java units and inside Minecraft GameTests.
+The current playable foundation spans nineteen completed milestones: scheduled digital devices, a real programmable **Eigen-8 Computer** and MCU, instrumentation, configurable electrical/motor control, transient/nonlinear circuit analysis, engineering mathematics with a matrix editor, timed buses, planar and six-axis robot kinematics, PLC automation with live I/O, advanced diagnostics, physical multi-block CAN/robot networks, and server-validated engineering GUIs. Underneath them, pure guarded engineering models are adapted into persistent, server-authoritative Minecraft blocks and tested both as Java units and inside Minecraft GameTests.
+
+Start with the detailed [EigenWorks Player Guide](docs/USER_GUIDE.md). All items are organized into four dedicated `EigenWorks:` Creative inventory tabs for tools/digital logic, computing/analysis, control/robotics, and communications.
 
 Empty-hand right-click the Test Bench to queue a server-side digital diagnostic. On the next engineering simulation tick it computes `0xC AND 0xA` through the real gate implementation, clocks a counter, and reports both results in chat.
 
@@ -20,7 +22,7 @@ Connections are stored on input block entities and survive serialization. The se
 
 ## Building and programming a CPU
 
-1. Craft or take an **Eigen-8 Computer** from the Functional Blocks creative tab and place it.
+1. Craft or take an **Eigen-8 Computer** from the **EigenWorks: Computing & Analysis** Creative tab and place it.
 2. Put Eigen-8 assembly in a Book and Quill (one source file may span pages).
 3. Use the book on the Computer. The server assembles it and reports either the byte count or an exact source-line error.
 4. Empty-hand use the Computer to open its debugger.
@@ -84,7 +86,7 @@ Place **Configurable CAN Node** blocks and join them with thin **CAN Cable** seg
 ./gradlew runClient
 ```
 
-The installable JAR is written to `build/libs/eigenworks-0.2.0.jar`. The `-sources` JAR is for development and should not be installed. `./scripts/verify-release.sh` performs the complete build, checks embedded compatibility metadata/assets, and prints the release SHA-256.
+The installable JAR is written to `build/libs/eigenworks-0.2.1.jar`. The `-sources` JAR is for development and should not be installed. `./scripts/verify-release.sh` performs the complete build, checks embedded compatibility metadata/assets, and prints the release SHA-256.
 
 Gradle automatically selects an installed JDK 25 or downloads a compatible toolchain through the Foojay resolver. The Gradle launcher itself requires Java 17 or newer.
 
@@ -92,12 +94,12 @@ Gradle automatically selects an installed JDK 25 or downloads a compatible toolc
 
 1. Install Fabric Loader for Minecraft 26.2.
 2. Install Fabric API 0.160.0+26.2 in `.minecraft/mods/`.
-3. Copy `build/libs/eigenworks-0.2.0.jar` into `.minecraft/mods/`.
+3. Copy `build/libs/eigenworks-0.2.1.jar` into `.minecraft/mods/`.
 4. Launch the Minecraft 26.2 Fabric profile.
 
 ## First launch
 
-Create a world and open the Functional Blocks creative tab for the blocks. The Digital Linking Tool is in Tools & Utilities. Every Milestone 3 device has a survival recipe, and all device blocks can be mined with a pickaxe.
+Create a world and open any of the four dedicated `EigenWorks:` Creative tabs. Tools/digital logic, computing/analysis, control/robotics, and communications each have their own section. Every device has a survival recipe, and all device blocks can be mined with a pickaxe.
 
 ## Engineering guides
 
@@ -107,7 +109,7 @@ The first digital circuit, CPU program, MCU motor-control loop, PID response, os
 
 The code separates Minecraft adapters from pure engineering simulation classes so numerical behavior can be tested without launching Minecraft. Read [AGENTS.md](AGENTS.md), [ARCHITECTURE.md](ARCHITECTURE.md), and [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) before making substantial changes.
 
-Every push and pull request runs the Gradle build, unit tests, Minecraft GameTests, and release-JAR validation in GitHub Actions. A tag matching the project version (for example `v0.2.0`) runs the same checks and publishes the installable JAR as a GitHub Release. See [the compatibility matrix](docs/COMPATIBILITY.md) and [changelog](CHANGELOG.md).
+Every push and pull request runs the Gradle build, unit tests, Minecraft GameTests, and release-JAR validation in GitHub Actions. A tag matching the project version (for example `v0.2.1`) runs the same checks and publishes the installable JAR as a GitHub Release. See [the compatibility matrix](docs/COMPATIBILITY.md) and [changelog](CHANGELOG.md).
 
 ## License
 

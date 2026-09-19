@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1 — 2026-09-19
+
+- Organized all 19 blocks/tools into four dedicated subsystem Creative tabs with no duplication.
+- Added a comprehensive player guide covering installation, every device, wiring, programming, demos, diagnostics, persistence, and troubleshooting.
+- Added a Minecraft GameTest that builds the custom tab contents and verifies complete one-to-one item coverage.
+
 ## 0.2.0 — 2026-09-19
 
 - Completed eighteen functional engineering milestones plus release automation.

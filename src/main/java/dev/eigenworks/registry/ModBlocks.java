@@ -19,13 +19,11 @@ import dev.eigenworks.block.AdvancedEngineeringConsoleBlock;
 import dev.eigenworks.block.CanCableBlock;
 import dev.eigenworks.block.CanNodeBlock;
 import dev.eigenworks.block.RobotJointModuleBlock;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -102,26 +100,7 @@ public final class ModBlocks {
 	}
 
 	public static void initialize() {
-		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS)
-				.register(entries -> {
-					entries.accept(ENGINEERING_TEST_BENCH.asItem());
-					entries.accept(DIGITAL_CLOCK.asItem());
-					entries.accept(DIGITAL_COUNTER.asItem());
-					entries.accept(DIGITAL_GATE.asItem());
-					entries.accept(DIGITAL_REGISTER.asItem());
-					entries.accept(COMPUTER.asItem());
-					entries.accept(MICROCONTROLLER.asItem());
-					entries.accept(OSCILLOSCOPE.asItem());
-					entries.accept(MOTOR_RIG.asItem());
-					entries.accept(MATHEMATICS_WORKSTATION.asItem());
-					entries.accept(COMMUNICATION_HUB.asItem());
-					entries.accept(ROBOT_ARM.asItem());
-					entries.accept(FACTORY_CELL.asItem());
-					entries.accept(ADVANCED_ENGINEERING_CONSOLE.asItem());
-					entries.accept(CAN_CABLE.asItem());
-					entries.accept(CAN_NODE.asItem());
-					entries.accept(ROBOT_JOINT_MODULE.asItem());
-				});
+		// Class loading performs block and block-item registration.
 	}
 
 	private static BlockBehaviour.Properties deviceProperties() {
