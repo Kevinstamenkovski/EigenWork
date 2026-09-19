@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 12 — conveyor, sensors, diverter, PLC scan cycle, Structured Text, and Demo E.
+Milestone 13 — CAN, network imperfections, FPU, vector accelerator, and advanced engineering extensions.
 
 ## Last completed milestone
 
-Milestone 11 — robot topology, FK/IK/Jacobian, trajectories, and playable Demo D.
+Milestone 12 — programmable PLC factory automation and playable Demo E.
 
 ## Completed systems
 
@@ -102,6 +102,11 @@ Milestone 11 — robot topology, FK/IK/Jacobian, trajectories, and playable Demo
 - Constant-velocity linear and acceleration-limited triangular/trapezoidal point-to-point joint trajectories.
 - Placeable persistent 2-DOF Planar Robot Arm with Cartesian presets/inputs, joint/end-effector outputs, 10 ms scheduled motion, inspector diagnostics, and unreachable-target handling.
 - Demo D computes real IK for `(1, 1) m`, follows bounded joint trajectories, reaches the target, and exposes non-singular diagnostics.
+- Bounded Structured Text-inspired compiler/interpreter supporting sequential IF/THEN/ELSE, Boolean expressions, assignments, retained variables, and safe error diagnostics.
+- Deterministic PLC input/program/output scans with configurable 20 ms period, case-insensitive I/O image, non-retentive on-delay timer, and rising-edge counter.
+- One-metre conveyor plant with explicit workpiece state, photoelectric presence sensor, metallic proximity sensor, terminal diverter, and emergency-stop behavior.
+- Placeable persistent Programmable PLC Factory Cell with book-based program loading, alternating test workpieces, emergency stop, inspector diagnostics, and digital I/O ports.
+- Demo E runs actual sensor/PLC/actuator logic to route metallic items `DIVERTED` and non-metal items `STRAIGHT`.
 
 ## Partially implemented systems
 
@@ -117,6 +122,7 @@ Milestone 11 — robot topology, FK/IK/Jacobian, trajectories, and playable Demo
 - The Mathematics Workstation uses a compact book-based matrix editor rather than a dedicated grid GUI; calculations and persistence are fully playable.
 - Communication buses currently run inside each controller/hub; arbitrary multi-block protocol cable geometry and logic-analyzer decoding remain later extensions.
 - The first Robot Arm is one block containing articulated server state; separate multi-block link geometry and animated rendering are future presentation/topology work.
+- The first Factory Cell integrates conveyor/sensors/diverter in one block; separate visible conveyor segments and moving Minecraft item entities are future presentation/topology work.
 
 ## Known bugs and failing tests
 
@@ -127,10 +133,10 @@ Milestone 11 — robot topology, FK/IK/Jacobian, trajectories, and playable Demo
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 97 passing tests. New coverage validates transform caching, analytical FK, both IK branches, unreachable targets, Jacobian/manipulability, damped-least-squares convergence, linear/trapezoidal trajectories, and complete Cartesian arm motion.
-- Minecraft GameTests: all 14 required tests pass (thirteen EigenWorks tests plus the framework test), including Demo D IK, scheduled trajectory completion, Cartesian tolerance, singularity margin, unreachable-target rejection, and joint persistence.
+- Unit tests: 102 passing tests. New coverage validates Structured Text parsing/execution/errors, PLC scans, timers/counters, factory classification/routing, and emergency-stop motion inhibition.
+- Minecraft GameTests: all 15 required tests pass (fourteen EigenWorks tests plus the framework test), including both Demo E routes, repeated PLC scan execution, program persistence, and emergency-stop control.
 - `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
-- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1599 recipes without EigenWorks datapack errors, executed all prior systems plus Robot Arm Demo D and persistence. All 14 required tests passed.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1600 recipes without EigenWorks datapack errors, executed all prior systems plus PLC Factory Demo E and persistence. All 15 required tests passed.
 - Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with Computer/MCU/Oscilloscope/Inspector/Motor Rig assets and debugger/scope screen registrations present; no missing-model, missing-texture, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so rendered appearance was not visually inspected.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
@@ -146,7 +152,7 @@ Milestone 11 — robot topology, FK/IK/Jacobian, trajectories, and playable Demo
 
 ## Temporary limitations
 
-Milestone 11 is complete. The robot graph supports arbitrary serial joint/link counts for FK, while analytical IK and the playable adapter intentionally target the first two-revolute-joint planar arm. Rotational 3D Jacobian terms, collision, and articulated rendering remain later advanced-robotics extensions.
+Milestone 12 is complete. Structured Text intentionally supports bounded Boolean control rather than unbounded loops or arbitrary arithmetic. The integrated cell proves sensor-to-PLC-to-actuator behavior while physical multi-block conveyor topology remains a later extension.
 
 ## Relevant locations
 
@@ -191,14 +197,18 @@ Milestone 11 is complete. The robot graph supports arbitrary serial joint/link c
 - Robotics core: `src/main/java/dev/eigenworks/robotics/`
 - Robot adapter: `src/main/java/dev/eigenworks/block/entity/RobotArmBlockEntity.java`
 - Robotics guide: `docs/ROBOTICS.md`
+- Automation core: `src/main/java/dev/eigenworks/automation/`
+- Factory adapter: `src/main/java/dev/eigenworks/block/entity/FactoryCellBlockEntity.java`
+- Demo E source: `examples/demo_e_factory.st`
+- Automation guide: `docs/AUTOMATION.md`
 
 ## Exact next tasks
 
-1. Implement server-scheduled conveyor item progression and photoelectric/proximity sensing.
-2. Implement a deterministic PLC scan cycle with digital/analog I/O, timers, and counters.
-3. Implement a bounded Structured Text-inspired parser/interpreter for IF/ELSE assignments.
-4. Add diverter behavior controlled by PLC output and an emergency-stop input.
-5. Complete Demo E with a sensed item routed by PLC logic, persistence, tests, and player documentation.
+1. Implement CAN identifiers, arbitration, timed delivery, multiple nodes, and explicit bus diagnostics.
+2. Add deterministic latency, jitter, packet-loss, bandwidth, and timeout models.
+3. Implement optional FPU operations with logical cycle costs and numerical fault guards.
+4. Implement bounded vector/matrix accelerator operations with cycle accounting.
+5. Add one playable Advanced Engineering Console integrating CAN and accelerators, then complete full release regression/documentation.
 
 ## Commands
 

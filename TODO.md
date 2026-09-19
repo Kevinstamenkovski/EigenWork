@@ -86,5 +86,5 @@
 - [x] Milestone 9: matrices, solvers, Euler/RK4, transfer function, state space, and mathematics workstation.
 - [x] Milestone 10: timed UART, addressed I2C, SPI transactions, MCU registers, and Communication Hub.
 - [x] Milestone 11: robot graph, FK, analytic/numerical 2-link IK, Jacobian, trajectories, and Demo D.
-- [ ] Milestone 12: conveyor, sensors, diverter, PLC scan cycle, and Demo E.
+- [x] Milestone 12: conveyor, sensors, diverter, Structured Text PLC scan cycle, and Demo E.
 - [ ] Milestone 13: CAN, network imperfections, FPU, accelerators, and advanced systems.

@@ -14,6 +14,8 @@ import dev.eigenworks.block.entity.MotorRigBlockEntity;
 import dev.eigenworks.block.entity.MathematicsWorkstationBlockEntity;
 import dev.eigenworks.block.entity.CommunicationHubBlockEntity;
 import dev.eigenworks.block.entity.RobotArmBlockEntity;
+import dev.eigenworks.block.entity.FactoryCellBlockEntity;
+import dev.eigenworks.automation.RouteOutcome;
 import dev.eigenworks.computer.cpu.CpuStatus;
 import dev.eigenworks.digital.DigitalGateOperation;
 import dev.eigenworks.digital.world.DigitalWorldNetwork;
@@ -383,6 +385,31 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 			helper.assertValueEqual(robot.arm().joint2(), restored.arm().joint2(), "Restored elbow angle");
 			helper.assertTrue(!robot.commandTarget(3, 0), "Unreachable target must be rejected without crashing");
 			helper.succeed();
+		});
+	}
+
+	@GameTest(maxTicks = 80)
+	public void plcFactoryRoutesItemsThroughDemoE(GameTestHelper helper) {
+		BlockPos factoryPos = new BlockPos(3, 1, 1);
+		helper.setBlock(factoryPos, ModBlocks.FACTORY_CELL);
+		FactoryCellBlockEntity factory = helper.getBlockEntity(factoryPos, FactoryCellBlockEntity.class);
+		helper.assertTrue(factory.loadProgram(dev.eigenworks.automation.FactoryCell.DEFAULT_PROGRAM),
+				"Demo E Structured Text must compile");
+		helper.assertTrue(factory.spawnItem(true), "Metal workpiece must enter conveyor");
+		helper.runAfterDelay(30, () -> {
+			helper.assertValueEqual(RouteOutcome.DIVERTED, factory.factory().conveyor().lastOutcome(),
+					"PLC must divert metallic workpiece");
+			helper.assertTrue(factory.spawnItem(false), "Non-metal workpiece must enter conveyor");
+			helper.runAfterDelay(30, () -> {
+				helper.assertValueEqual(RouteOutcome.STRAIGHT, factory.factory().conveyor().lastOutcome(),
+					"PLC must route non-metal workpiece straight");
+				helper.assertTrue(factory.factory().plc().scanCount() > 20, "PLC must execute repeated scan cycles");
+				FactoryCellBlockEntity restored = roundTrip(helper, factory, FactoryCellBlockEntity.class);
+				helper.assertValueEqual(factory.factory().plc().source(), restored.factory().plc().source(), "Restored PLC source");
+				restored.toggleEmergencyStop();
+				helper.assertTrue(restored.factory().emergencyStop(), "Emergency stop state must be controllable");
+				helper.succeed();
+			});
 		});
 	}
 

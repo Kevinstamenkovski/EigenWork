@@ -1,0 +1,1 @@
+{"type":"minecraft:crafting_shaped","category":"redstone","pattern":["IRI","OCO","IRI"],"key":{"I":"minecraft:iron_ingot","R":"minecraft:redstone","O":"minecraft:observer","C":"minecraft:comparator"},"result":{"id":"eigenworks:factory_cell","count":1}}

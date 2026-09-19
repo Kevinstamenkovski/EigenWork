@@ -12,6 +12,7 @@ import dev.eigenworks.block.entity.MotorRigBlockEntity;
 import dev.eigenworks.block.entity.MathematicsWorkstationBlockEntity;
 import dev.eigenworks.block.entity.CommunicationHubBlockEntity;
 import dev.eigenworks.block.entity.RobotArmBlockEntity;
+import dev.eigenworks.block.entity.FactoryCellBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -57,6 +58,9 @@ public final class ModBlockEntities {
 	public static final BlockEntityType<RobotArmBlockEntity> ROBOT_ARM = Registry.register(
 			BuiltInRegistries.BLOCK_ENTITY_TYPE, EigenWorks.id("robot_arm"),
 			FabricBlockEntityTypeBuilder.create(RobotArmBlockEntity::new, ModBlocks.ROBOT_ARM).build());
+	public static final BlockEntityType<FactoryCellBlockEntity> FACTORY_CELL = Registry.register(
+			BuiltInRegistries.BLOCK_ENTITY_TYPE, EigenWorks.id("factory_cell"),
+			FabricBlockEntityTypeBuilder.create(FactoryCellBlockEntity::new, ModBlocks.FACTORY_CELL).build());
 
 	private ModBlockEntities() {
 	}

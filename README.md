@@ -58,6 +58,10 @@ The **UART / I2C / SPI Communication Hub** runs actual timed bus diagnostics und
 
 The **2-DOF Planar Robot Arm** has explicit joints/links, homogeneous-transform forward kinematics, analytic and damped-least-squares IK, a Jacobian/singularity metric, and bounded joint trajectories. Empty-hand use cycles Cartesian targets and sneak-use resets it. Target and diagnostic ports connect through the Digital Linking Tool. Demo D and all scaling/kinematics details are in [`docs/ROBOTICS.md`](docs/ROBOTICS.md).
 
+## PLC factory automation
+
+The **Programmable PLC Factory Cell** combines a conveyor, photoelectric and proximity sensors, diverter, emergency stop, and deterministic 20 ms PLC scan. Program it from a Book and Quill using the safe Structured Text subset; empty-hand use inserts workpieces and sneak-use toggles emergency stop. Demo E routes metallic and non-metal workpieces through real sensor/PLC/actuator state. See [`docs/AUTOMATION.md`](docs/AUTOMATION.md).
+
 ## Requirements
 
 - Minecraft Java Edition 26.2
@@ -89,7 +93,7 @@ Create a world and open the Functional Blocks creative tab for the blocks. The D
 
 ## Engineering guides
 
-The first digital circuit, CPU program, MCU motor-control loop, PID response, oscilloscope workflow, mathematics workstation, timed communication buses, and robot arm are documented above and in the linked guides. The PLC guide will be added with its playable milestone. Incomplete systems are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
+The first digital circuit, CPU program, MCU motor-control loop, PID response, oscilloscope workflow, mathematics workstation, timed communication buses, robot arm, and PLC factory are documented above and in the linked guides. Incomplete advanced systems are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
 
 ## Development
 

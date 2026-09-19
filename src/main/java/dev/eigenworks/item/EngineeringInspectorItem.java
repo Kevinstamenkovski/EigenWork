@@ -14,6 +14,7 @@ import dev.eigenworks.block.entity.MotorRigBlockEntity;
 import dev.eigenworks.block.entity.MathematicsWorkstationBlockEntity;
 import dev.eigenworks.block.entity.CommunicationHubBlockEntity;
 import dev.eigenworks.block.entity.RobotArmBlockEntity;
+import dev.eigenworks.block.entity.FactoryCellBlockEntity;
 import dev.eigenworks.digital.world.WorldDigitalDevice;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -85,6 +86,15 @@ public final class EngineeringInspectorItem extends Item {
 			lines.add(Component.literal("end: (%.3f, %.3f) m  target: (%.3f, %.3f) m".formatted(
 					pose.xMeters(), pose.yMeters(), robot.arm().targetX(), robot.arm().targetY())));
 			lines.add(Component.literal("manipulability: %.5f  %s".formatted(robot.arm().manipulability(), robot.arm().diagnostic())));
+		} else if (blockEntity instanceof FactoryCellBlockEntity factory) {
+			lines.add(Component.literal("PLC Factory Cell"));
+			lines.add(Component.literal("item: %s  position: %.3f m  outcome: %s".formatted(
+					factory.factory().conveyor().item(), factory.factory().conveyor().positionMeters(), factory.factory().conveyor().lastOutcome())));
+			lines.add(Component.literal("photo: %s  proximity: %s  conveyor: %s  diverter: %s".formatted(
+					factory.factory().conveyor().photoelectricSensor(), factory.factory().conveyor().proximitySensor(),
+					factory.factory().conveyorOutput(), factory.factory().diverterOutput())));
+			lines.add(Component.literal("scans: %d  sensed: %d  e-stop: %s  %s".formatted(
+					factory.factory().plc().scanCount(), factory.factory().itemsSensed(), factory.factory().emergencyStop(), factory.programDiagnostic())));
 		} else if (blockEntity instanceof DigitalClockBlockEntity clock) {
 			lines.add(Component.literal("Digital Clock: %.1f Hz, output=%s, enabled=%s".formatted(
 					clock.frequencyHertz(), clock.levelHigh(), clock.enabled())));

@@ -19,6 +19,7 @@
 - `dev.eigenworks.mathematics`: vectors, matrices, pivoted solvers, numerical integration, dynamic-system models, and safe expression evaluation.
 - `dev.eigenworks.networking`: timed UART framing, addressed I2C transactions, and chip-selected SPI transfers.
 - `dev.eigenworks.robotics`: explicit robot topology, homogeneous transforms, IK/Jacobians, singularity metrics, and trajectories.
+- `dev.eigenworks.automation`: bounded Structured Text, deterministic PLC scans, timers/counters, sensors, conveyor, and diverter plant.
 - Future packages follow subsystem ownership: `mathematics`, `robotics`, `automation`, and `networking`.
 
 Minecraft blocks and block entities are adapters. Mathematical and engineering behavior belongs in pure Java objects with no dependency on client rendering or world traversal.
@@ -118,3 +119,9 @@ UART framing is explicit and configurable by baud, data width, parity, and stop 
 `RobotGraph` owns ordered immutable joint/link topology and caches cumulative homogeneous transforms against joint positions. Revolute and prismatic local transforms compose through the Milestone 9 matrix implementation. `PlanarArmKinematics` provides analytical 2R forward/inverse kinematics, the translational Jacobian, manipulability, and bounded damped-least-squares numerical IK using pivoted solves near singularities.
 
 `LinearTrajectory` and `TrapezoidalTrajectory` provide point-to-point joint commands; the latter automatically selects triangular motion when distance is too short to reach cruise velocity. `PlanarRobotArm` composes topology, IK, and synchronized profiles. `RobotArmBlockEntity` is the 10 ms authoritative adapter with persistent joint/target state and explicit target/diagnostic ports. It publishes only loaded state through cached digital topology. The current visual is one block; articulated rendering and separate player-built link blocks can consume the same graph later.
+
+## Automation architecture
+
+`StructuredTextCompiler` tokenizes and parses a deliberately bounded IEC 61131-3-inspired Boolean language into immutable condition/assignment nodes. There is no general loop, reflection, or runtime code compilation. `PlcController` snapshots named inputs into a case-insensitive variable image, executes the program in source order, and retains output/internal variables between fixed 20 ms scans. Separate TON timer and rising-edge counter models provide deterministic scan primitives.
+
+`ConveyorLine` advances one explicit workpiece along a one-metre plant, exposes photoelectric/proximity sensor states, and applies the diverter at its terminal. `FactoryCell` composes that plant with PLC inputs/outputs and resets the route latch on workpiece insertion. `FactoryCellBlockEntity` is the 10 ms server adapter, persists PLC source/plant/configuration, and provides explicit emergency-stop and diagnostic ports without world scans. The initial rendering is an integrated cell; later segment blocks can share one registered cached factory topology.
