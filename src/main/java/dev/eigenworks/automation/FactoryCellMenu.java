@@ -1,0 +1,8 @@
+package dev.eigenworks.automation;
+import dev.eigenworks.block.entity.FactoryCellBlockEntity; import dev.eigenworks.registry.ModMenus; import net.minecraft.world.entity.player.*; import net.minecraft.world.inventory.*; import net.minecraft.world.item.ItemStack;
+public final class FactoryCellMenu extends AbstractContainerMenu{
+	public static final int DATA_COUNT=10,BUTTON_ITEM=0,BUTTON_ESTOP=1,BUTTON_SCAN=2;
+	private final ContainerData data;private final FactoryCellBlockEntity cell;public FactoryCellMenu(int id,Inventory i){this(id,new SimpleContainerData(DATA_COUNT),null);}public FactoryCellMenu(int id,FactoryCellBlockEntity c){this(id,c.menuData(),c);}private FactoryCellMenu(int id,ContainerData d,FactoryCellBlockEntity c){super(ModMenus.FACTORY_CELL,id);data=d;cell=c;checkContainerDataCount(d,DATA_COUNT);addDataSlots(d);}
+	@Override public ItemStack quickMoveStack(Player p,int s){return ItemStack.EMPTY;}@Override public boolean stillValid(Player p){return cell==null||cell.stillValid(p);}@Override public boolean clickMenuButton(Player p,int id){if(cell==null||!stillValid(p))return false;if(id==0)cell.spawnNextItem();else if(id==1)cell.toggleEmergencyStop();else if(id==2)cell.nextScanPeriod();else return false;return true;}
+	public boolean photo(){return data.get(0)!=0;}public boolean proximity(){return data.get(1)!=0;}public boolean conveyor(){return data.get(2)!=0;}public boolean diverter(){return data.get(3)!=0;}public boolean estop(){return data.get(4)!=0;}public int itemCount(){return data.get(5);}public int scanMs(){return data.get(6);}public long scans(){return Integer.toUnsignedLong(data.get(7))|(Integer.toUnsignedLong(data.get(8))<<16);}public int outcome(){return data.get(9);}
+}

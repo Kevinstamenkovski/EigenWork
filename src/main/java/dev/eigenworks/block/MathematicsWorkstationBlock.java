@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.WritableBookContent;
 import net.minecraft.world.item.component.WrittenBookContent;
@@ -43,8 +44,7 @@ public final class MathematicsWorkstationBlock extends BaseEntityBlock {
 			Player player, BlockHitResult hit) {
 		if (level.isClientSide()) return InteractionResult.SUCCESS;
 		if (!(level.getBlockEntity(pos) instanceof MathematicsWorkstationBlockEntity workstation)) return InteractionResult.PASS;
-		player.sendSystemMessage(Component.literal("Expression: " + workstation.expression()));
-		player.sendSystemMessage(Component.literal("Result: " + workstation.result()));
+		if(player instanceof ServerPlayer serverPlayer)serverPlayer.openMenu(workstation);
 		return InteractionResult.SUCCESS_SERVER;
 	}
 

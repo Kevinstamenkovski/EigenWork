@@ -100,7 +100,7 @@ Pure control blocks implement weighted sum, gain, saturation, Euler integration,
 
 ## GUI networking
 
-GUI edits are validated server-side. The Eigen-8 debugger uses vanilla container-data synchronization for a fixed-size snapshot and menu button packets for controls; it never sends the 64 KiB RAM image to the client. The Motor Rig menu reuses the same bounded button-packet pattern: clients identify a parameter/direction, while the server owns schema, accepted value, PID reconstruction, and persistence. Fixed-point `ContainerData` sends only thirteen bounded telemetry/configuration integers. Oscilloscope histories use capped ring buffers and bounded visual update rates; packets never mirror entire unbounded histories.
+GUI edits are validated server-side. The Eigen-8 debugger uses vanilla container-data synchronization for a fixed-size snapshot and menu button packets for controls; it never sends the 64 KiB RAM image to the client. Motor, matrix, PLC, and Advanced Console menus reuse the same bounded button-packet pattern: clients identify an action while the server owns schemas, accepted values, execution, and persistence. Fixed-point `ContainerData` sends only bounded telemetry/configuration integers. Oscilloscope histories use capped ring buffers and bounded visual update rates; packets never mirror entire unbounded histories.
 
 ## Mathematics architecture
 

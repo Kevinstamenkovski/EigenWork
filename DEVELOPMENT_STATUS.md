@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 16 planning — expanded editors for matrices, PLC I/O, and advanced-console parameters.
+Milestone 17 — dynamic and nonlinear Modified Nodal Analysis.
 
 ## Last completed milestone
 
-Milestone 15 — reusable server-validated engineering parameters and live Motor Rig PID configuration GUI.
+Milestone 16 — bounded matrix, PLC I/O, and Advanced Console editors.
 
 ## Completed systems
 
@@ -125,6 +125,9 @@ Milestone 15 — reusable server-validated engineering parameters and live Motor
 - Persistent Motor Rig gains and setpoint with invalid saved-value fallback to known-safe defaults.
 - Server-authoritative synchronized Motor Rig screen with step controls, mode/plant/parameter reset actions, and live position/error/output/P/I/D/voltage/current telemetry.
 - Menu packets contain only bounded button identifiers; all parameter meaning, ranges, accepted values, and controller state remain authoritative on the server.
+- Persistent 2x2 matrix grid with bounded edits, determinant/inverse selection, and server execution.
+- Live PLC input/output image, scan-period/count, workpiece, and emergency-stop screen.
+- Persistent Advanced Console CAN bitrate, latency, IK damping, module, and run controls.
 
 ## Partially implemented systems
 
@@ -152,7 +155,7 @@ Milestone 15 — reusable server-validated engineering parameters and live Motor
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
 - Unit tests: 114 passing tests. New coverage validates parameter schemas, bounds/defaults/steps, rejected atomic controller configuration, and controller reconstruction.
-- Minecraft GameTests: all 18 required tests pass (seventeen EigenWorks tests plus the framework test), including actual Motor Rig menu-button application and PID configuration persistence.
+- Minecraft GameTests: all 19 required tests pass (eighteen EigenWorks tests plus the framework test), including all Milestone 16 editor actions and persistence.
 - `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
 - Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1603 recipes without EigenWorks datapack errors, executed all prior systems plus server-validated Motor Rig configuration/persistence. All 18 required tests passed.
 - Latest client regression (2026-09-19): EigenWorks initialized with the Motor Rig menu/screen registration and completed resource reload; no EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so the screen layout was not visually inspected.
@@ -170,7 +173,7 @@ Milestone 15 — reusable server-validated engineering parameters and live Motor
 
 ## Temporary limitations
 
-Milestones 1–15 are complete as functional vertical slices. The PID editor uses declared step buttons instead of free-form text, preventing malformed client numeric input. Matrix, PLC I/O, and Advanced Console editors; Eigen-8 CAN I/O; nonlinear general circuit solving; and six-axis animated robots remain explicit extensions.
+Milestones 1–16 are complete as functional vertical slices. Editors use bounded action packets instead of trusting client numeric input. Eigen-8 CAN I/O, nonlinear general circuit solving, and six-axis animated robots remain explicit extensions.
 
 ## Relevant locations
 
@@ -234,11 +237,10 @@ Milestones 1–15 are complete as functional vertical slices. The PID editor use
 
 ## Exact next tasks
 
-1. Add a bounded grid editor for Mathematics Workstation vector/matrix operands.
-2. Add PLC I/O monitoring and editable scan/program controls using the same server-owned menu pattern.
-3. Add Advanced Console parameter selection for CAN bitrate, impairment settings, and IK damping.
-4. Integrate capacitor/inductor companion stamps and bounded nonlinear diode iteration into general MNA.
-5. Add articulated multi-block rendering and general 6-DOF robot topology.
+1. Integrate capacitor and inductor backward-Euler companion stamps into transient MNA.
+2. Add bounded Newton iteration for nonlinear diode networks with convergence diagnostics.
+3. Add articulated multi-block rendering and general 6-DOF robot topology.
+4. Complete distributable release workflow and compatibility matrix.
 
 ## Commands
 

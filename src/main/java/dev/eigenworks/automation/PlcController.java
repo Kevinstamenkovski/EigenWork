@@ -4,7 +4,7 @@ import java.util.Map;
 
 /** Deterministic input-snapshot/program/output scan controller. */
 public final class PlcController {
-	private final long scanPeriodMicros;
+	private long scanPeriodMicros;
 	private final PlcRuntime runtime = new PlcRuntime();
 	private StructuredTextProgram program;
 	private String source;
@@ -18,4 +18,5 @@ public final class PlcController {
 	public boolean variable(String name) { return runtime.get(name); }
 	public void setVariable(String name, boolean value) { runtime.set(name, value); }
 	public long scanPeriodMicros() { return scanPeriodMicros; } public long scanCount() { return scanCount; } public String source() { return source; }
+	public void setScanPeriodMicros(long value){if(value<1_000||value>1_000_000)throw new IllegalArgumentException("PLC scan period must be within 1 ms..1 s");scanPeriodMicros=value;}
 }

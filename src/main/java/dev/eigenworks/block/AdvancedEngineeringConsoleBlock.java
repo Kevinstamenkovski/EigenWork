@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
@@ -23,8 +24,7 @@ public final class AdvancedEngineeringConsoleBlock extends BaseEntityBlock {
 	@Override protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
 		if (level.isClientSide()) return InteractionResult.SUCCESS;
 		if (!(level.getBlockEntity(pos) instanceof AdvancedEngineeringConsoleBlockEntity console)) return InteractionResult.PASS;
-		if (player.isShiftKeyDown()) console.nextModule(); else console.runDiagnostic();
-		player.sendSystemMessage(Component.literal("Advanced Console [" + console.selectedModule() + "]: " + console.result()));
+		if (player.isShiftKeyDown()) {console.nextModule();player.sendSystemMessage(Component.literal("Advanced Console [" + console.selectedModule() + "]: " + console.result()));} else if(player instanceof ServerPlayer serverPlayer)serverPlayer.openMenu(console);
 		return InteractionResult.SUCCESS_SERVER;
 	}
 }

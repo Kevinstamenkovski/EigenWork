@@ -5,6 +5,7 @@ import java.util.List;
 import dev.eigenworks.automation.FactoryCell;
 import dev.eigenworks.automation.FactoryItem;
 import dev.eigenworks.automation.RouteOutcome;
+import dev.eigenworks.automation.FactoryCellMenu;
 import dev.eigenworks.digital.DigitalPortDirection;
 import dev.eigenworks.digital.world.DigitalDeviceAddress;
 import dev.eigenworks.digital.world.DigitalInputBinding;
@@ -17,6 +18,7 @@ import dev.eigenworks.signal.DigitalWord;
 import dev.eigenworks.simulation.LoadedSimulationDevice;
 import dev.eigenworks.simulation.SimulationContext;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;import net.minecraft.world.MenuProvider;import net.minecraft.world.entity.player.*;import net.minecraft.world.inventory.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,7 +26,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 /** Integrated conveyor/sensors/diverter/PLC factory cell for playable Demo E. */
-public final class FactoryCellBlockEntity extends BlockEntity implements LoadedSimulationDevice, WorldDigitalDevice {
+public final class FactoryCellBlockEntity extends BlockEntity implements LoadedSimulationDevice, WorldDigitalDevice, MenuProvider {
 	private static final DigitalPortSpec EMERGENCY_STOP = port("emergency_stop", 1, DigitalPortDirection.INPUT);
 	private static final List<DigitalPortSpec> OUTPUTS = List.of(port("photo_sensor", 1, DigitalPortDirection.OUTPUT),
 			port("proximity_sensor", 1, DigitalPortDirection.OUTPUT), port("conveyor", 1, DigitalPortDirection.OUTPUT),
@@ -60,6 +62,9 @@ public final class FactoryCellBlockEntity extends BlockEntity implements LoadedS
 	public boolean spawnItem(boolean metallic) { boolean spawned = factory.spawn(new FactoryItem(nextItemId++, metallic)); if (spawned) setChanged(); return spawned; }
 	public void toggleEmergencyStop() { factory.setEmergencyStop(!factory.emergencyStop()); setChanged(); }
 	public FactoryCell factory() { return factory; } public String programDiagnostic() { return programDiagnostic; }
+	public void nextScanPeriod(){long p=factory.plc().scanPeriodMicros();factory.plc().setScanPeriodMicros(p==10_000?20_000:p==20_000?50_000:10_000);setChanged();}
+	public boolean stillValid(Player p){return level!=null&&level.getBlockEntity(worldPosition)==this&&p.distanceToSqr(worldPosition.getX()+.5,worldPosition.getY()+.5,worldPosition.getZ()+.5)<=64;}@Override public Component getDisplayName(){return Component.translatable("screen.eigenworks.factory_cell");}@Override public AbstractContainerMenu createMenu(int id,Inventory i,Player p){return new FactoryCellMenu(id,this);}
+	public ContainerData menuData(){return new ContainerData(){public int get(int i){long scans=factory.plc().scanCount();return switch(i){case 0->factory.conveyor().photoelectricSensor()?1:0;case 1->factory.conveyor().proximitySensor()?1:0;case 2->factory.conveyorOutput()?1:0;case 3->factory.diverterOutput()?1:0;case 4->factory.emergencyStop()?1:0;case 5->factory.itemsSensed();case 6->(int)(factory.plc().scanPeriodMicros()/1000);case 7->(int)scans;case 8->(int)(scans>>>16);case 9->factory.conveyor().lastOutcome().ordinal();default->0;};}public void set(int i,int v){}public int getCount(){return FactoryCellMenu.DATA_COUNT;}};}
 
 	@Override public void bindDigitalNetwork(ServerLevel level, DigitalWorldNetwork network) { address = new DigitalDeviceAddress(level.dimension().identifier().toString(), worldPosition.asLong()); this.network = network; }
 	@Override public void unbindDigitalNetwork() { network = null; }
@@ -84,6 +89,7 @@ public final class FactoryCellBlockEntity extends BlockEntity implements LoadedS
 		super.loadAdditional(input);
 		String source = input.getStringOr("plc_source", FactoryCell.DEFAULT_PROGRAM);
 		try { factory.loadProgram(source); } catch (IllegalArgumentException ignored) { factory.loadProgram(FactoryCell.DEFAULT_PROGRAM); }
+		factory.plc().setScanPeriodMicros(switch(input.getIntOr("scan_period_ms",20)){case 10->10_000;case 50->50_000;default->20_000;});
 		programDiagnostic = input.getStringOr("program_diagnostic", "DEFAULT PLC PROGRAM LOADED");
 		nextItemId = Math.max(1, input.getLongOr("next_item_id", 1)); nextMetallic = input.getBooleanOr("next_metallic", true);
 		boolean hasItem = input.getBooleanOr("has_item", false);
@@ -95,6 +101,7 @@ public final class FactoryCellBlockEntity extends BlockEntity implements LoadedS
 	@Override protected void saveAdditional(ValueOutput output) {
 		super.saveAdditional(output);
 		output.putString("plc_source", factory.plc().source()); output.putString("program_diagnostic", programDiagnostic);
+		output.putInt("scan_period_ms",(int)(factory.plc().scanPeriodMicros()/1000));
 		output.putLong("next_item_id", nextItemId); output.putBoolean("next_metallic", nextMetallic);
 		FactoryItem item = factory.conveyor().item(); output.putBoolean("has_item", item != null);
 		if (item != null) { output.putLong("item_id", item.id()); output.putBoolean("item_metallic", item.metallic()); }

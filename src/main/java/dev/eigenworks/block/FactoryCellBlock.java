@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.WritableBookContent;
 import net.minecraft.world.item.component.WrittenBookContent;
@@ -36,7 +37,7 @@ public final class FactoryCellBlock extends BaseEntityBlock {
 	@Override protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
 		if (level.isClientSide()) return InteractionResult.SUCCESS;
 		if (!(level.getBlockEntity(pos) instanceof FactoryCellBlockEntity factory)) return InteractionResult.PASS;
-		if (player.isShiftKeyDown()) factory.toggleEmergencyStop(); else factory.spawnNextItem();
+		if (player.isShiftKeyDown()) factory.toggleEmergencyStop(); else if(player instanceof ServerPlayer serverPlayer)serverPlayer.openMenu(factory);
 		player.sendSystemMessage(Component.literal("Factory: item=" + factory.factory().conveyor().item() + " position=%.2f m photo=%s proximity=%s conveyor=%s diverter=%s outcome=%s e-stop=%s scans=%d".formatted(
 				factory.factory().conveyor().positionMeters(), factory.factory().conveyor().photoelectricSensor(), factory.factory().conveyor().proximitySensor(),
 				factory.factory().conveyorOutput(), factory.factory().diverterOutput(), factory.factory().conveyor().lastOutcome(), factory.factory().emergencyStop(), factory.factory().plc().scanCount())));

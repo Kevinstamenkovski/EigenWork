@@ -20,6 +20,9 @@ import dev.eigenworks.block.entity.CanNodeBlockEntity;
 import dev.eigenworks.automation.RouteOutcome;
 import dev.eigenworks.computer.cpu.CpuStatus;
 import dev.eigenworks.control.MotorRigMenu;
+import dev.eigenworks.mathematics.MathematicsWorkstationMenu;
+import dev.eigenworks.automation.FactoryCellMenu;
+import dev.eigenworks.computer.accelerator.AdvancedConsoleMenu;
 import dev.eigenworks.digital.DigitalGateOperation;
 import dev.eigenworks.digital.world.DigitalWorldNetwork;
 import dev.eigenworks.registry.ModBlocks;
@@ -367,6 +370,18 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 	}
 
 	@GameTest
+	public void milestoneSixteenEditorsApplyServerValuesAndPersist(GameTestHelper helper) {
+		BlockPos mathPos=new BlockPos(3,1,1),factoryPos=new BlockPos(4,1,1),consolePos=new BlockPos(5,1,1);
+		helper.setBlock(mathPos,ModBlocks.MATHEMATICS_WORKSTATION);helper.setBlock(factoryPos,ModBlocks.FACTORY_CELL);helper.setBlock(consolePos,ModBlocks.ADVANCED_ENGINEERING_CONSOLE);
+		var player=helper.makeMockServerPlayer(GameType.CREATIVE);
+		MathematicsWorkstationBlockEntity math=helper.getBlockEntity(mathPos,MathematicsWorkstationBlockEntity.class);movePlayer(helper,player,mathPos);MathematicsWorkstationMenu mathMenu=new MathematicsWorkstationMenu(20,math);
+		helper.assertTrue(mathMenu.clickMenuButton(player,1),"Matrix cell increment");helper.assertTrue(mathMenu.clickMenuButton(player,MathematicsWorkstationMenu.BUTTON_CALCULATE),"Matrix calculation");helper.assertValueEqual(2.0,math.gridCell(0),"Edited matrix cell");
+		FactoryCellBlockEntity factory=helper.getBlockEntity(factoryPos,FactoryCellBlockEntity.class);movePlayer(helper,player,factoryPos);FactoryCellMenu factoryMenu=new FactoryCellMenu(21,factory);helper.assertTrue(factoryMenu.clickMenuButton(player,FactoryCellMenu.BUTTON_SCAN),"PLC scan setting");helper.assertValueEqual(50_000L,factory.factory().plc().scanPeriodMicros(),"Edited PLC scan period");
+		AdvancedEngineeringConsoleBlockEntity console=helper.getBlockEntity(consolePos,AdvancedEngineeringConsoleBlockEntity.class);movePlayer(helper,player,consolePos);AdvancedConsoleMenu consoleMenu=new AdvancedConsoleMenu(22,console);helper.assertTrue(consoleMenu.clickMenuButton(player,2),"CAN bitrate setting");helper.assertValueEqual(1_000_000,console.bitrate(),"Edited console bitrate");
+		helper.assertValueEqual(2.0,roundTrip(helper,math,MathematicsWorkstationBlockEntity.class).gridCell(0),"Persisted matrix cell");helper.assertValueEqual(50_000L,roundTrip(helper,factory,FactoryCellBlockEntity.class).factory().plc().scanPeriodMicros(),"Persisted PLC scan");helper.assertValueEqual(1_000_000,roundTrip(helper,console,AdvancedEngineeringConsoleBlockEntity.class).bitrate(),"Persisted bitrate");helper.discard(player);helper.succeed();
+	}
+
+	@GameTest
 	public void communicationHubExecutesAllTimedBusesAndPersists(GameTestHelper helper) {
 		BlockPos hubPos = new BlockPos(3, 1, 1);
 		helper.setBlock(hubPos, ModBlocks.COMMUNICATION_HUB);
@@ -494,4 +509,5 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 				"Serialized block entity must restore as " + expectedType.getSimpleName());
 		return expectedType.cast(restored);
 	}
+	private static void movePlayer(GameTestHelper helper,net.minecraft.world.entity.player.Player player,BlockPos relative){BlockPos p=helper.absolutePos(relative);player.setPos(p.getX()+.5,p.getY()+.5,p.getZ()+.5);}
 }

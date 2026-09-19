@@ -1,0 +1,9 @@
+package dev.eigenworks.client.screen;
+import dev.eigenworks.mathematics.MathematicsWorkstationMenu; import net.minecraft.client.gui.GuiGraphicsExtractor; import net.minecraft.client.gui.components.Button; import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen; import net.minecraft.network.chat.Component; import net.minecraft.world.entity.player.Inventory;
+public final class MathematicsWorkstationScreen extends AbstractContainerScreen<MathematicsWorkstationMenu>{
+	public MathematicsWorkstationScreen(MathematicsWorkstationMenu m,Inventory i,Component t){super(m,i,t,280,190);titleLabelX=10;titleLabelY=8;}
+	@Override protected void init(){super.init();for(int i=0;i<4;i++){int x=leftPos+35+(i%2)*100,y=topPos+35+(i/2)*38;addRenderableWidget(button("-",x+45,y,20,i*2));addRenderableWidget(button("+",x+68,y,20,i*2+1));}addRenderableWidget(button("Operation",leftPos+15,topPos+120,75,20));addRenderableWidget(button("Calculate",leftPos+95,topPos+120,75,21));addRenderableWidget(button("Reset",leftPos+175,topPos+120,55,22));}
+	private Button button(String s,int x,int y,int w,int id){return Button.builder(Component.literal(s),b->{if(minecraft!=null&&minecraft.gameMode!=null)minecraft.gameMode.handleInventoryButtonClick(menu.containerId,id);}).bounds(x,y,w,20).build();}
+	@Override public void extractBackground(GuiGraphicsExtractor g,int x,int y,float p){g.fill(leftPos,topPos,leftPos+280,topPos+190,0xF00B1117);g.outline(leftPos,topPos,280,190,0xFF4DB6AC);}
+	@Override protected void extractLabels(GuiGraphicsExtractor g,int x,int y){g.text(font,title,10,8,0xFF76E5D8,false);for(int i=0;i<4;i++)g.text(font,"%.3f".formatted(menu.cell(i)),38+(i%2)*100,42+(i/2)*38,0xFFE5E9F0,false);g.text(font,"Mode: "+(menu.operation()==0?"DETERMINANT":"INVERSE"),15,102,0xFFB4E1DC,false);g.text(font,"det(A) = %.3f".formatted(menu.result()),15,154,menu.successful()?0xFF72E572:0xFFFF6868,false);}
+}

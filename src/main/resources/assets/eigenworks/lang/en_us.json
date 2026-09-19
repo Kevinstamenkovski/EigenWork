@@ -31,10 +31,13 @@
   "screen.eigenworks.motor_rig": "Motor Rig PID Configuration",
   "message.eigenworks.motor_status": "Motor [%s]: %s V, %s A, speed=%s rad/s, angle=%s rad, encoder=%s, error=%s rad",
   "block.eigenworks.mathematics_workstation": "Engineering Mathematics Workstation",
+  "screen.eigenworks.mathematics_workstation": "2x2 Matrix Editor",
   "block.eigenworks.communication_hub": "UART / I2C / SPI Communication Hub",
   "block.eigenworks.robot_arm": "2-DOF Planar Robot Arm",
   "block.eigenworks.factory_cell": "Programmable PLC Factory Cell",
+  "screen.eigenworks.factory_cell": "PLC Factory I/O Monitor",
   "block.eigenworks.advanced_engineering_console": "Advanced Engineering Console",
+  "screen.eigenworks.advanced_console": "Advanced Engineering Parameters",
   "block.eigenworks.can_cable": "CAN Cable",
   "block.eigenworks.can_node": "Programmable CAN Node"
 }

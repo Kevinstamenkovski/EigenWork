@@ -102,7 +102,9 @@
 - [x] Milestone 15: add reusable finite/range/step/default engineering parameter schemas.
 - [x] Milestone 15: add server-validated Motor Rig PID/target controls and live telemetry screen.
 - [x] Milestone 15: persist configured PID values and verify menu updates/save-load in Minecraft.
-- [ ] Extend configurable screens to matrices, PLC I/O, and Advanced Console parameters.
+- [x] Milestone 16: bounded 2x2 matrix grid/editor with determinant/inverse execution.
+- [x] Milestone 16: live PLC I/O monitor with item, emergency-stop, and scan-period controls.
+- [x] Milestone 16: Advanced Console bitrate, latency, IK damping, module, and run controls.
 - [ ] Integrate capacitor/inductor companion stamps and nonlinear diode iterations into general MNA networks.
 - [ ] Add articulated multi-block robot rendering and six-axis robot topology.
 - [ ] Add a distributable release workflow and compatibility matrix for future Minecraft/Fabric updates.
