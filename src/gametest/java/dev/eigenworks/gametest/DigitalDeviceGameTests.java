@@ -29,6 +29,7 @@ import dev.eigenworks.digital.world.DigitalWorldNetwork;
 import dev.eigenworks.registry.ModBlocks;
 import dev.eigenworks.registry.ModItems;
 import dev.eigenworks.registry.ModCreativeTabs;
+import dev.eigenworks.item.EngineersHandbookItem;
 import dev.eigenworks.signal.DigitalWord;
 import dev.eigenworks.simulation.EngineeringSimulation;
 import net.fabricmc.fabric.api.gametest.v1.CustomTestMethodInvoker;
@@ -65,11 +66,34 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 				helper.assertTrue(unique.add(stack.getItem()), "An EigenWorks item must not be duplicated across subsystem tabs");
 			}
 		}
-		helper.assertValueEqual(19, displayed, "All registered EigenWorks blocks and tools in grouped tabs");
+		helper.assertValueEqual(20, displayed, "All registered EigenWorks blocks, tools, and handbook in grouped tabs");
+		helper.assertTrue(unique.contains(ModItems.ENGINEERS_HANDBOOK), "Tools tab must contain the Engineer's Handbook");
 		helper.assertTrue(unique.contains(ModBlocks.COMPUTER.asItem()), "Computing tab must contain the Eigen-8 Computer");
 		helper.assertTrue(unique.contains(ModItems.ENGINEERING_INSPECTOR), "Tools tab must contain the Engineering Inspector");
 		helper.assertTrue(unique.contains(ModBlocks.ROBOT_JOINT_MODULE.asItem()), "Robotics tab must contain the articulated joint");
 		helper.assertTrue(unique.contains(ModBlocks.CAN_CABLE.asItem()), "Communications tab must contain CAN cable");
+		for (var block : java.util.List.of(
+				ModBlocks.ENGINEERING_TEST_BENCH, ModBlocks.DIGITAL_CLOCK, ModBlocks.DIGITAL_COUNTER,
+				ModBlocks.DIGITAL_GATE, ModBlocks.DIGITAL_REGISTER, ModBlocks.COMPUTER, ModBlocks.MICROCONTROLLER,
+				ModBlocks.OSCILLOSCOPE, ModBlocks.MOTOR_RIG, ModBlocks.MATHEMATICS_WORKSTATION,
+				ModBlocks.COMMUNICATION_HUB, ModBlocks.ROBOT_ARM, ModBlocks.FACTORY_CELL,
+				ModBlocks.ADVANCED_ENGINEERING_CONSOLE, ModBlocks.CAN_CABLE, ModBlocks.CAN_NODE,
+				ModBlocks.ROBOT_JOINT_MODULE)) {
+			helper.assertTrue(EngineersHandbookItem.hasEntry(block), "Every placed EigenWorks device must have context help");
+		}
+		helper.succeed();
+	}
+
+	@GameTest
+	public void handbookProvidesQuickStartAndContextHelp(GameTestHelper helper) {
+		var player = helper.makeMockServerPlayer(GameType.CREATIVE);
+		ItemStack handbook = new ItemStack(ModItems.ENGINEERS_HANDBOOK);
+		player.setItemInHand(InteractionHand.MAIN_HAND, handbook);
+		helper.assertValueEqual(net.minecraft.world.InteractionResult.SUCCESS,
+				ModItems.ENGINEERS_HANDBOOK.use(helper.getLevel(), player, InteractionHand.MAIN_HAND),
+				"Handbook air-use must provide the quick start");
+		helper.placeAt(player, handbook, CLOCK_POS.below(), Direction.UP);
+		helper.discard(player);
 		helper.succeed();
 	}
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.2 — 2026-09-19
+
+- Added an in-game Engineer's Handbook with an eight-step first circuit and context-sensitive help for all 17 placed devices.
+- Added concise purpose and control tooltips to every EigenWorks block and standalone tool.
+- Added an on-join discovery hint, put the handbook first in Tools & Digital, and added a survival recipe.
+- Extended Minecraft GameTest coverage to require the handbook and a help entry for every placeable device.
+
 ## 0.2.1 — 2026-09-19
 
 - Organized all 19 blocks/tools into four dedicated subsystem Creative tabs with no duplication.

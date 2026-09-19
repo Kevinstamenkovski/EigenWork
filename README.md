@@ -4,7 +4,7 @@ EigenWorks is a Fabric mod for Minecraft Java Edition 26.2 that grows into a coh
 
 The current playable foundation spans nineteen completed milestones: scheduled digital devices, a real programmable **Eigen-8 Computer** and MCU, instrumentation, configurable electrical/motor control, transient/nonlinear circuit analysis, engineering mathematics with a matrix editor, timed buses, planar and six-axis robot kinematics, PLC automation with live I/O, advanced diagnostics, physical multi-block CAN/robot networks, and server-validated engineering GUIs. Underneath them, pure guarded engineering models are adapted into persistent, server-authoritative Minecraft blocks and tested both as Java units and inside Minecraft GameTests.
 
-Start with the detailed [EigenWorks Player Guide](docs/USER_GUIDE.md). All items are organized into four dedicated `EigenWorks:` Creative inventory tabs for tools/digital logic, computing/analysis, control/robotics, and communications.
+Start in-game with the **Engineer's Handbook**, which is the first item in **EigenWorks: Tools & Digital**. Use it in the air for a complete first circuit, or use it on any placed EigenWorks device for its exact controls, ports, and next step. Every device item also shows its purpose and controls directly in its hover tooltip. The detailed [EigenWorks Player Guide](docs/USER_GUIDE.md) remains the complete external reference. All items are organized into four dedicated `EigenWorks:` Creative inventory tabs for tools/digital logic, computing/analysis, control/robotics, and communications.
 
 Empty-hand right-click the Test Bench to queue a server-side digital diagnostic. On the next engineering simulation tick it computes `0xC AND 0xA` through the real gate implementation, clocks a counter, and reports both results in chat.
 
@@ -86,7 +86,7 @@ Place **Configurable CAN Node** blocks and join them with thin **CAN Cable** seg
 ./gradlew runClient
 ```
 
-The installable JAR is written to `build/libs/eigenworks-0.2.1.jar`. The `-sources` JAR is for development and should not be installed. `./scripts/verify-release.sh` performs the complete build, checks embedded compatibility metadata/assets, and prints the release SHA-256.
+The installable JAR is written to `build/libs/eigenworks-0.2.2.jar`. The `-sources` JAR is for development and should not be installed. `./scripts/verify-release.sh` performs the complete build, checks embedded compatibility metadata/assets, and prints the release SHA-256.
 
 The optional industrial resource pack is built reproducibly with:
 
@@ -103,7 +103,7 @@ Gradle automatically selects an installed JDK 25 or downloads a compatible toolc
 
 1. Install Fabric Loader for Minecraft 26.2.
 2. Install Fabric API 0.160.0+26.2 in `.minecraft/mods/`.
-3. Copy `build/libs/eigenworks-0.2.1.jar` into `.minecraft/mods/`.
+3. Copy `build/libs/eigenworks-0.2.2.jar` into `.minecraft/mods/`.
 4. Launch the Minecraft 26.2 Fabric profile.
 
 For the optional custom device artwork, also copy `resourcepacks/eigenworks-industrial-resource-pack-0.2.1.zip` into `.minecraft/resourcepacks/`, then enable **EigenWorks Industrial** under **Options > Resource Packs**. Do not put the resource-pack ZIP in `mods`; it changes presentation only and does not replace the mod JAR.
@@ -120,7 +120,7 @@ The first digital circuit, CPU program, MCU motor-control loop, PID response, os
 
 The code separates Minecraft adapters from pure engineering simulation classes so numerical behavior can be tested without launching Minecraft. Read [AGENTS.md](AGENTS.md), [ARCHITECTURE.md](ARCHITECTURE.md), and [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) before making substantial changes.
 
-Every push and pull request runs the Gradle build, unit tests, Minecraft GameTests, and release-JAR validation in GitHub Actions. A tag matching the project version (for example `v0.2.1`) runs the same checks and publishes the installable JAR as a GitHub Release. See [the compatibility matrix](docs/COMPATIBILITY.md) and [changelog](CHANGELOG.md).
+Every push and pull request runs the Gradle build, unit tests, Minecraft GameTests, and release-JAR validation in GitHub Actions. A tag matching the project version (for example `v0.2.2`) runs the same checks and publishes the installable JAR as a GitHub Release. See [the compatibility matrix](docs/COMPATIBILITY.md) and [changelog](CHANGELOG.md).
 
 ## License
 

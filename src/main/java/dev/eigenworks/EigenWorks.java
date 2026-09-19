@@ -7,6 +7,7 @@ import dev.eigenworks.registry.ModItems;
 import dev.eigenworks.registry.ModMenus;
 import dev.eigenworks.registry.ModCreativeTabs;
 import dev.eigenworks.simulation.EngineeringSimulation;
+import dev.eigenworks.item.EngineeringOnboarding;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ public final class EigenWorks implements ModInitializer {
 		ModCreativeTabs.initialize();
 		ModMenus.initialize();
 		EngineeringSimulation.initialize();
+		EngineeringOnboarding.initialize();
 		LOGGER.info("EigenWorks {} initialized", BuildInfo.VERSION);
 	}
 

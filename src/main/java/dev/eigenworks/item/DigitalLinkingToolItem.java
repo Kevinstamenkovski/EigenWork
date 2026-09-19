@@ -1,5 +1,7 @@
 package dev.eigenworks.item;
 
+import java.util.function.Consumer;
+
 import dev.eigenworks.digital.world.DigitalSourceEndpoint;
 import dev.eigenworks.digital.world.DigitalWorldNetwork;
 import dev.eigenworks.digital.world.WorldDigitalDevice;
@@ -10,12 +12,23 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 
 /** Selects an output and connects it to a compatible input without world scans. */
 public final class DigitalLinkingToolItem extends Item {
 	public DigitalLinkingToolItem(Properties properties) {
 		super(properties);
+	}
+
+
+	@Override
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display,
+			Consumer<Component> output, TooltipFlag flag) {
+		super.appendHoverText(stack, context, display, output, flag);
+		EngineeringTooltips.append("digital_linking_tool", output);
 	}
 
 	@Override

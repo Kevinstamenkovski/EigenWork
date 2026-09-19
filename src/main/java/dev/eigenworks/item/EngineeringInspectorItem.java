@@ -2,6 +2,7 @@ package dev.eigenworks.item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import dev.eigenworks.block.entity.ComputerBlockEntity;
 import dev.eigenworks.block.entity.DigitalClockBlockEntity;
@@ -25,12 +26,21 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 /** Handheld contextual engineering inspector; all values are read from server-owned state. */
 public final class EngineeringInspectorItem extends Item {
 	public EngineeringInspectorItem(Properties properties) { super(properties); }
+
+	@Override public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display,
+			Consumer<Component> output, TooltipFlag flag) {
+		super.appendHoverText(stack, context, display, output, flag);
+		EngineeringTooltips.append("engineering_inspector", output);
+	}
 
 	@Override public InteractionResult useOn(UseOnContext context) {
 		if (context.getLevel().isClientSide()) return InteractionResult.SUCCESS;

@@ -6,10 +6,10 @@ This guide covers the playable EigenWorks 0.2.x systems for Minecraft Java Editi
 
 Install these files in the active profile's `.minecraft/mods/` directory:
 
-- `eigenworks-0.2.1.jar`
+- `eigenworks-0.2.2.jar`
 - Fabric API `0.160.0+26.2`
 
-Use Minecraft 26.2, Fabric Loader 0.19.5 or newer for 26.2, and Java 25. Do not install the `-sources.jar`. At startup, `logs/latest.log` should contain `EigenWorks 0.2.1 initialized`.
+Use Minecraft 26.2, Fabric Loader 0.19.5 or newer for 26.2, and Java 25. Do not install the `-sources.jar`. At startup, `logs/latest.log` should contain `EigenWorks 0.2.2 initialized`.
 
 ### Optional industrial resource pack
 
@@ -34,12 +34,19 @@ In a world with commands enabled, this command is a direct registration check:
 /give @s eigenworks:engineering_test_bench
 ```
 
+## Start here: the in-game Engineer's Handbook
+
+Open **EigenWorks: Tools & Digital** and take the **Engineer's Handbook**, which is deliberately the first item in the tab. Use it in the air to display a step-by-step Clock-to-Counter project. Use it directly on any placed EigenWorks device to display that device's purpose, controls, signal ports, and a concrete next step in chat.
+
+Every block item also shows a short purpose line and its essential use/sneak-use controls when hovered in an inventory. The welcome message shown on world entry points back to the handbook. These in-game hints are the recommended learning path; the remainder of this guide is the detailed reference.
+
 ## Creative inventory groups
 
 EigenWorks has four dedicated Creative tabs instead of mixing devices into vanilla tabs.
 
 ### EigenWorks: Tools & Digital
 
+- Engineer's Handbook (start here)
 - Engineering Test Bench
 - Engineering Inspector
 - Digital Linking Tool

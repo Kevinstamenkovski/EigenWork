@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [" C ", "RBR", " C "],
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "R": "minecraft:redstone",
+    "B": "minecraft:book"
+  },
+  "result": { "id": "eigenworks:engineers_handbook", "count": 1 }
+}

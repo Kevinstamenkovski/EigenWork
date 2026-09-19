@@ -10,7 +10,7 @@
 | Fabric API | 0.160.0+26.2 | Minimum declared API version for Minecraft 26.2 |
 | Fabric Loom | 1.17.21 locally (`1.17-SNAPSHOT` selector) | Build-time only |
 | Gradle wrapper | 9.5.1 | Reproducible build entry point |
-| EigenWorks | 0.2.1 | Current installable release candidate |
+| EigenWorks | 0.2.2 | Current installable release candidate |
 
 The verified regression environment is Linux with Temurin 25.0.4.1. The mod has no native runtime library, so Windows and macOS should work with the same Minecraft, Loader, Fabric API, and Java versions, but those operating systems have not yet received a manual client launch in this repository.
 

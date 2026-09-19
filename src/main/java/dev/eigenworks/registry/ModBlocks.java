@@ -19,6 +19,7 @@ import dev.eigenworks.block.AdvancedEngineeringConsoleBlock;
 import dev.eigenworks.block.CanCableBlock;
 import dev.eigenworks.block.CanNodeBlock;
 import dev.eigenworks.block.RobotJointModuleBlock;
+import dev.eigenworks.item.EngineeringBlockItem;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.references.BlockItemId;
@@ -86,7 +87,7 @@ public final class ModBlocks {
 			Function<BlockBehaviour.Properties, Block> blockFactory,
 			BlockBehaviour.Properties properties) {
 		Block block = register(id.block(), blockFactory, properties);
-		BlockItem item = new BlockItem(block, new Item.Properties().useBlockDescriptionPrefix().setId(id.item()));
+		BlockItem item = new EngineeringBlockItem(block, new Item.Properties().useBlockDescriptionPrefix().setId(id.item()));
 		Registry.register(BuiltInRegistries.ITEM, id.item(), item);
 		return block;
 	}

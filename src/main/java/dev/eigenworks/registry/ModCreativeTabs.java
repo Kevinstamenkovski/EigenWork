@@ -13,6 +13,7 @@ public final class ModCreativeTabs {
 	public static final CreativeModeTab TOOLS_AND_DIGITAL = register(
 			"tools_and_digital", "itemGroup.eigenworks.tools_and_digital", ModBlocks.ENGINEERING_TEST_BENCH.asItem(),
 			(output) -> {
+				output.accept(ModItems.ENGINEERS_HANDBOOK);
 				output.accept(ModBlocks.ENGINEERING_TEST_BENCH);
 				output.accept(ModItems.ENGINEERING_INSPECTOR);
 				output.accept(ModItems.DIGITAL_LINKING_TOOL);

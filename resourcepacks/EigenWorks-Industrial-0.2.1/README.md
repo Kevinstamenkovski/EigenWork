@@ -5,7 +5,7 @@ block and handheld tool a distinct industrial electronics texture.
 
 ## Install
 
-1. Keep `eigenworks-0.2.1.jar` in `.minecraft/mods/` together with Fabric API.
+1. Keep `eigenworks-0.2.2.jar` in `.minecraft/mods/` together with Fabric API.
 2. Copy `eigenworks-industrial-resource-pack-0.2.1.zip` into
    `.minecraft/resourcepacks/`.
 3. In Minecraft, open **Options > Resource Packs** and move **EigenWorks

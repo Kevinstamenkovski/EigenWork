@@ -104,6 +104,8 @@ GUI edits are validated server-side. The Eigen-8 debugger uses vanilla container
 
 Creative inventory discovery is owned by `ModCreativeTabs`. Four Fabric-backed category tabs group all registered blocks and standalone tools by subsystem. Items are deliberately listed exactly once across these tabs; registration does not depend on injection into changing vanilla categories. A Minecraft GameTest explicitly builds all four tab contents and verifies complete, duplicate-free coverage.
 
+Usability is layered over the same registered objects rather than duplicating device behavior. `EngineeringBlockItem` adds localized purpose/control tooltips to every block item, while standalone tools share the same tooltip convention. `EngineersHandbookItem` contains only discoverability metadata: air use emits the bounded first-circuit walkthrough and block use resolves the registered block identifier to three localized help lines. It never reads or mutates simulation state. A Fabric join event emits a short pointer to the handbook, and GameTest coverage requires one handbook entry for every placeable EigenWorks device.
+
 ## Mathematics architecture
 
 `Vector` and `Matrix` own copied finite arrays and expose immutable algebra. Linear solve and determinant use Gaussian elimination with partial pivoting and an explicit singularity tolerance; inverse is implemented as repeated solves rather than unchecked adjugate formulas. `NumericalIntegrators` evaluates vector derivatives through guarded Forward Euler or classical RK4. `StateSpaceSystem` validates compatible A/B/C/D dimensions and integrates continuous state, while `TransferFunction` converts a proper SISO polynomial ratio into controllable canonical form.

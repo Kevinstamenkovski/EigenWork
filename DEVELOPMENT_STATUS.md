@@ -2,7 +2,7 @@
 
 ## Current milestone
 
-Maintenance — all planned milestones are complete; EigenWorks 0.2.1 now includes grouped Creative tabs, a full player guide, and an optional complete industrial resource pack.
+Usability release 0.2.2 — all planned engineering milestones remain complete; onboarding now lives inside the game through the Engineer's Handbook, device tooltips, and a first-project path.
 
 ## Last completed milestone
 
@@ -140,9 +140,12 @@ Milestone 19 — distributable release workflow and final regression.
 - GitHub Actions Java 25 build workflow running unit tests, Minecraft GameTests, and distributable validation on pushes and pull requests.
 - Tag-gated release workflow that requires `vX.Y.Z` to match the project version and publishes only the installable JAR.
 - Reproducible release verifier checking embedded Fabric metadata, required classes/assets/data, sources artifact, and SHA-256.
-- Versioned compatibility matrix, upgrade procedure, and changelog for EigenWorks 0.2.1.
-- Four dedicated subsystem Creative tabs containing all 19 EigenWorks blocks/tools exactly once.
+- Versioned compatibility matrix, upgrade procedure, and changelog for EigenWorks 0.2.2.
+- Four dedicated subsystem Creative tabs containing all 20 EigenWorks blocks, tools, and handbook exactly once.
 - Detailed player guide covering installation, item discovery, every playable device, wiring, programming, demos, persistence, and troubleshooting.
+- In-game Engineer's Handbook with an eight-step Clock-to-Counter quick start and three-line context help for every one of the 17 placeable devices.
+- Concise localized purpose and control tooltips on every block item and standalone tool, with the handbook placed first in Tools & Digital.
+- World-entry onboarding hint plus a survival handbook recipe; help text remains presentation-only and never mutates authoritative simulation state.
 - Optional Minecraft 26.2 EigenWorks Industrial resource pack with distinct artwork for all 17 blocks and two handheld tools, custom thin-cable/joint geometry preservation, an original pack icon, and a reproducible Java/AWT atlas pipeline.
 - Resource-pack build and verification scripts producing a directly installable ZIP and checking format 88, all expected model/texture counts, and archive integrity.
 
@@ -150,7 +153,7 @@ Milestone 19 — distributable release workflow and final regression.
 
 - Configuration currently provides validated defaults but has no user file or screen.
 - The Engineering Test Bench is a one-shot digital diagnostic, not a configurable workstation yet.
-- Computer, oscilloscope, and Motor Rig have dedicated synchronized GUIs; most remaining devices still use compact block interactions and chat diagnostics.
+- Computer, oscilloscope, and Motor Rig have dedicated synchronized GUIs; remaining devices use compact block interactions and chat diagnostics, now made discoverable through item tooltips and context-sensitive handbook entries.
 - Digital logic links remain abstract and persistent; physical rendered cabling now exists for CAN only.
 - The debugger intentionally exposes a compact bounded snapshot rather than a full editable 64 KiB memory grid; richer memory/source views remain future UI work.
 - The MCU ADC has a real voltage input API and tested quantization, but a placeable analog cable/sensor source arrives with the electrical and instrumentation milestones.
@@ -164,22 +167,22 @@ Milestone 19 — distributable release workflow and final regression.
 
 ## Known bugs and failing tests
 
-- No known code bugs or failing tests.
+- No known code bugs or failing tests. The connectionless Fabric mock-player chat path found during handbook testing was guarded before release.
 - Gradle reports deprecations originating in the current Loom/Gradle toolchain; this does not fail the build but must be revisited before Gradle 10.
 - Host default Java is 21; Gradle toolchains automatically select or provision Java 25. The verified local Java 25 path is `/home/kevin-stamenkovski/.local/share/eigenworks/jdks/jdk-25.0.4.1+1`.
 
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 122 passing tests. New coverage validates six-axis DH forward kinematics, geometric Jacobians, dimension bounds, and non-finite joint rejection.
-- Minecraft GameTests: all 21 required tests pass (twenty EigenWorks tests plus the framework test), including complete duplicate-free custom Creative tab coverage.
-- `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.2.1; it was stopped manually after resource reload.
-- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1604 recipes without EigenWorks datapack errors, and executed all systems. All 21 required tests passed.
-- Latest client regression (2026-09-19): EigenWorks 0.2.1 initialized with all four custom Creative tabs and completed resource reload without missing-model/texture or EigenWorks exceptions. Tab membership was verified by GameTest; no desktop input was used for manual visual inspection.
+- Unit tests: 122 passing tests.
+- Minecraft GameTests: all 22 required tests pass (twenty-one EigenWorks tests plus the framework test), including handbook air-use/device-use, complete context-help coverage, and duplicate-free Creative tabs.
+- `./gradlew runClient`: launched EigenWorks 0.2.2 successfully on Minecraft 26.2, entered the existing development world, loaded 1,605 recipes, and displayed the localized handbook onboarding hint on player join.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1605 recipes without EigenWorks datapack errors, and executed all systems. All 22 required tests passed.
+- Latest client regression (2026-09-19): EigenWorks 0.2.2 initialized, completed resource reload without missing model/translation exceptions, entered New World, and displayed `EigenWorks: open Tools & Digital and use the Engineer's Handbook for an in-game quick start.` The client was stopped manually after verification.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
-- The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
-- Produced JAR: `build/libs/eigenworks-0.2.1.jar`; SHA-256: `4b9da519b641fe287f7a7e7368b99cc9af62b467ed4f50cee36cd877b86cc7f9`.
-- Optional visual pack: `resourcepacks/eigenworks-industrial-resource-pack-0.2.1.zip`; SHA-256: `636842aa5c967bec24a84353c0065068fa68202ec127ed1b6a2bba4c36235786`. Standalone validation passes with 17 block textures, two transparent item textures, 19 matching models, a 128x128 icon, Minecraft 26.2 resource format 88, and a clean ZIP integrity test.
+- Client launch logged expected Mojang account/Realms 401 responses for the unauthenticated development user. The temporary no-space quick-play save alias also produced path/lock warnings before the real New World loaded; the alias was removed afterward. No EigenWorks exception occurred.
+- Produced JAR: `build/libs/eigenworks-0.2.2.jar`; SHA-256: `3fcb594b9cdc28991868fa97aa21514e41a3be6d7ac2939b2771f4cab47d2437`.
+- Optional visual pack: `resourcepacks/eigenworks-industrial-resource-pack-0.2.1.zip`; SHA-256: `05b1f0aee19ca2d5a8cbce73674d0b36a6b215ab83d31b51bded310a37bc3e55`. Standalone validation passes with 17 block textures, two transparent item textures, 19 matching models, a 128x128 icon, Minecraft 26.2 resource format 88, and a clean ZIP integrity test.
 - Resource-pack artwork has been inspected as a generated atlas and pack icon; activation inside the Minecraft Resource Packs screen has not yet been manually visual-regression tested.
 
 ## Architectural decisions
@@ -222,6 +225,7 @@ Milestones 1–19 are complete as functional vertical slices. Editors use bounde
 - Instrumentation core/menu: `src/main/java/dev/eigenworks/instrumentation/`
 - Oscilloscope adapter/screen: `src/main/java/dev/eigenworks/block/entity/OscilloscopeBlockEntity.java` and `client/screen/OscilloscopeScreen.java`
 - Engineering Inspector: `src/main/java/dev/eigenworks/item/EngineeringInspectorItem.java`
+- In-game onboarding: `src/main/java/dev/eigenworks/item/EngineersHandbookItem.java`, `EngineeringBlockItem.java`, and localized help in `src/main/resources/assets/eigenworks/lang/en_us.json`
 - Instrumentation guide: `docs/INSTRUMENTATION.md`
 - Circuit solver: `src/main/java/dev/eigenworks/electrical/`
 - Motor models: `src/main/java/dev/eigenworks/mechanical/`
@@ -261,10 +265,11 @@ Milestones 1–19 are complete as functional vertical slices. Editors use bounde
 
 ## Exact next tasks
 
-1. Optionally create and push tag `v0.2.1` when a public GitHub Release is desired; the workflow will publish the verified JAR.
-2. Enable the optional EigenWorks Industrial pack in a normal client, inspect representative devices/tools, and tune individual UV presentation if desired.
-3. Visually inspect a placed articulated joint in a normal client world and tune presentation if desired.
-4. Choose the next extension from the documented limitations before beginning a new milestone.
+1. Optionally create and push tag `v0.2.2` when a public GitHub Release is desired; the workflow will publish the verified JAR.
+2. Manually inspect handbook hover text and context-help wrapping at multiple GUI scales.
+3. Enable the optional EigenWorks Industrial pack in a normal client, inspect representative devices/tools, and tune individual UV presentation if desired.
+4. Visually inspect a placed articulated joint in a normal client world and tune presentation if desired.
+5. Choose the next extension from the documented limitations before beginning a new milestone.
 
 ## Commands
 
