@@ -13,6 +13,7 @@ import dev.eigenworks.block.entity.MathematicsWorkstationBlockEntity;
 import dev.eigenworks.block.entity.CommunicationHubBlockEntity;
 import dev.eigenworks.block.entity.RobotArmBlockEntity;
 import dev.eigenworks.block.entity.FactoryCellBlockEntity;
+import dev.eigenworks.block.entity.AdvancedEngineeringConsoleBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -61,6 +62,9 @@ public final class ModBlockEntities {
 	public static final BlockEntityType<FactoryCellBlockEntity> FACTORY_CELL = Registry.register(
 			BuiltInRegistries.BLOCK_ENTITY_TYPE, EigenWorks.id("factory_cell"),
 			FabricBlockEntityTypeBuilder.create(FactoryCellBlockEntity::new, ModBlocks.FACTORY_CELL).build());
+	public static final BlockEntityType<AdvancedEngineeringConsoleBlockEntity> ADVANCED_ENGINEERING_CONSOLE = Registry.register(
+			BuiltInRegistries.BLOCK_ENTITY_TYPE, EigenWorks.id("advanced_engineering_console"),
+			FabricBlockEntityTypeBuilder.create(AdvancedEngineeringConsoleBlockEntity::new, ModBlocks.ADVANCED_ENGINEERING_CONSOLE).build());
 
 	private ModBlockEntities() {
 	}

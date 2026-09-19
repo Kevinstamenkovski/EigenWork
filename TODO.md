@@ -87,4 +87,16 @@
 - [x] Milestone 10: timed UART, addressed I2C, SPI transactions, MCU registers, and Communication Hub.
 - [x] Milestone 11: robot graph, FK, analytic/numerical 2-link IK, Jacobian, trajectories, and Demo D.
 - [x] Milestone 12: conveyor, sensors, diverter, Structured Text PLC scan cycle, and Demo E.
-- [ ] Milestone 13: CAN, network imperfections, FPU, accelerators, and advanced systems.
+- [x] Milestone 13: timed CAN arbitration/retry and multi-node delivery.
+- [x] Milestone 13: deterministic latency, jitter, loss, bandwidth, and timeout model.
+- [x] Milestone 13: guarded cycle-accounted FPU and bounded matrix/vector accelerator.
+- [x] Milestone 13: stable RC/RL transients and redundant 3-link damped-least-squares IK.
+- [x] Milestone 13: persistent playable Advanced Engineering Console and Minecraft regression.
+
+## Post-milestone release backlog
+
+- [ ] Add physical rendered cable geometry and multi-block CAN topology.
+- [ ] Add configurable device screens for PID gains, matrices, PLC I/O, and console parameters.
+- [ ] Integrate capacitor/inductor companion stamps and nonlinear diode iterations into general MNA networks.
+- [ ] Add articulated multi-block robot rendering and six-axis robot topology.
+- [ ] Add a distributable release workflow and compatibility matrix for future Minecraft/Fabric updates.

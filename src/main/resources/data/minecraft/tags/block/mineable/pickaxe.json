@@ -13,6 +13,7 @@
     "eigenworks:mathematics_workstation",
     "eigenworks:communication_hub",
     "eigenworks:robot_arm",
-    "eigenworks:factory_cell"
+    "eigenworks:factory_cell",
+    "eigenworks:advanced_engineering_console"
   ]
 }

@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 13 — CAN, network imperfections, FPU, vector accelerator, and advanced engineering extensions.
+All thirteen planned milestones are complete. Current work is release hardening and expansion of the playable topology/UI layer.
 
 ## Last completed milestone
 
-Milestone 12 — programmable PLC factory automation and playable Demo E.
+Milestone 13 — CAN, network imperfections, FPU, matrix accelerator, transient circuits, advanced robotics, and a playable integration console.
 
 ## Completed systems
 
@@ -107,6 +107,13 @@ Milestone 12 — programmable PLC factory automation and playable Demo E.
 - One-metre conveyor plant with explicit workpiece state, photoelectric presence sensor, metallic proximity sensor, terminal diverter, and emergency-stop behavior.
 - Placeable persistent Programmable PLC Factory Cell with book-based program loading, alternating test workpieces, emergency stop, inspector diagnostics, and digital I/O ports.
 - Demo E runs actual sensor/PLC/actuator logic to route metallic items `DIVERTED` and non-metal items `STRAIGHT`.
+- Timed multi-node CAN with standard 11-bit identifiers, eight-byte payloads, bitrate-derived delivery, nondestructive lower-ID arbitration, losing-frame retry, bounded receive queues, and diagnostics.
+- Seeded deterministic message impairments covering base latency, bounded jitter, probability loss, serialization bandwidth, delivery deadlines, and separate drop/timeout counts.
+- Optional finite-guarded FPU with add/subtract/multiply/divide/square-root/trigonometric operations and logical cycle charges.
+- Dimension-bounded vector dot, matrix-vector, and matrix-matrix accelerator operations with deterministic logical work accounting.
+- Backward-Euler series RC/RL transient state models with parameter, timestep, and non-finite-state protection.
+- Redundant three-link planar forward kinematics, 2x3 Jacobian, manipulability, and bounded damped-least-squares inverse kinematics.
+- Placeable persistent Advanced Engineering Console executing all Milestone 13 diagnostics on the server, with inspector support, recipe/assets/loot, and serialization GameTest.
 
 ## Partially implemented systems
 
@@ -117,11 +124,11 @@ Milestone 12 — programmable PLC factory automation and playable Demo E.
 - The debugger intentionally exposes a compact bounded snapshot rather than a full editable 64 KiB memory grid; richer memory/source views remain future UI work.
 - The MCU ADC has a real voltage input API and tested quantization, but a placeable analog cable/sensor source arrives with the electrical and instrumentation milestones.
 - The first oscilloscope accepts 8-bit digital words. Typed voltage/current/mechanical channels and triggering follow their respective physical systems.
-- The first MNA core is DC-only; capacitor/inductor companion models, switches, and nonlinear devices remain extensions.
+- The general MNA builder remains DC-only; tested RC/RL backward-Euler companion models exist separately, while switches and nonlinear devices remain extensions.
 - PID gains and the 90-degree target are fixed for the initial demonstration; editable controller configuration UI is future work.
 - The Mathematics Workstation uses a compact book-based matrix editor rather than a dedicated grid GUI; calculations and persistence are fully playable.
-- Communication buses currently run inside each controller/hub; arbitrary multi-block protocol cable geometry and logic-analyzer decoding remain later extensions.
-- The first Robot Arm is one block containing articulated server state; separate multi-block link geometry and animated rendering are future presentation/topology work.
+- Communication buses currently run inside each controller/hub/console; arbitrary multi-block protocol cable geometry and logic-analyzer decoding remain later extensions.
+- Robot Arms are blocks containing articulated server state; separate multi-block link geometry, 6-DOF topology, and animated rendering are future presentation/topology work.
 - The first Factory Cell integrates conveyor/sensors/diverter in one block; separate visible conveyor segments and moving Minecraft item entities are future presentation/topology work.
 
 ## Known bugs and failing tests
@@ -133,11 +140,11 @@ Milestone 12 — programmable PLC factory automation and playable Demo E.
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 102 passing tests. New coverage validates Structured Text parsing/execution/errors, PLC scans, timers/counters, factory classification/routing, and emergency-stop motion inhibition.
-- Minecraft GameTests: all 15 required tests pass (fourteen EigenWorks tests plus the framework test), including both Demo E routes, repeated PLC scan execution, program persistence, and emergency-stop control.
+- Unit tests: 109 passing tests. New coverage validates CAN arbitration/retry, impairment latency/loss/timeout, FPU faults/cycles, accelerator bounds/results, RC/RL transients, and 3-link IK.
+- Minecraft GameTests: all 16 required tests pass (fifteen EigenWorks tests plus the framework test), including every Advanced Engineering Console module and persistence.
 - `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
-- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1600 recipes without EigenWorks datapack errors, executed all prior systems plus PLC Factory Demo E and persistence. All 15 required tests passed.
-- Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with Computer/MCU/Oscilloscope/Inspector/Motor Rig assets and debugger/scope screen registrations present; no missing-model, missing-texture, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so rendered appearance was not visually inspected.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1601 recipes without EigenWorks datapack errors, executed all prior systems plus every advanced diagnostic and persistence. All 16 required tests passed.
+- Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with the Advanced Engineering Console and all prior assets registered; no missing-model, missing-texture, datapack, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so rendered appearance was not visually inspected.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
 - Produced JAR: `build/libs/eigenworks-0.1.0.jar`.
@@ -152,7 +159,7 @@ Milestone 12 — programmable PLC factory automation and playable Demo E.
 
 ## Temporary limitations
 
-Milestone 12 is complete. Structured Text intentionally supports bounded Boolean control rather than unbounded loops or arbitrary arithmetic. The integrated cell proves sensor-to-PLC-to-actuator behavior while physical multi-block conveyor topology remains a later extension.
+All planned milestones are complete as functional vertical slices. This is an engineering-sandbox foundation, not a claim that every future item in the master vision is feature-complete: physical cable rendering, multi-block machines, six-axis animated robots, richer configuration GUIs, nonlinear general circuit solving, CAN cabling, and protocol analysis remain explicit release extensions.
 
 ## Relevant locations
 
@@ -201,14 +208,20 @@ Milestone 12 is complete. Structured Text intentionally supports bounded Boolean
 - Factory adapter: `src/main/java/dev/eigenworks/block/entity/FactoryCellBlockEntity.java`
 - Demo E source: `examples/demo_e_factory.st`
 - Automation guide: `docs/AUTOMATION.md`
+- CAN/impairment engines: `src/main/java/dev/eigenworks/networking/CanBus.java` and `ImpairedLink.java`
+- FPU/matrix accelerators: `src/main/java/dev/eigenworks/computer/accelerator/`
+- RC/RL transients: `src/main/java/dev/eigenworks/electrical/RcTransient.java` and `RlTransient.java`
+- 3-link robotics: `src/main/java/dev/eigenworks/robotics/PlanarThreeLinkKinematics.java`
+- Advanced Console: `src/main/java/dev/eigenworks/block/entity/AdvancedEngineeringConsoleBlockEntity.java`
+- Advanced systems guide: `docs/ADVANCED_ENGINEERING.md`
 
 ## Exact next tasks
 
-1. Implement CAN identifiers, arbitration, timed delivery, multiple nodes, and explicit bus diagnostics.
-2. Add deterministic latency, jitter, packet-loss, bandwidth, and timeout models.
-3. Implement optional FPU operations with logical cycle costs and numerical fault guards.
-4. Implement bounded vector/matrix accelerator operations with cycle accounting.
-5. Add one playable Advanced Engineering Console integrating CAN and accelerators, then complete full release regression/documentation.
+1. Add physical rendered cable geometry and a cached multi-block CAN topology.
+2. Add editable screens for PID, matrices, PLC I/O, and advanced diagnostic parameters.
+3. Integrate capacitor/inductor companion stamps and bounded nonlinear diode iteration into the general MNA solver.
+4. Add articulated multi-block rendering and general 6-DOF robot topology.
+5. Establish a tagged release workflow after player-facing balance and multiplayer soak testing.
 
 ## Commands
 

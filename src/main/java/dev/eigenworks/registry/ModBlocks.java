@@ -15,6 +15,7 @@ import dev.eigenworks.block.MathematicsWorkstationBlock;
 import dev.eigenworks.block.CommunicationHubBlock;
 import dev.eigenworks.block.RobotArmBlock;
 import dev.eigenworks.block.FactoryCellBlock;
+import dev.eigenworks.block.AdvancedEngineeringConsoleBlock;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -71,6 +72,7 @@ public final class ModBlocks {
 			ModBlockItemIds.COMMUNICATION_HUB, CommunicationHubBlock::new, deviceProperties());
 	public static final Block ROBOT_ARM = register(ModBlockItemIds.ROBOT_ARM, RobotArmBlock::new, deviceProperties());
 	public static final Block FACTORY_CELL = register(ModBlockItemIds.FACTORY_CELL, FactoryCellBlock::new, deviceProperties());
+	public static final Block ADVANCED_ENGINEERING_CONSOLE = register(ModBlockItemIds.ADVANCED_ENGINEERING_CONSOLE, AdvancedEngineeringConsoleBlock::new, deviceProperties());
 
 	private ModBlocks() {
 	}
@@ -109,6 +111,7 @@ public final class ModBlocks {
 					entries.accept(COMMUNICATION_HUB.asItem());
 					entries.accept(ROBOT_ARM.asItem());
 					entries.accept(FACTORY_CELL.asItem());
+					entries.accept(ADVANCED_ENGINEERING_CONSOLE.asItem());
 				});
 	}
 

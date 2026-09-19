@@ -32,5 +32,6 @@
   "block.eigenworks.mathematics_workstation": "Engineering Mathematics Workstation",
   "block.eigenworks.communication_hub": "UART / I2C / SPI Communication Hub",
   "block.eigenworks.robot_arm": "2-DOF Planar Robot Arm",
-  "block.eigenworks.factory_cell": "Programmable PLC Factory Cell"
+  "block.eigenworks.factory_cell": "Programmable PLC Factory Cell",
+  "block.eigenworks.advanced_engineering_console": "Advanced Engineering Console"
 }

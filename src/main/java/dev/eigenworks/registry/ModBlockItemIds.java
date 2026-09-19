@@ -19,6 +19,7 @@ public final class ModBlockItemIds {
 	public static final BlockItemId COMMUNICATION_HUB = create("communication_hub");
 	public static final BlockItemId ROBOT_ARM = create("robot_arm");
 	public static final BlockItemId FACTORY_CELL = create("factory_cell");
+	public static final BlockItemId ADVANCED_ENGINEERING_CONSOLE = create("advanced_engineering_console");
 
 	private ModBlockItemIds() {
 	}

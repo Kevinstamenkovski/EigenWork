@@ -1,0 +1,1 @@
+{"type":"minecraft:crafting_shaped","category":"redstone","pattern":["QGQ","RCR","QGQ"],"key":{"Q":"minecraft:quartz","G":"minecraft:gold_ingot","R":"minecraft:redstone","C":"eigenworks:communication_hub"},"result":{"id":"eigenworks:advanced_engineering_console","count":1}}

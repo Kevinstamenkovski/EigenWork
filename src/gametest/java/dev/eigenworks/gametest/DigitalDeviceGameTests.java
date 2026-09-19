@@ -15,6 +15,7 @@ import dev.eigenworks.block.entity.MathematicsWorkstationBlockEntity;
 import dev.eigenworks.block.entity.CommunicationHubBlockEntity;
 import dev.eigenworks.block.entity.RobotArmBlockEntity;
 import dev.eigenworks.block.entity.FactoryCellBlockEntity;
+import dev.eigenworks.block.entity.AdvancedEngineeringConsoleBlockEntity;
 import dev.eigenworks.automation.RouteOutcome;
 import dev.eigenworks.computer.cpu.CpuStatus;
 import dev.eigenworks.digital.DigitalGateOperation;
@@ -411,6 +412,26 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 				helper.succeed();
 			});
 		});
+	}
+
+	@GameTest
+	public void advancedConsoleRunsEveryMilestoneThirteenSubsystemAndPersists(GameTestHelper helper) {
+		BlockPos consolePos = new BlockPos(3, 1, 1);
+		helper.setBlock(consolePos, ModBlocks.ADVANCED_ENGINEERING_CONSOLE);
+		AdvancedEngineeringConsoleBlockEntity console = helper.getBlockEntity(
+				consolePos, AdvancedEngineeringConsoleBlockEntity.class);
+		for (AdvancedEngineeringConsoleBlockEntity.Module module : AdvancedEngineeringConsoleBlockEntity.Module.values()) {
+			helper.assertValueEqual(module, console.selectedModule(), "Selected advanced module");
+			helper.assertTrue(console.runDiagnostic(), module + " diagnostic must succeed");
+			helper.assertTrue(!console.result().contains("FAULT"), module + " must provide a valid result");
+			if (module != AdvancedEngineeringConsoleBlockEntity.Module.THREE_LINK_ROBOT) console.nextModule();
+		}
+		AdvancedEngineeringConsoleBlockEntity restored = roundTrip(
+				helper, console, AdvancedEngineeringConsoleBlockEntity.class);
+		helper.assertValueEqual(AdvancedEngineeringConsoleBlockEntity.Module.THREE_LINK_ROBOT,
+				restored.selectedModule(), "Restored advanced module");
+		helper.assertValueEqual(console.result(), restored.result(), "Restored advanced diagnostic");
+		helper.succeed();
 	}
 
 	@Override

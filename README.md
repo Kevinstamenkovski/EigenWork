@@ -2,7 +2,7 @@
 
 EigenWorks is a Fabric mod for Minecraft Java Edition 26.2 that grows into a coherent engineering sandbox: signals, real programmable computers, embedded control, electrical and motor models, instrumentation, robotics, and industrial automation.
 
-The current playable baseline includes an **Engineering Test Bench**, scheduled digital devices, a **Digital Linking Tool**, and a real programmable **Eigen-8 Computer**. Underneath them, the server-authoritative deterministic scheduler, typed latency-aware signals, cached digital world network, assembler, ALU, CPU, RAM/ROM, stack, branches, I/O, interrupts, and guarded CPU faults are implemented and tested inside Minecraft.
+The current playable foundation spans all thirteen planned milestones: scheduled digital devices, a real programmable **Eigen-8 Computer** and MCU, instrumentation, electrical/motor control, engineering mathematics, timed buses, robot kinematics, PLC automation, and advanced diagnostics. Underneath them, pure guarded engineering models are adapted into persistent, server-authoritative Minecraft blocks and tested both as Java units and inside Minecraft GameTests.
 
 Empty-hand right-click the Test Bench to queue a server-side digital diagnostic. On the next engineering simulation tick it computes `0xC AND 0xA` through the real gate implementation, clocks a counter, and reports both results in chat.
 
@@ -62,6 +62,10 @@ The **2-DOF Planar Robot Arm** has explicit joints/links, homogeneous-transform 
 
 The **Programmable PLC Factory Cell** combines a conveyor, photoelectric and proximity sensors, diverter, emergency stop, and deterministic 20 ms PLC scan. Program it from a Book and Quill using the safe Structured Text subset; empty-hand use inserts workpieces and sneak-use toggles emergency stop. Demo E routes metallic and non-metal workpieces through real sensor/PLC/actuator state. See [`docs/AUTOMATION.md`](docs/AUTOMATION.md).
 
+## Advanced engineering
+
+The **Advanced Engineering Console** provides playable server-side diagnostics for timed CAN arbitration/retry, deterministic network latency/loss/bandwidth/timeouts, a cycle-accounted FPU, a bounded matrix accelerator, stable RC/RL transients, and damped-least-squares 3-link robot IK. Empty-hand use runs the selected module and sneak-use cycles modules. Models, numerical protections, and honest scope limits are documented in [`docs/ADVANCED_ENGINEERING.md`](docs/ADVANCED_ENGINEERING.md).
+
 ## Requirements
 
 - Minecraft Java Edition 26.2
@@ -93,7 +97,7 @@ Create a world and open the Functional Blocks creative tab for the blocks. The D
 
 ## Engineering guides
 
-The first digital circuit, CPU program, MCU motor-control loop, PID response, oscilloscope workflow, mathematics workstation, timed communication buses, robot arm, and PLC factory are documented above and in the linked guides. Incomplete advanced systems are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
+The first digital circuit, CPU program, MCU motor-control loop, PID response, oscilloscope workflow, mathematics workstation, communication buses, robot arms, PLC factory, and advanced diagnostics are documented above and in the linked guides. Further extensions are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
 
 ## Development
 

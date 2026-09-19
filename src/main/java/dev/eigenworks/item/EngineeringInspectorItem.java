@@ -15,6 +15,7 @@ import dev.eigenworks.block.entity.MathematicsWorkstationBlockEntity;
 import dev.eigenworks.block.entity.CommunicationHubBlockEntity;
 import dev.eigenworks.block.entity.RobotArmBlockEntity;
 import dev.eigenworks.block.entity.FactoryCellBlockEntity;
+import dev.eigenworks.block.entity.AdvancedEngineeringConsoleBlockEntity;
 import dev.eigenworks.digital.world.WorldDigitalDevice;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -95,6 +96,10 @@ public final class EngineeringInspectorItem extends Item {
 					factory.factory().conveyorOutput(), factory.factory().diverterOutput())));
 			lines.add(Component.literal("scans: %d  sensed: %d  e-stop: %s  %s".formatted(
 					factory.factory().plc().scanCount(), factory.factory().itemsSensed(), factory.factory().emergencyStop(), factory.programDiagnostic())));
+		} else if (blockEntity instanceof AdvancedEngineeringConsoleBlockEntity console) {
+			lines.add(Component.literal("Advanced Engineering Console: " + console.selectedModule()));
+			lines.add(Component.literal("Status: " + console.result()));
+			lines.add(Component.literal("Logical cycles/iterations: %d  successful: %s".formatted(console.lastCycles(), console.successful())));
 		} else if (blockEntity instanceof DigitalClockBlockEntity clock) {
 			lines.add(Component.literal("Digital Clock: %.1f Hz, output=%s, enabled=%s".formatted(
 					clock.frequencyHertz(), clock.levelHigh(), clock.enabled())));
