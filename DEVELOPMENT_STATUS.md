@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 18 — articulated multi-block six-axis robotics.
+Milestone 19 — distributable release workflow and final regression.
 
 ## Last completed milestone
 
-Milestone 17 — dynamic and nonlinear Modified Nodal Analysis.
+Milestone 18 — articulated multi-block six-axis robotics.
 
 ## Completed systems
 
@@ -132,6 +132,11 @@ Milestone 17 — dynamic and nonlinear Modified Nodal Analysis.
 - Guarded Shockley-diode Newton iteration with voltage/exponent limiting and explicit convergence failure.
 - Transactional circuit timesteps: history advances only after a finite, converged solution.
 - Advanced Console transient diagnostic now exercises composed RC and nonlinear diode MNA networks.
+- General one-to-six-axis serial revolute kinematics using standard Denavit-Hartenberg parameters.
+- Full homogeneous forward transforms and 6xN geometric Jacobians validated against analytical planar cases.
+- Loaded-only face-adjacent robot joint registry with dirty topology caching, unique ordered axis validation, and six-axis bounds.
+- Placeable persistent Articulated Robot Joint Modules with server-authoritative 90-degree controls, inspector diagnostics, recipe, loot, and custom geometry.
+- Client block-entity rendering rotates each module's steel link arm from synchronized authoritative joint state.
 
 ## Partially implemented systems
 
@@ -146,7 +151,7 @@ Milestone 17 — dynamic and nonlinear Modified Nodal Analysis.
 - PID gains and target are editable and persistent; output limits, derivative-filter time, and sample period remain fixed safe implementation parameters.
 - The Mathematics Workstation provides both book commands and a dedicated bounded 2x2 grid GUI; larger matrix input remains book-based.
 - CAN has arbitrary branching multi-block cable topology; UART/I2C/SPI remain local to controllers/hubs, and protocol-analyzer decoding remains an extension.
-- Robot Arms are blocks containing articulated server state; separate multi-block link geometry, 6-DOF topology, and animated rendering are future presentation/topology work.
+- Physical robot modules use fixed block collision anchors with rotating visual link arms; moving multi-block collision geometry and general 6-DOF IK are future extensions.
 - The first Factory Cell integrates conveyor/sensors/diverter in one block; separate visible conveyor segments and moving Minecraft item entities are future presentation/topology work.
 
 ## Known bugs and failing tests
@@ -158,11 +163,11 @@ Milestone 17 — dynamic and nonlinear Modified Nodal Analysis.
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 119 passing tests. New coverage validates RC/RL companion history, nonlinear diode convergence and bias behavior, unsafe timesteps, and singular transient networks.
-- Minecraft GameTests: all 19 required tests pass (eighteen EigenWorks tests plus the framework test), including all Milestone 16 editor actions and persistence.
+- Unit tests: 122 passing tests. New coverage validates six-axis DH forward kinematics, geometric Jacobians, dimension bounds, and non-finite joint rejection.
+- Minecraft GameTests: all 20 required tests pass (nineteen EigenWorks tests plus the framework test), including six-block robot topology, articulation, cache reuse, and persistence.
 - `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
 - Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1603 recipes without EigenWorks datapack errors, executed all prior systems plus server-validated Motor Rig configuration/persistence. All 18 required tests passed.
-- Latest client regression (2026-09-19): EigenWorks initialized with the Motor Rig menu/screen registration and completed resource reload; no EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so the screen layout was not visually inspected.
+- Latest client regression (2026-09-19): EigenWorks initialized with the articulated joint renderer and completed resource reload without missing-model/texture or EigenWorks exceptions. The client was then stopped manually; no desktop input was used, so a placed moving joint was not visually inspected in-world.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
 - Produced JAR: `build/libs/eigenworks-0.1.0.jar`.
@@ -177,7 +182,7 @@ Milestone 17 — dynamic and nonlinear Modified Nodal Analysis.
 
 ## Temporary limitations
 
-Milestones 1–17 are complete as functional vertical slices. Editors use bounded action packets instead of trusting client numeric input. Eigen-8 CAN I/O, controlled-source/transistor circuit models, and six-axis animated robots remain explicit extensions.
+Milestones 1–18 are complete as functional vertical slices. Editors use bounded action packets instead of trusting client numeric input. Eigen-8 CAN I/O, controlled-source/transistor circuit models, and general six-axis IK remain explicit extensions.
 
 ## Relevant locations
 
@@ -221,6 +226,8 @@ Milestones 1–17 are complete as functional vertical slices. Editors use bounde
 - Communication guide: `docs/COMMUNICATION.md`
 - Robotics core: `src/main/java/dev/eigenworks/robotics/`
 - Robot adapter: `src/main/java/dev/eigenworks/block/entity/RobotArmBlockEntity.java`
+- Physical robot topology: `src/main/java/dev/eigenworks/robotics/world/`
+- Articulated joint adapter/renderer: `src/main/java/dev/eigenworks/block/entity/RobotJointModuleBlockEntity.java` and `client/render/RobotJointModuleRenderer.java`
 - Robotics guide: `docs/ROBOTICS.md`
 - Automation core: `src/main/java/dev/eigenworks/automation/`
 - Factory adapter: `src/main/java/dev/eigenworks/block/entity/FactoryCellBlockEntity.java`
@@ -242,10 +249,10 @@ Milestones 1–17 are complete as functional vertical slices. Editors use bounde
 
 ## Exact next tasks
 
-1. Add general serial-chain forward kinematics and Jacobians for up to six axes.
-2. Add loaded multi-block robot joint topology without world scans.
-3. Add articulated joint visualization and Minecraft topology/persistence regression.
-4. Complete distributable release workflow and compatibility matrix.
+1. Add CI build and tagged-release artifact workflows using Java 25.
+2. Add a compatibility matrix and reproducible release verification script.
+3. Run the final unit, GameTest, build, JAR-content, and client-launch regression.
+4. Publish the stable milestone commit and document the exact release artifact.
 
 ## Commands
 

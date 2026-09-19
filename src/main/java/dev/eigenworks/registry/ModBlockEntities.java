@@ -16,6 +16,7 @@ import dev.eigenworks.block.entity.FactoryCellBlockEntity;
 import dev.eigenworks.block.entity.AdvancedEngineeringConsoleBlockEntity;
 import dev.eigenworks.block.entity.CanCableBlockEntity;
 import dev.eigenworks.block.entity.CanNodeBlockEntity;
+import dev.eigenworks.block.entity.RobotJointModuleBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -73,6 +74,9 @@ public final class ModBlockEntities {
 	public static final BlockEntityType<CanNodeBlockEntity> CAN_NODE = Registry.register(
 			BuiltInRegistries.BLOCK_ENTITY_TYPE, EigenWorks.id("can_node"),
 			FabricBlockEntityTypeBuilder.create(CanNodeBlockEntity::new, ModBlocks.CAN_NODE).build());
+	public static final BlockEntityType<RobotJointModuleBlockEntity> ROBOT_JOINT_MODULE = Registry.register(
+			BuiltInRegistries.BLOCK_ENTITY_TYPE, EigenWorks.id("robot_joint_module"),
+			FabricBlockEntityTypeBuilder.create(RobotJointModuleBlockEntity::new, ModBlocks.ROBOT_JOINT_MODULE).build());
 
 	private ModBlockEntities() {
 	}

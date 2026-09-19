@@ -17,6 +17,7 @@ import dev.eigenworks.block.entity.RobotArmBlockEntity;
 import dev.eigenworks.block.entity.FactoryCellBlockEntity;
 import dev.eigenworks.block.entity.AdvancedEngineeringConsoleBlockEntity;
 import dev.eigenworks.block.entity.CanNodeBlockEntity;
+import dev.eigenworks.block.entity.RobotJointModuleBlockEntity;
 import dev.eigenworks.automation.RouteOutcome;
 import dev.eigenworks.computer.cpu.CpuStatus;
 import dev.eigenworks.control.MotorRigMenu;
@@ -490,6 +491,32 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 				helper.assertValueEqual(0x100, restored.lastReceivedIdentifier(), "Persisted CAN identifier");
 				helper.succeed();
 			});
+		});
+	}
+
+	@GameTest(maxTicks = 20)
+	public void sixAxisRobotBuildsCachedPhysicalChainAndPersists(GameTestHelper helper) {
+		RobotJointModuleBlockEntity[] joints = new RobotJointModuleBlockEntity[6];
+		for (int axis = 0; axis < joints.length; axis++) {
+			BlockPos position = new BlockPos(3 + axis, 1, 3);
+			helper.setBlock(position, ModBlocks.ROBOT_JOINT_MODULE);
+			joints[axis] = helper.getBlockEntity(position, RobotJointModuleBlockEntity.class);
+			for (int index = 0; index < axis; index++) joints[axis].nextAxis();
+		}
+		helper.runAfterDelay(1, () -> {
+			var network = EngineeringSimulation.robotNetwork(helper.getLevel().getServer());
+			helper.assertValueEqual(6, network.loadedJointCount(), "Loaded physical robot joints");
+			var straight = joints[0].assembly();
+			helper.assertValueEqual(6, straight.axes(), "Validated robot axis count");
+			helper.assertValueEqual(6.0, straight.endEffector().matrix().get(0, 3), "Straight-chain end X");
+			long builds = network.cacheBuildCount(); joints[0].assembly();
+			helper.assertValueEqual(builds, network.cacheBuildCount(), "Steady-state FK must reuse cached topology");
+			joints[0].rotateQuarterTurn();
+			helper.assertTrue(Math.abs(joints[0].assembly().endEffector().matrix().get(1, 3) - 6) < 1e-9,
+					"First-axis rotation must articulate the entire chain");
+			RobotJointModuleBlockEntity restored = roundTrip(helper, joints[5], RobotJointModuleBlockEntity.class);
+			helper.assertValueEqual(5, restored.axisIndex(), "Persisted joint axis index");
+			helper.succeed();
 		});
 	}
 

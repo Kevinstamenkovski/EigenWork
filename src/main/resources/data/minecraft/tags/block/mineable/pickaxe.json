@@ -16,6 +16,7 @@
     "eigenworks:factory_cell",
     "eigenworks:advanced_engineering_console",
     "eigenworks:can_cable",
-    "eigenworks:can_node"
+    "eigenworks:can_node",
+    "eigenworks:robot_joint_module"
   ]
 }

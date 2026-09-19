@@ -2,7 +2,7 @@
 
 EigenWorks is a Fabric mod for Minecraft Java Edition 26.2 that grows into a coherent engineering sandbox: signals, real programmable computers, embedded control, electrical and motor models, instrumentation, robotics, and industrial automation.
 
-The current playable foundation spans seventeen completed milestones: scheduled digital devices, a real programmable **Eigen-8 Computer** and MCU, instrumentation, configurable electrical/motor control, transient/nonlinear circuit analysis, engineering mathematics with a matrix editor, timed buses, robot kinematics, PLC automation with live I/O, advanced diagnostics, physical multi-block CAN networks, and server-validated engineering GUIs. Underneath them, pure guarded engineering models are adapted into persistent, server-authoritative Minecraft blocks and tested both as Java units and inside Minecraft GameTests.
+The current playable foundation spans eighteen completed milestones: scheduled digital devices, a real programmable **Eigen-8 Computer** and MCU, instrumentation, configurable electrical/motor control, transient/nonlinear circuit analysis, engineering mathematics with a matrix editor, timed buses, planar and six-axis robot kinematics, PLC automation with live I/O, advanced diagnostics, physical multi-block CAN/robot networks, and server-validated engineering GUIs. Underneath them, pure guarded engineering models are adapted into persistent, server-authoritative Minecraft blocks and tested both as Java units and inside Minecraft GameTests.
 
 Empty-hand right-click the Test Bench to queue a server-side digital diagnostic. On the next engineering simulation tick it computes `0xC AND 0xA` through the real gate implementation, clocks a counter, and reports both results in chat.
 
@@ -56,7 +56,7 @@ The **UART / I2C / SPI Communication Hub** runs actual timed bus diagnostics und
 
 ## Robotics
 
-The **2-DOF Planar Robot Arm** has explicit joints/links, homogeneous-transform forward kinematics, analytic and damped-least-squares IK, a Jacobian/singularity metric, and bounded joint trajectories. Empty-hand use cycles Cartesian targets and sneak-use resets it. Target and diagnostic ports connect through the Digital Linking Tool. Demo D and all scaling/kinematics details are in [`docs/ROBOTICS.md`](docs/ROBOTICS.md).
+The **2-DOF Planar Robot Arm** has explicit joints/links, homogeneous-transform forward kinematics, analytic and damped-least-squares IK, a Jacobian/singularity metric, and bounded joint trajectories. The **Articulated Robot Joint Module** builds loaded face-adjacent chains of up to six axes, uses general Denavit-Hartenberg forward kinematics and a 6xN geometric Jacobian, and renders each link arm from synchronized joint state. Demo D, controls, and scaling are in [`docs/ROBOTICS.md`](docs/ROBOTICS.md).
 
 ## PLC factory automation
 

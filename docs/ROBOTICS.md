@@ -24,6 +24,12 @@ Steps are bounded, solve operations use the pivoted mathematics library, and non
 
 Place a **2-DOF Planar Robot Arm**. Empty-hand use cycles reachable Cartesian targets; sneak-use resets it fully extended. The logical server computes analytic IK, produces two synchronized trapezoidal joint trajectories, and advances the arm at 10 ms. The Engineering Inspector reports q1/q2, target, end-effector position, manipulability, and IK diagnostic.
 
+## Physical one-to-six-axis chain
+
+Place **Articulated Robot Joint Module** blocks face-to-face in a non-branching chain. Sneak-use cycles a module's axis number J1 through J6; normal empty-hand use rotates that axis by 90 degrees. Indices must be unique and contiguous from J1, and their blocks must be adjacent in index order. The Engineering Inspector reports configuration and the full chain end-effector position.
+
+The server keeps a loaded-joint registry and rebuilds connected components only after blocks load or unload. A valid component is converted to standard revolute Denavit-Hartenberg links (one metre by default), then `SerialManipulatorKinematics` computes a homogeneous end transform and 6xN geometric Jacobian. The client receives persisted joint state and rotates a local rendered steel arm; simulation and topology validation remain server authoritative. The placed blocks are fixed collision anchors, so visual arms articulate but do not move block collision boxes.
+
 The block exposes two 8-bit target inputs (`target_x`, `target_y`) and four scope-compatible outputs (`x`, `y`, `joint1`, `joint2`). Cartesian channels map `-2..+2 m` and joint channels map `-pi..+pi rad` to `0..255`. Repeated Digital Linking Tool uses cycle the outputs.
 
 Demo D is the preset `(1, 1) m`: the server computes IK, follows the bounded joint trajectory, and reaches the target. Its Minecraft GameTest verifies Cartesian tolerance, non-singular manipulability, unreachable-target handling, and state persistence. This first block contains the complete articulated state and diagnostics; separate visible multi-block links and animated geometry are a later rendering/topology extension.

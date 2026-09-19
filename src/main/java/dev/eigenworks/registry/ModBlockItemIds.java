@@ -22,6 +22,7 @@ public final class ModBlockItemIds {
 	public static final BlockItemId ADVANCED_ENGINEERING_CONSOLE = create("advanced_engineering_console");
 	public static final BlockItemId CAN_CABLE = create("can_cable");
 	public static final BlockItemId CAN_NODE = create("can_node");
+	public static final BlockItemId ROBOT_JOINT_MODULE = create("robot_joint_module");
 
 	private ModBlockItemIds() {
 	}

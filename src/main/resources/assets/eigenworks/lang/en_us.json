@@ -39,5 +39,6 @@
   "block.eigenworks.advanced_engineering_console": "Advanced Engineering Console",
   "screen.eigenworks.advanced_console": "Advanced Engineering Parameters",
   "block.eigenworks.can_cable": "CAN Cable",
-  "block.eigenworks.can_node": "Programmable CAN Node"
+  "block.eigenworks.can_node": "Programmable CAN Node",
+  "block.eigenworks.robot_joint_module": "Articulated Robot Joint Module"
 }

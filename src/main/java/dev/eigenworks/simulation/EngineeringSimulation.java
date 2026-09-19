@@ -9,6 +9,8 @@ import dev.eigenworks.digital.world.DigitalWorldNetwork;
 import dev.eigenworks.digital.world.WorldDigitalDevice;
 import dev.eigenworks.networking.world.CanWorldNetwork;
 import dev.eigenworks.networking.world.WorldCanElement;
+import dev.eigenworks.robotics.world.RobotWorldNetwork;
+import dev.eigenworks.robotics.world.WorldRobotJoint;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -19,6 +21,7 @@ public final class EngineeringSimulation {
 	private static final Map<MinecraftServer, EngineeringScheduler> SCHEDULERS = new IdentityHashMap<>();
 	private static final Map<MinecraftServer, DigitalWorldNetwork> DIGITAL_NETWORKS = new IdentityHashMap<>();
 	private static final Map<MinecraftServer, CanWorldNetwork> CAN_NETWORKS = new IdentityHashMap<>();
+	private static final Map<MinecraftServer, RobotWorldNetwork> ROBOT_NETWORKS = new IdentityHashMap<>();
 
 	private EngineeringSimulation() {
 	}
@@ -28,11 +31,13 @@ public final class EngineeringSimulation {
 			SCHEDULERS.put(server, createScheduler());
 			DIGITAL_NETWORKS.put(server, new DigitalWorldNetwork());
 			CAN_NETWORKS.put(server, new CanWorldNetwork());
+			ROBOT_NETWORKS.put(server, new RobotWorldNetwork());
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			SCHEDULERS.remove(server);
 			DIGITAL_NETWORKS.remove(server);
 			CAN_NETWORKS.remove(server);
+			ROBOT_NETWORKS.remove(server);
 		});
 		ServerTickEvents.END_SERVER_TICK.register(EngineeringSimulation::tick);
 		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, level) -> {
@@ -49,6 +54,11 @@ public final class EngineeringSimulation {
 				CanWorldNetwork network = canNetwork(level.getServer());
 				element.bindCanNetwork(level, network);
 				network.register(element);
+			}
+			if (blockEntity instanceof WorldRobotJoint joint) {
+				RobotWorldNetwork network = robotNetwork(level.getServer());
+				joint.bindRobotNetwork(level, network);
+				network.register(joint);
 			}
 		});
 		ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, level) -> {
@@ -70,6 +80,11 @@ public final class EngineeringSimulation {
 				CanWorldNetwork network = CAN_NETWORKS.get(level.getServer());
 				if (network != null) network.unregister(element);
 				element.unbindCanNetwork();
+			}
+			if (blockEntity instanceof WorldRobotJoint joint) {
+				RobotWorldNetwork network = ROBOT_NETWORKS.get(level.getServer());
+				if (network != null) network.unregister(joint);
+				joint.unbindRobotNetwork();
 			}
 		});
 	}
@@ -93,6 +108,12 @@ public final class EngineeringSimulation {
 	public static CanWorldNetwork canNetwork(MinecraftServer server) {
 		CanWorldNetwork network = CAN_NETWORKS.get(server);
 		if (network == null) throw new IllegalStateException("CAN network is unavailable before server start or after stop");
+		return network;
+	}
+
+	public static RobotWorldNetwork robotNetwork(MinecraftServer server) {
+		RobotWorldNetwork network = ROBOT_NETWORKS.get(server);
+		if (network == null) throw new IllegalStateException("Robot network is unavailable before server start or after stop");
 		return network;
 	}
 

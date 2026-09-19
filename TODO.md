@@ -107,5 +107,6 @@
 - [x] Milestone 16: Advanced Console bitrate, latency, IK damping, module, and run controls.
 - [x] Milestone 17: integrate capacitor/inductor companion stamps into stateful transient MNA networks.
 - [x] Milestone 17: add guarded Shockley-diode Newton iteration and convergence diagnostics.
-- [ ] Add articulated multi-block robot rendering and six-axis robot topology.
+- [x] Milestone 18: add general one-to-six-axis DH forward kinematics and 6xN geometric Jacobians.
+- [x] Milestone 18: add cached loaded multi-block robot topology, persistence, inspection, and articulated link rendering.
 - [ ] Add a distributable release workflow and compatibility matrix for future Minecraft/Fabric updates.

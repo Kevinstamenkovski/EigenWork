@@ -18,6 +18,7 @@ import dev.eigenworks.block.FactoryCellBlock;
 import dev.eigenworks.block.AdvancedEngineeringConsoleBlock;
 import dev.eigenworks.block.CanCableBlock;
 import dev.eigenworks.block.CanNodeBlock;
+import dev.eigenworks.block.RobotJointModuleBlock;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -77,6 +78,7 @@ public final class ModBlocks {
 	public static final Block ADVANCED_ENGINEERING_CONSOLE = register(ModBlockItemIds.ADVANCED_ENGINEERING_CONSOLE, AdvancedEngineeringConsoleBlock::new, deviceProperties());
 	public static final Block CAN_CABLE = register(ModBlockItemIds.CAN_CABLE, CanCableBlock::new, deviceProperties().noOcclusion());
 	public static final Block CAN_NODE = register(ModBlockItemIds.CAN_NODE, CanNodeBlock::new, deviceProperties());
+	public static final Block ROBOT_JOINT_MODULE = register(ModBlockItemIds.ROBOT_JOINT_MODULE, RobotJointModuleBlock::new, deviceProperties().noOcclusion());
 
 	private ModBlocks() {
 	}
@@ -118,6 +120,7 @@ public final class ModBlocks {
 					entries.accept(ADVANCED_ENGINEERING_CONSOLE.asItem());
 					entries.accept(CAN_CABLE.asItem());
 					entries.accept(CAN_NODE.asItem());
+					entries.accept(ROBOT_JOINT_MODULE.asItem());
 				});
 	}
 

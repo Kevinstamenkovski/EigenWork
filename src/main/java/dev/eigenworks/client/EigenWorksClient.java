@@ -7,6 +7,9 @@ import dev.eigenworks.client.screen.MathematicsWorkstationScreen;
 import dev.eigenworks.client.screen.FactoryCellScreen;
 import dev.eigenworks.client.screen.AdvancedConsoleScreen;
 import dev.eigenworks.registry.ModMenus;
+import dev.eigenworks.registry.ModBlockEntities;
+import dev.eigenworks.client.render.RobotJointModuleRenderer;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.gui.screens.MenuScreens;
 
@@ -20,5 +23,6 @@ public final class EigenWorksClient implements ClientModInitializer {
 		MenuScreens.register(ModMenus.MATHEMATICS_WORKSTATION,MathematicsWorkstationScreen::new);
 		MenuScreens.register(ModMenus.FACTORY_CELL,FactoryCellScreen::new);
 		MenuScreens.register(ModMenus.ADVANCED_CONSOLE,AdvancedConsoleScreen::new);
+		BlockEntityRendererRegistry.register(ModBlockEntities.ROBOT_JOINT_MODULE, RobotJointModuleRenderer::new);
 	}
 }
