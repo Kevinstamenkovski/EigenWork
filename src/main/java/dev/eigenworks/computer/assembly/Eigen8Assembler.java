@@ -46,7 +46,7 @@ public final class Eigen8Assembler {
 				}
 				ParsedLine parsed = parseInstruction(code, lineNumber, sourceLines[index], address);
 				instructions.add(parsed);
-				address += parsed.instruction().size();
+				address += parsed.size();
 				if (address > 65_536) {
 					throw new AssemblyException("Program exceeds the 65536-byte address space");
 				}
@@ -79,6 +79,10 @@ public final class Eigen8Assembler {
 		String[] head = code.trim().split("\\s+", 2);
 		String mnemonic = head[0].toUpperCase(Locale.ROOT);
 		List<String> operands = splitOperands(head.length == 2 ? head[1] : "");
+		if (mnemonic.equals(".BYTE") || mnemonic.equals(".WORD")) {
+			if (operands.isEmpty()) throw new AssemblyException(mnemonic + " requires at least one value");
+			return new ParsedLine(line, sourceLine, address, null, mnemonic, operands);
+		}
 		CpuInstruction instruction;
 		if (mnemonic.equals("LOAD")) {
 			requireCount(mnemonic, operands, 2);
@@ -90,10 +94,18 @@ public final class Eigen8Assembler {
 			}
 			requireCount(mnemonic, operands, operandCount(instruction));
 		}
-		return new ParsedLine(line, sourceLine, address, instruction, operands);
+		return new ParsedLine(line, sourceLine, address, instruction, null, operands);
 	}
 
 	private static void emit(ParsedLine parsed, Map<String, Integer> symbols, ByteArrayOutputStream output) {
+		if (parsed.directive() != null) {
+			for (String operand : parsed.operands()) {
+				int maximum = parsed.directive().equals(".BYTE") ? 0xFF : 0xFFFF;
+				int value = resolve(operand, symbols, maximum, parsed.directive() + " value");
+				if (maximum == 0xFF) output.write(value); else emitWord(output, value);
+			}
+			return;
+		}
 		CpuInstruction instruction = parsed.instruction();
 		List<String> operands = parsed.operands();
 		output.write(instruction.opcode());
@@ -271,7 +283,12 @@ public final class Eigen8Assembler {
 	}
 
 	private record ParsedLine(int line, String sourceLine, int address, CpuInstruction instruction,
-			List<String> operands) { }
+			String directive, List<String> operands) {
+		int size() {
+			if (instruction != null) return instruction.size();
+			return operands.size() * (directive.equals(".BYTE") ? 1 : 2);
+		}
+	}
 
 	private static final class AssemblyException extends RuntimeException {
 		AssemblyException(String message) {

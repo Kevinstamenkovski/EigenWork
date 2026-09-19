@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": ["RQR", "GCG", "RIR"],
+  "key": {
+    "R": "minecraft:redstone",
+    "Q": "minecraft:quartz",
+    "G": "minecraft:gold_ingot",
+    "C": "eigenworks:computer",
+    "I": "minecraft:iron_ingot"
+  },
+  "result": { "id": "eigenworks:microcontroller", "count": 1 }
+}

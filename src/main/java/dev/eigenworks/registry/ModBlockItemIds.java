@@ -12,6 +12,7 @@ public final class ModBlockItemIds {
 	public static final BlockItemId DIGITAL_GATE = create("digital_gate");
 	public static final BlockItemId DIGITAL_REGISTER = create("digital_register");
 	public static final BlockItemId COMPUTER = create("computer");
+	public static final BlockItemId MICROCONTROLLER = create("microcontroller");
 
 	private ModBlockItemIds() {
 	}

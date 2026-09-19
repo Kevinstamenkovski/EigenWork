@@ -144,6 +144,20 @@ class Eigen8CpuTest {
 		assertEquals(0, machine.cpu.registerValue(2), "All three signed branches must be taken");
 	}
 
+	@Test
+	void hardwareInterruptIsServicedBeforeTheNextInstruction() {
+		Machine machine = assemble("NOP\nHALT");
+		// Vector 100 occupies bytes 200/201; handler is address 1 (HALT).
+		machine.memory.write(200, 0);
+		machine.memory.write(201, 1);
+		assertTrue(machine.cpu.requestInterrupt(100));
+		machine.cpu.run();
+		machine.cpu.runCycles(20);
+		assertEquals(CpuStatus.HALTED, machine.cpu.status());
+		assertEquals(2, machine.cpu.programCounter());
+		assertEquals(Eigen8Cpu.DEFAULT_STACK_POINTER - 2, machine.cpu.stackPointer());
+	}
+
 	private static Machine assemble(String source) {
 		AssemblyResult result = new Eigen8Assembler().assemble(source);
 		assertTrue(result.successful(), () -> result.diagnostics().toString());

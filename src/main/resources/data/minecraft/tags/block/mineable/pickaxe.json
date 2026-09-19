@@ -6,6 +6,7 @@
     "eigenworks:digital_counter",
     "eigenworks:digital_gate",
     "eigenworks:digital_register",
-    "eigenworks:computer"
+    "eigenworks:computer",
+    "eigenworks:microcontroller"
   ]
 }

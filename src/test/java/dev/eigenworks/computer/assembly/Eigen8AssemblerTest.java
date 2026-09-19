@@ -76,4 +76,15 @@ class Eigen8AssemblerTest {
 		assertTrue(result.successful(), () -> result.diagnostics().toString());
 		assertEquals(30, result.program().addressToLine().size());
 	}
+
+	@Test
+	void emitsByteAndBigEndianWordDataForInterruptTables() {
+		AssemblyResult result = new Eigen8Assembler().assemble("""
+			.word handler
+			.byte 0xAA, 0b01010101
+			handler: HALT
+			""");
+		assertTrue(result.successful(), () -> result.diagnostics().toString());
+		assertArrayEquals(new byte[] {0, 4, (byte) 0xAA, 0x55, (byte) 0xFF}, result.program().bytecode());
+	}
 }

@@ -54,7 +54,7 @@ Interrupt vector `n` reads its destination from big-endian memory bytes at `2*n`
 
 ## Assembler syntax
 
-The assembler is case-insensitive. Decimal, hexadecimal (`0x2A`), and binary (`0b101010`) literals are accepted. Labels end in `:`. Constants use `.equ NAME, value` or `CONST NAME = value`. `;` and `#` start comments. Memory operands must use brackets.
+The assembler is case-insensitive. Decimal, hexadecimal (`0x2A`), and binary (`0b101010`) literals are accepted. Labels end in `:`. Constants use `.equ NAME, value` or `CONST NAME = value`. `;` and `#` start comments. Memory operands must use brackets. `.byte value, ...` emits raw bytes and `.word value, ...` emits big-endian 16-bit words; labels may be used as values, which allows programs to author interrupt vector tables safely.
 
 Diagnostics include a one-based source line and column. Duplicate/invalid symbols, unknown instructions or labels, invalid registers, incorrect operand counts, and values outside their encoded width reject the whole program; partial bytecode is never installed.
 

@@ -18,5 +18,8 @@
   "message.eigenworks.link_error": "Digital link error: %s",
   "block.eigenworks.computer": "Eigen-8 Computer",
   "screen.eigenworks.computer": "Eigen-8 CPU Debugger",
-  "message.eigenworks.computer_assembled": "Eigen-8 assembled %s bytes. Open the debugger to run it."
+  "message.eigenworks.computer_assembled": "Eigen-8 assembled %s bytes. Open the debugger to run it.",
+  "block.eigenworks.microcontroller": "Eigen-MCU",
+  "message.eigenworks.mcu_programmed": "Eigen-MCU programmed %s flash bytes. Empty-hand use to run.",
+  "message.eigenworks.mcu_status": "MCU: %s, GPIO=0x%s, ADC=%s, PWM duty=%s/255, missed deadlines=%s"
 }

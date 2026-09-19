@@ -11,6 +11,7 @@
 - `dev.eigenworks.block` and `dev.eigenworks.block.entity`: thin Minecraft adapters and persistent device state over engineering models.
 - `dev.eigenworks.computer`: pure Eigen-8 memory, ALU, CPU, ISA, assembler, and synchronized debugger menu.
 - `dev.eigenworks.client`: client-only screens over server-owned menu data.
+- `dev.eigenworks.embedded`: pure MCU integration and GPIO/ADC/PWM/timer peripherals.
 - Future packages follow subsystem ownership: `embedded`, `electrical`, `control`, `instrumentation`, `mechanical`, `robotics`, `automation`, and `networking`.
 
 Minecraft blocks and block entities are adapters. Mathematical and engineering behavior belongs in pure Java objects with no dependency on client rendering or world traversal.
@@ -60,6 +61,14 @@ Eigen-8 is an educational accumulator-independent 8-bit machine with eight gener
 `ComputerBlockEntity` is the server-side adapter. It registers with the central scheduler at a 50 ms logical period and grants at most 1,000 cycles per update. Programs are loaded from writable or signed Minecraft books, limited to 32,000 source characters, assembled on the logical server, and start paused. RAM, source, registers, PC, SP, flags, status, and accounting counters survive block-entity serialization; RAM is packed four bytes per serialized integer.
 
 The slotless `ComputerMenu` synchronizes a bounded debugger snapshot. Run, pause, reset, and single-step requests travel through vanilla menu-button packets and are validated/applied on the server. The client screen only renders the synchronized state and never computes CPU results. Demo A stores its visible result at `0x0020`.
+
+## Embedded architecture
+
+`EigenMicrocontroller` composes the existing Eigen-8 CPU with 32 KiB externally programmable/read-only flash, RAM through `0xFEFF`, and a frozen port-register peripheral adapter. The initial MCU runs at a logical 1 MHz in 1 ms scheduler slices. It accounts actual instruction costs, advances its timer by consumed cycles, queues hardware interrupts between atomic instructions, and counts a deadline miss whenever a runnable task exhausts its slice.
+
+GPIO is an eight-bit bank with separate direction, output-latch, and external-input state. The placed MCU participates in `DigitalWorldNetwork` with `gpio_in`, `gpio_out`, and `pwm0`, so topology remains explicit and cached. The ADC is a sample-and-hold quantizer with bit depth, reference voltage, minimum sample period, conversion delay, busy state, and held result. PWM uses absolute simulation time plus a quantized duty register and timestep-safe frequency choices. The periodic timer has reload, remaining-cycle, enable, interrupt-enable, overflow, and vector state. The complete register map is in `docs/EIGEN_MCU.md`; UART/SPI/I2C port ranges are reserved for Milestone 10.
+
+`MicrocontrollerBlockEntity` remains the server authority and persists flash, RAM, CPU state, all peripheral registers/state, program source, deadline count, and digital input endpoint. Books are safe source media; failed assembly never replaces flash. The client supplies no computed peripheral result.
 
 ## Planned electrical, control, and robotics architecture
 

@@ -8,6 +8,7 @@ import dev.eigenworks.block.entity.DigitalCounterBlockEntity;
 import dev.eigenworks.block.entity.DigitalGateBlockEntity;
 import dev.eigenworks.block.entity.DigitalRegisterBlockEntity;
 import dev.eigenworks.block.entity.ComputerBlockEntity;
+import dev.eigenworks.block.entity.MicrocontrollerBlockEntity;
 import dev.eigenworks.computer.cpu.CpuStatus;
 import dev.eigenworks.digital.DigitalGateOperation;
 import dev.eigenworks.digital.world.DigitalWorldNetwork;
@@ -139,6 +140,40 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 			helper.assertValueEqual(42, restored.memoryValue(ComputerBlockEntity.DEMO_RESULT_ADDRESS),
 					"Persisted Demo A result");
 			helper.assertValueEqual(source, restored.programSource(), "Persisted assembly source");
+			helper.succeed();
+		});
+	}
+
+	@GameTest
+	public void microcontrollerRunsEmbeddedPeripheralsAndPersists(GameTestHelper helper) {
+		BlockPos mcuPos = new BlockPos(3, 1, 1);
+		helper.setBlock(mcuPos, ModBlocks.MICROCONTROLLER);
+		MicrocontrollerBlockEntity mcu = helper.getBlockEntity(mcuPos, MicrocontrollerBlockEntity.class);
+		mcu.mcu().peripherals().setAnalogInputVolts(2.5);
+		String source = """
+			LOAD R0, 0xFF
+			OUT 0x00, R0
+			LOAD R0, 0xA5
+			OUT 0x01, R0
+			LOAD R0, 1
+			OUT 0x10, R0
+			LOAD R0, 128
+			OUT 0x20, R0
+			LOAD R0, 1
+			OUT 0x21, R0
+			HALT
+			""";
+		helper.assertTrue(mcu.assembleAndLoad(source).successful(), "MCU source must assemble in Minecraft");
+		mcu.toggleRunPause();
+		helper.runAfterDelay(3, () -> {
+			helper.assertValueEqual(CpuStatus.HALTED, mcu.mcu().cpu().status(), "Scheduled MCU status");
+			helper.assertValueEqual(0xA5, mcu.gpioOutput(), "MCU GPIO output");
+			helper.assertValueEqual(512, mcu.mcu().peripherals().adc().result(), "MCU ADC conversion");
+			helper.assertTrue(mcu.mcu().peripherals().pwm().enabled(), "MCU PWM enable");
+			MicrocontrollerBlockEntity restored = roundTrip(helper, mcu, MicrocontrollerBlockEntity.class);
+			helper.assertValueEqual(0xA5, restored.gpioOutput(), "Restored GPIO output");
+			helper.assertValueEqual(512, restored.mcu().peripherals().adc().result(), "Restored ADC result");
+			helper.assertValueEqual(source, restored.mcu().programSource(), "Restored MCU source");
 			helper.succeed();
 		});
 	}

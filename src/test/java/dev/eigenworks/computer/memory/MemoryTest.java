@@ -29,4 +29,13 @@ class MemoryTest {
 		assertThrows(MemoryAccessException.class, () -> bus.read(4));
 		assertThrows(IllegalArgumentException.class, () -> bus.map(1, new RamMemory(2)));
 	}
+
+	@Test
+	void flashCanOnlyBeWrittenThroughItsProgrammer() {
+		FlashMemory flash = new FlashMemory(8);
+		flash.program(new byte[] {0x11, 0x22});
+		assertEquals(0x11, flash.read(0));
+		assertEquals(0xFF, flash.read(7));
+		assertThrows(MemoryAccessException.class, () -> flash.write(0, 0));
+	}
 }

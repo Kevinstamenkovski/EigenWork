@@ -28,6 +28,12 @@ Connections are stored on input block entities and survive serialization. The se
 
 Demo A is provided at [`examples/demo_a.asm`](examples/demo_a.asm). Entering that program and pressing Run performs the actual instruction sequence `25 + 17`, stores `42` at address `0x0020`, and shows `42` in green in the debugger. The complete encoding, cycle costs, flag behavior, assembler grammar, interrupt table, and fault behavior are documented in [`docs/EIGEN8_ISA.md`](docs/EIGEN8_ISA.md).
 
+## Microcontroller basics
+
+The **Eigen-MCU** combines Eigen-8 with persistent flash/RAM, eight direction-controlled GPIO pins, a delayed 10-bit ADC, deterministic PWM, a cycle timer, hardware interrupt requests, and real-time deadline accounting. Program it with an assembly book just like the Computer, then empty-hand use it to Run/Pause or sneak-use to reset. Connect its `gpio_in`, `gpio_out`, and `pwm0` ports with the Digital Linking Tool.
+
+The complete port register map and timing rules are in [`docs/EIGEN_MCU.md`](docs/EIGEN_MCU.md). A working GPIO/ADC/PWM program is provided at [`examples/mcu_gpio_pwm.asm`](examples/mcu_gpio_pwm.asm).
+
 ## Requirements
 
 - Minecraft Java Edition 26.2

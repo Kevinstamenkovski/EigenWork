@@ -6,6 +6,7 @@ import dev.eigenworks.block.entity.DigitalCounterBlockEntity;
 import dev.eigenworks.block.entity.DigitalGateBlockEntity;
 import dev.eigenworks.block.entity.DigitalRegisterBlockEntity;
 import dev.eigenworks.block.entity.ComputerBlockEntity;
+import dev.eigenworks.block.entity.MicrocontrollerBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -33,6 +34,10 @@ public final class ModBlockEntities {
 			BuiltInRegistries.BLOCK_ENTITY_TYPE,
 			EigenWorks.id("computer"),
 			FabricBlockEntityTypeBuilder.create(ComputerBlockEntity::new, ModBlocks.COMPUTER).build());
+	public static final BlockEntityType<MicrocontrollerBlockEntity> MICROCONTROLLER = Registry.register(
+			BuiltInRegistries.BLOCK_ENTITY_TYPE,
+			EigenWorks.id("microcontroller"),
+			FabricBlockEntityTypeBuilder.create(MicrocontrollerBlockEntity::new, ModBlocks.MICROCONTROLLER).build());
 
 	private ModBlockEntities() {
 	}

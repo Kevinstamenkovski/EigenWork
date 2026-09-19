@@ -24,6 +24,7 @@ public final class Eigen8Cpu {
 	private String faultMessage = "";
 	private long totalCycles;
 	private long totalInstructions;
+	private int pendingInterrupt = -1;
 
 	public Eigen8Cpu(ByteMemory memory) {
 		this(memory, CpuIo.DISCONNECTED);
@@ -50,6 +51,7 @@ public final class Eigen8Cpu {
 		faultMessage = "";
 		totalCycles = 0;
 		totalInstructions = 0;
+		pendingInterrupt = -1;
 	}
 
 	public void run() {
@@ -99,6 +101,15 @@ public final class Eigen8Cpu {
 
 	private int executeOne() {
 		try {
+			if (pendingInterrupt >= 0) {
+				int vector = pendingInterrupt;
+				pendingInterrupt = -1;
+				pushWord(programCounter);
+				programCounter = readWord(vector * 2);
+				totalCycles += CpuInstruction.INT.cycles();
+				totalInstructions++;
+				return CpuInstruction.INT.cycles();
+			}
 			int opcodeAddress = programCounter;
 			int opcode = fetchByte();
 			CpuInstruction instruction = CpuInstruction.decode(opcode);
@@ -319,6 +330,22 @@ public final class Eigen8Cpu {
 		return totalInstructions;
 	}
 
+	/** Queues one hardware interrupt for service before the next instruction. */
+	public boolean requestInterrupt(int vector) {
+		if (vector < 0 || vector > 0xFF) {
+			throw new IllegalArgumentException("Interrupt vector must be between 0 and 255");
+		}
+		if (pendingInterrupt >= 0 || status == CpuStatus.HALTED || status == CpuStatus.FAULTED) {
+			return false;
+		}
+		pendingInterrupt = vector;
+		return true;
+	}
+
+	public int pendingInterrupt() {
+		return pendingInterrupt;
+	}
+
 	public CpuInstruction currentInstruction() {
 		return CpuInstruction.decode(memory.read(programCounter));
 	}
@@ -346,6 +373,7 @@ public final class Eigen8Cpu {
 		faultMessage = status == CpuStatus.FAULTED ? "Restored faulted CPU state" : "";
 		totalCycles = Math.max(0L, restoredCycles);
 		totalInstructions = Math.max(0L, restoredInstructions);
+		pendingInterrupt = -1;
 	}
 
 	private static int requireByte(int value) {

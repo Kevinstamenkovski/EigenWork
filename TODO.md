@@ -50,14 +50,14 @@
 
 ## Milestone 5 — Embedded systems
 
-- [ ] Define the MCU register map for GPIO, ADC, PWM, timers, UART, SPI, and I2C.
-- [ ] Refactor or adapt Eigen-8 port I/O into server-owned peripheral registers.
-- [ ] Implement digital GPIO direction/input/output and connect it to digital networks.
-- [ ] Implement timer cycle accounting and interrupt generation.
-- [ ] Implement ADC range, bit depth, quantization, sampling rate, and conversion delay.
-- [ ] Implement PWM frequency, duty cycle, enable, and timestamped output.
-- [ ] Add missed-deadline accounting for bounded MCU instruction budgets.
-- [ ] Add a placeable persistent MCU with programming and diagnostics.
+- [x] Define the MCU register map and reserve ranges for later UART, SPI, and I2C peripherals.
+- [x] Adapt Eigen-8 port I/O into server-owned peripheral registers.
+- [x] Implement digital GPIO direction/input/output and connect it to digital networks.
+- [x] Implement timer cycle accounting and hardware interrupt requests.
+- [x] Implement ADC range, bit depth, quantization, sampling rate, and conversion delay.
+- [x] Implement PWM frequency, duty cycle, enable, and timestamped output.
+- [x] Add missed-deadline accounting for bounded MCU instruction budgets.
+- [x] Add a placeable persistent MCU with book programming and diagnostics.
 
 ## Later milestones
 

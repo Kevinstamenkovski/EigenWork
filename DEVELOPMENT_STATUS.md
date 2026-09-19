@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 5 — MCU, GPIO, timers, ADC, and PWM.
+Milestone 6 — engineering inspector, oscilloscope, and data logger.
 
 ## Last completed milestone
 
-Milestone 4 — programmable Eigen-8 computer, assembler, debugger, and Demo A.
+Milestone 5 — programmable MCU, GPIO, timer, ADC, PWM, and deadline accounting.
 
 ## Completed systems
 
@@ -48,6 +48,17 @@ Milestone 4 — programmable Eigen-8 computer, assembler, debugger, and Demo A.
 - Full Computer persistence for source, 64 KiB RAM, registers, PC/SP, flags, status, and execution counters.
 - Demo A assembly program performs real CPU instructions for `25 + 17`, stores `42` at `0x0020`, and exposes it visibly in the debugger.
 - Computer block item, localization, model, loot table, mining tag, creative entry, and survival recipe.
+- Eigen-MCU integration with a logical 1 MHz Eigen-8 CPU, 32 KiB externally programmable flash, 32,512-byte RAM, and bounded 1 ms execution slices.
+- Frozen embedded port register map with reserved ranges for later UART, SPI, and I2C.
+- Eight-bit GPIO direction, output latch, external input sampling, and combined pin reads.
+- MCU `gpio_in`, `gpio_out`, and `pwm0` ports connected through the cached world digital network and Digital Linking Tool.
+- Ten-bit 0–5 V ADC with 1,024 levels, saturation, nearest-code quantization, 100 µs sample period, 100 µs conversion delay, busy state, and held result.
+- Eight-bit-duty deterministic PWM with enable and selectable 10/50/100/500 Hz timing derived from absolute simulation time.
+- Cycle-counted periodic timer with reload, status, interrupt enable, programmable vector, and hardware interrupt requests between CPU instructions.
+- Stable `CONTROL DEADLINE MISSED` accounting when runnable MCU code exhausts its logical cycle budget.
+- Placeable persistent Eigen-MCU programmed safely from Minecraft books with Run/Pause, reset, and chat diagnostics.
+- Persistence for MCU source, flash, RAM, CPU state, GPIO, ADC, PWM, timer, deadline count, and digital links.
+- MCU block item, localization, model, loot table, mining tag, creative entry, survival recipe, register-map guide, and example program.
 
 ## Partially implemented systems
 
@@ -56,6 +67,7 @@ Milestone 4 — programmable Eigen-8 computer, assembler, debugger, and Demo A.
 - Device configuration currently uses compact block interactions and chat diagnostics rather than dedicated GUIs.
 - Digital links are functional and persistent but do not yet render physical cable geometry.
 - The debugger intentionally exposes a compact bounded snapshot rather than a full editable 64 KiB memory grid; richer memory/source views remain future UI work.
+- The MCU ADC has a real voltage input API and tested quantization, but a placeable analog cable/sensor source arrives with the electrical and instrumentation milestones.
 
 ## Known bugs and failing tests
 
@@ -66,11 +78,11 @@ Milestone 4 — programmable Eigen-8 computer, assembler, debugger, and Demo A.
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 50 passing tests. Computer coverage includes ALU flags, RAM/ROM/bus behavior, assembler syntax and every frozen mnemonic, Demo A, memory/stack/logic operations, calls, signed branches, port I/O, interrupts, stepping, and CPU faults, in addition to all prior simulation/signal/digital tests.
-- Minecraft GameTests: all 6 required tests pass (five EigenWorks tests plus the framework test), including placed Computer assembly, central-scheduler execution of Demo A, HALT/result checks, and source/RAM serialization alongside all prior digital gameplay tests.
+- Unit tests: 60 passing tests. Embedded coverage includes flash programming protection, assembler-authored interrupt tables, hardware interrupt injection, GPIO direction behavior, ADC quantization/delay, PWM timing, timer overflows/interrupt service, MCU peripheral programs, and real-time deadline misses, in addition to all prior systems.
+- Minecraft GameTests: all 7 required tests pass (six EigenWorks tests plus the framework test), including placed scheduled MCU execution, GPIO, ADC, PWM, and complete source/peripheral serialization alongside all prior tests.
 - `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
-- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1592 recipes without EigenWorks datapack errors, executed all digital tests plus scheduled Computer Demo A and persistence. All 6 required tests passed.
-- Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with the Computer model and client-side debugger registration present; no missing-model, missing-texture, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so the debugger's rendered appearance was not visually inspected.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1593 recipes without EigenWorks datapack errors, executed all digital/Computer tests plus scheduled MCU GPIO/ADC/PWM execution and persistence. All 7 required tests passed.
+- Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with the Computer/MCU models and client debugger registration present; no missing-model, missing-texture, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so rendered appearance was not visually inspected.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
 - Produced JAR: `build/libs/eigenworks-0.1.0.jar`.
@@ -85,7 +97,7 @@ Milestone 4 — programmable Eigen-8 computer, assembler, debugger, and Demo A.
 
 ## Temporary limitations
 
-Milestone 4 is complete as a functional educational computer. The current Computer uses unified RAM rather than separately placeable CPU/RAM/ROM components; its debugger is intentionally compact and books are the source editor. MCU peripherals, electrical, control, instrumentation, and robotics gameplay are not claimed.
+Milestone 5 is complete as a functional embedded platform. The ADC currently receives voltage through its server-side device API because analog cable and sensor blocks are later milestones. UART/SPI/I2C registers are reserved but their timed protocols are Milestone 10. Electrical, control, instrumentation, and robotics gameplay are not yet claimed.
 
 ## Relevant locations
 
@@ -106,13 +118,17 @@ Milestone 4 is complete as a functional educational computer. The current Comput
 - Computer debugger client: `src/main/java/dev/eigenworks/client/screen/ComputerDebuggerScreen.java`
 - ISA reference: `docs/EIGEN8_ISA.md`
 - Demo A source: `examples/demo_a.asm`
+- MCU and peripherals: `src/main/java/dev/eigenworks/embedded/`
+- MCU Minecraft adapter: `src/main/java/dev/eigenworks/block/MicrocontrollerBlock.java` and `block/entity/MicrocontrollerBlockEntity.java`
+- MCU register map: `docs/EIGEN_MCU.md`
+- MCU example: `examples/mcu_gpio_pwm.asm`
 
 ## Exact next tasks
 
-1. Freeze the MCU peripheral register/port map around the existing Eigen-8 I/O interface.
-2. Implement direction-controlled digital GPIO and bridge it to explicit digital network ports.
-3. Implement cycle-accounted timers with interrupt generation.
-4. Implement and test ADC quantization/range/conversion delay and PWM frequency/duty/enable.
+1. Implement the handheld engineering inspector and contextual device diagnostics.
+2. Add bounded server-owned sampled-channel ring buffers.
+3. Implement a multi-channel oscilloscope block and synchronized time-domain screen.
+4. Implement safe mod-directory CSV data logging with explicit player control.
 
 ## Commands
 
