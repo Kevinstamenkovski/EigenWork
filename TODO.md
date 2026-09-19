@@ -99,7 +99,10 @@
 - [x] Milestone 14: build cached branching multi-block components without per-tick world scans.
 - [x] Milestone 14: add persistent configurable CAN nodes with timed frame delivery and inspector diagnostics.
 - [x] Milestone 14: verify placement, communication, and save/load with Minecraft GameTests.
-- [ ] Add configurable device screens for PID gains, matrices, PLC I/O, and console parameters.
+- [x] Milestone 15: add reusable finite/range/step/default engineering parameter schemas.
+- [x] Milestone 15: add server-validated Motor Rig PID/target controls and live telemetry screen.
+- [x] Milestone 15: persist configured PID values and verify menu updates/save-load in Minecraft.
+- [ ] Extend configurable screens to matrices, PLC I/O, and Advanced Console parameters.
 - [ ] Integrate capacitor/inductor companion stamps and nonlinear diode iterations into general MNA networks.
 - [ ] Add articulated multi-block robot rendering and six-axis robot topology.
 - [ ] Add a distributable release workflow and compatibility matrix for future Minecraft/Fabric updates.

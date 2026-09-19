@@ -55,4 +55,14 @@ class ControlBlockTest {
 		assertThrows(IllegalArgumentException.class, () -> new DelayBlock(0, 0));
 		assertThrows(IllegalArgumentException.class, () -> new PidController(1, 0, 0, 0, -1, 1, 0));
 	}
+
+	@Test void motorControllerParametersAreValidatedAndRebuildPidState() {
+		MotorPositionController controller = new MotorPositionController();
+		controller.configure(3.0, 0.8, 0.2, 1.0);
+		assertEquals(3.0, controller.kp()); assertEquals(0.8, controller.ki()); assertEquals(0.2, controller.kd()); assertEquals(1.0, controller.targetRadians());
+		controller.adjustParameter(0, 1); assertEquals(3.1, controller.kp(), 1e-12);
+		assertThrows(IllegalArgumentException.class, () -> controller.configure(-1, .8, .2, 1));
+		assertEquals(3.1, controller.kp(), 1e-12, "Rejected configuration must not replace valid parameters");
+		controller.resetParameters(); assertEquals(2.4, controller.kp()); assertEquals(Math.PI / 2, controller.targetRadians());
+	}
 }

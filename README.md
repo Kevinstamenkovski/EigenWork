@@ -2,7 +2,7 @@
 
 EigenWorks is a Fabric mod for Minecraft Java Edition 26.2 that grows into a coherent engineering sandbox: signals, real programmable computers, embedded control, electrical and motor models, instrumentation, robotics, and industrial automation.
 
-The current playable foundation spans fourteen completed milestones: scheduled digital devices, a real programmable **Eigen-8 Computer** and MCU, instrumentation, electrical/motor control, engineering mathematics, timed buses, robot kinematics, PLC automation, advanced diagnostics, and physical multi-block CAN networks. Underneath them, pure guarded engineering models are adapted into persistent, server-authoritative Minecraft blocks and tested both as Java units and inside Minecraft GameTests.
+The current playable foundation spans fifteen completed milestones: scheduled digital devices, a real programmable **Eigen-8 Computer** and MCU, instrumentation, configurable electrical/motor control, engineering mathematics, timed buses, robot kinematics, PLC automation, advanced diagnostics, physical multi-block CAN networks, and server-validated engineering GUIs. Underneath them, pure guarded engineering models are adapted into persistent, server-authoritative Minecraft blocks and tested both as Java units and inside Minecraft GameTests.
 
 Empty-hand right-click the Test Bench to queue a server-side digital diagnostic. On the next engineering simulation tick it computes `0xC AND 0xA` through the real gate implementation, clocks a counter, and reports both results in chat.
 
@@ -42,7 +42,7 @@ Use the **Engineering Inspector** on a Computer, MCU, oscilloscope, or digital d
 
 ## Motor control
 
-The **DC Motor Test Rig** is a real composed H-bridge, DC motor, 20:1 gearbox, incremental encoder, and optional protected PID. Connect the MCU's 8-bit `pwm_duty` to `pwm_command`; `128` is zero voltage, values above/below drive forward/reverse. Empty-hand use toggles its built-in 90-degree PID demonstration, and sneak-use resets it. The rig publishes oscilloscope-ready setpoint, position, error, and control channels.
+The **DC Motor Test Rig** is a real composed H-bridge, DC motor, 20:1 gearbox, incremental encoder, and optional protected PID. Connect the MCU's 8-bit `pwm_duty` to `pwm_command`; `128` is zero voltage, values above/below drive forward/reverse. Empty-hand use opens its live server-authoritative PID configuration screen; edit Kp/Ki/Kd/target, switch direct/PID modes, or reset parameters and plant state there. Sneak-use remains a quick plant reset. The rig publishes oscilloscope-ready setpoint, position, error, and control channels.
 
 Demo B uses the real MCU to read motor position and calculate the PWM command in Eigen-8 assembly. Demo C uses the protected discrete PID and four scope traces. Wiring, source code, scaling, and operation are documented in [`docs/CONTROL.md`](docs/CONTROL.md); motor equations and the circuit solver are in [`docs/ELECTRICAL_MOTOR.md`](docs/ELECTRICAL_MOTOR.md).
 

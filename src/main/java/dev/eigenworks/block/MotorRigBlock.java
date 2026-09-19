@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
@@ -23,8 +24,10 @@ public final class MotorRigBlock extends BaseEntityBlock {
 	@Override protected InteractionResult useWithoutItem(BlockState state,Level level,BlockPos pos,Player player,BlockHitResult hit){
 		if(level.isClientSide())return InteractionResult.SUCCESS;
 		if(!(level.getBlockEntity(pos) instanceof MotorRigBlockEntity rig))return InteractionResult.PASS;
-		if(player.isShiftKeyDown())rig.resetRig();else rig.toggleControlMode();
-		player.sendSystemMessage(Component.translatable("message.eigenworks.motor_status",rig.controlMode().name(),rig.assembly().driver().outputVoltage(),rig.assembly().motor().currentAmperes(),rig.assembly().outputSpeed(),rig.assembly().outputAngle(),rig.encoderCounts(),rig.controllerSnapshot().error()));
+		if(player.isShiftKeyDown()) {
+			rig.resetRig();
+			player.sendSystemMessage(Component.translatable("message.eigenworks.motor_status",rig.controlMode().name(),rig.assembly().driver().outputVoltage(),rig.assembly().motor().currentAmperes(),rig.assembly().outputSpeed(),rig.assembly().outputAngle(),rig.encoderCounts(),rig.controllerSnapshot().error()));
+		} else if (player instanceof ServerPlayer serverPlayer) serverPlayer.openMenu(rig);
 		return InteractionResult.SUCCESS_SERVER;
 	}
 }

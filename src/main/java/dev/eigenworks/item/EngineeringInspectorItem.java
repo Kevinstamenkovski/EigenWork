@@ -72,6 +72,8 @@ public final class EngineeringInspectorItem extends Item {
 					rig.controlMode(), rig.controllerSnapshot().reference(), rig.controllerSnapshot().error())));
 			lines.add(Component.literal("V: %.2f V  I: %.2f A  speed: %.2f rad/s".formatted(rig.assembly().driver().outputVoltage(),rig.assembly().motor().currentAmperes(),rig.assembly().outputSpeed())));
 			lines.add(Component.literal("angle: %.3f rad  encoder: %d  load: %.2f N m".formatted(rig.assembly().outputAngle(),rig.encoderCounts(),rig.assembly().loadTorque())));
+			lines.add(Component.literal("PID: Kp=%.2f Ki=%.2f Kd=%.2f target=%.3f rad".formatted(
+					rig.positionController().kp(), rig.positionController().ki(), rig.positionController().kd(), rig.positionController().targetRadians())));
 			if(!rig.assembly().motor().faults().isEmpty())lines.add(Component.literal("Faults: "+rig.assembly().motor().faults()));
 		} else if (blockEntity instanceof MathematicsWorkstationBlockEntity workstation) {
 			lines.add(Component.literal("Engineering Mathematics Workstation"));

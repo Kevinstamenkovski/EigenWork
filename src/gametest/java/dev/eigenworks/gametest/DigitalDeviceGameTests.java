@@ -19,6 +19,7 @@ import dev.eigenworks.block.entity.AdvancedEngineeringConsoleBlockEntity;
 import dev.eigenworks.block.entity.CanNodeBlockEntity;
 import dev.eigenworks.automation.RouteOutcome;
 import dev.eigenworks.computer.cpu.CpuStatus;
+import dev.eigenworks.control.MotorRigMenu;
 import dev.eigenworks.digital.DigitalGateOperation;
 import dev.eigenworks.digital.world.DigitalWorldNetwork;
 import dev.eigenworks.registry.ModBlocks;
@@ -229,6 +230,27 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 			helper.assertValueEqual(motor.encoderCounts(),restored.encoderCounts(),"Restored encoder state");
 			helper.succeed();
 		});
+	}
+
+	@GameTest
+	public void motorRigMenuAppliesValidatedPidConfigurationAndPersists(GameTestHelper helper) {
+		BlockPos motorPos = new BlockPos(3, 1, 1);
+		helper.setBlock(motorPos, ModBlocks.MOTOR_RIG);
+		MotorRigBlockEntity motor = helper.getBlockEntity(motorPos, MotorRigBlockEntity.class);
+		var player = helper.makeMockServerPlayer(GameType.CREATIVE);
+		BlockPos absoluteMotorPos = helper.absolutePos(motorPos);
+		player.setPos(absoluteMotorPos.getX() + .5, absoluteMotorPos.getY() + .5, absoluteMotorPos.getZ() + .5);
+		MotorRigMenu menu = new MotorRigMenu(7, motor);
+		helper.assertTrue(menu.clickMenuButton(player, 1), "Server menu must accept Kp increment control");
+		helper.assertValueEqual(2.5, motor.positionController().kp(), "Server-adjusted Kp");
+		helper.assertTrue(menu.clickMenuButton(player, 7), "Server menu must accept target increment control");
+		helper.assertTrue(motor.positionController().targetRadians() > Math.PI / 2, "Target must increase by configured step");
+		helper.assertTrue(menu.clickMenuButton(player, MotorRigMenu.BUTTON_TOGGLE_MODE), "Server menu must toggle control mode");
+		helper.assertValueEqual(MotorRigBlockEntity.ControlMode.POSITION_90_DEGREES, motor.controlMode(), "Configured control mode");
+		MotorRigBlockEntity restored = roundTrip(helper, motor, MotorRigBlockEntity.class);
+		helper.assertValueEqual(2.5, restored.positionController().kp(), "Persisted Kp");
+		helper.assertValueEqual(motor.positionController().targetRadians(), restored.positionController().targetRadians(), "Persisted target");
+		helper.discard(player); helper.succeed();
 	}
 
 	@GameTest(maxTicks = 120)

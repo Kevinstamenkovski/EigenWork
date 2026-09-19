@@ -18,7 +18,7 @@ The MCU repeatedly reads encoded position through `IN`, computes signed proporti
 
 ## Demo C: protected PID and oscilloscope
 
-Empty-hand use the Motor Rig to enter `POSITION_90_DEGREES`. The server-owned PID drives the same H-bridge and physical motor model. Connect the rig's first four outputs to oscilloscope channels by selecting the rig, cycling to the desired output with repeated uses on the rig, and then using the tool on the scope:
+Empty-hand use the Motor Rig to open its PID Configuration screen, then select **Toggle mode** to enter `POSITION_90_DEGREES`. The server-owned PID drives the same H-bridge and physical motor model. Connect the rig's first four outputs to oscilloscope channels by selecting the rig with the Digital Linking Tool, cycling to the desired output with repeated uses, and then using the tool on the scope:
 
 1. `setpoint`
 2. `position`
@@ -26,3 +26,14 @@ Empty-hand use the Motor Rig to enter `POSITION_90_DEGREES`. The server-owned PI
 4. `control_output`
 
 These diagnostics are encoded as 8-bit signed engineering displays: angle/error use `-pi..+pi`, and control uses `-1..+1`. Open the oscilloscope to observe the actual sampled closed-loop response. Sneak-use the Motor Rig to reset its plant and controller state.
+
+## PID configuration screen
+
+The screen synchronizes live position, error, control output, P/I/D terms, motor voltage, and current from the server. `-` and `+` adjust bounded parameters using declared engineering steps:
+
+- Kp: 0–20, step 0.1
+- Ki: 0–10 1/s, step 0.05
+- Kd: 0–5 s, step 0.01
+- target: `-pi..+pi` rad, step 5 degrees
+
+Clients send only menu-button identifiers. `ValidatedParameterSet` applies the declared range and step on the server, reconstructs/reset the PID safely, marks persistence dirty, and synchronizes the accepted value back. Invalid or non-finite direct values are rejected. **Reset gains** restores `2.4 / 0.7 / 0.16 / 90 degrees`; **Reset rig** clears physical/controller state without replacing gains.

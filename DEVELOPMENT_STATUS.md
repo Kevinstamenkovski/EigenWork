@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 15 planning — editable engineering configuration screens. Milestone 14 physical CAN networking is stable and complete.
+Milestone 16 planning — expanded editors for matrices, PLC I/O, and advanced-console parameters.
 
 ## Last completed milestone
 
-Milestone 14 — physical rendered CAN cables, persistent nodes, and cached multi-block bus topology.
+Milestone 15 — reusable server-validated engineering parameters and live Motor Rig PID configuration GUI.
 
 ## Completed systems
 
@@ -119,18 +119,24 @@ Milestone 14 — physical rendered CAN cables, persistent nodes, and cached mult
 - Automatic cable/node registration and removal through block-entity chunk lifecycle events; steady-state transmission never scans the world.
 - Central 1 ms-quantized advancement of each physical 500 kbit/s CAN component from the authoritative server tick.
 - Persistent Configurable CAN Node with selectable 11-bit transmit ID, incrementing diagnostic payload, timed frame delivery, receive counters, and inspector diagnostics.
+- Reusable immutable engineering parameter schemas with finite bounds, adjustment step, default, label, and unit metadata.
+- Ordered server-owned parameter sets with duplicate-key rejection, bounded adjustment, direct-value validation, and deterministic reset.
+- Configurable Motor Rig Kp/Ki/Kd and target angle with safe PID reconstruction/reset whenever accepted parameters change.
+- Persistent Motor Rig gains and setpoint with invalid saved-value fallback to known-safe defaults.
+- Server-authoritative synchronized Motor Rig screen with step controls, mode/plant/parameter reset actions, and live position/error/output/P/I/D/voltage/current telemetry.
+- Menu packets contain only bounded button identifiers; all parameter meaning, ranges, accepted values, and controller state remain authoritative on the server.
 
 ## Partially implemented systems
 
 - Configuration currently provides validated defaults but has no user file or screen.
 - The Engineering Test Bench is a one-shot digital diagnostic, not a configurable workstation yet.
-- Device configuration currently uses compact block interactions and chat diagnostics rather than dedicated GUIs.
+- Computer, oscilloscope, and Motor Rig have dedicated synchronized GUIs; most remaining devices still use compact block interactions and chat diagnostics.
 - Digital logic links remain abstract and persistent; physical rendered cabling now exists for CAN only.
 - The debugger intentionally exposes a compact bounded snapshot rather than a full editable 64 KiB memory grid; richer memory/source views remain future UI work.
 - The MCU ADC has a real voltage input API and tested quantization, but a placeable analog cable/sensor source arrives with the electrical and instrumentation milestones.
 - The first oscilloscope accepts 8-bit digital words. Typed voltage/current/mechanical channels and triggering follow their respective physical systems.
 - The general MNA builder remains DC-only; tested RC/RL backward-Euler companion models exist separately, while switches and nonlinear devices remain extensions.
-- PID gains and the 90-degree target are fixed for the initial demonstration; editable controller configuration UI is future work.
+- PID gains and target are editable and persistent; output limits, derivative-filter time, and sample period remain fixed safe implementation parameters.
 - The Mathematics Workstation uses a compact book-based matrix editor rather than a dedicated grid GUI; calculations and persistence are fully playable.
 - CAN has arbitrary branching multi-block cable topology; UART/I2C/SPI remain local to controllers/hubs, and protocol-analyzer decoding remains an extension.
 - Robot Arms are blocks containing articulated server state; separate multi-block link geometry, 6-DOF topology, and animated rendering are future presentation/topology work.
@@ -145,11 +151,11 @@ Milestone 14 — physical rendered CAN cables, persistent nodes, and cached mult
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 111 passing tests. New coverage validates cached cable components, physical-cable requirements, frame delivery without steady-state cache rebuilds, and disconnection invalidation.
-- Minecraft GameTests: all 17 required tests pass (sixteen EigenWorks tests plus the framework test), including physical CAN placement, timed delivery, and node persistence.
+- Unit tests: 114 passing tests. New coverage validates parameter schemas, bounds/defaults/steps, rejected atomic controller configuration, and controller reconstruction.
+- Minecraft GameTests: all 18 required tests pass (seventeen EigenWorks tests plus the framework test), including actual Motor Rig menu-button application and PID configuration persistence.
 - `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
-- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1603 recipes without EigenWorks datapack errors, executed all prior systems plus physical CAN placement/transmission/persistence. All 17 required tests passed.
-- Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with CAN Cable/Node and all prior assets registered; no missing-model, missing-texture, datapack, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so rendered appearance was not visually inspected.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1603 recipes without EigenWorks datapack errors, executed all prior systems plus server-validated Motor Rig configuration/persistence. All 18 required tests passed.
+- Latest client regression (2026-09-19): EigenWorks initialized with the Motor Rig menu/screen registration and completed resource reload; no EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so the screen layout was not visually inspected.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
 - Produced JAR: `build/libs/eigenworks-0.1.0.jar`.
@@ -164,7 +170,7 @@ Milestone 14 — physical rendered CAN cables, persistent nodes, and cached mult
 
 ## Temporary limitations
 
-Milestones 1–14 are complete as functional vertical slices. CAN cable arms are deliberately rendered as a static six-way cross rather than dynamically hiding unused branches. Eigen-8 CAN memory-mapped I/O, electrical termination, richer configuration GUIs, nonlinear general circuit solving, and six-axis animated robots remain explicit release extensions.
+Milestones 1–15 are complete as functional vertical slices. The PID editor uses declared step buttons instead of free-form text, preventing malformed client numeric input. Matrix, PLC I/O, and Advanced Console editors; Eigen-8 CAN I/O; nonlinear general circuit solving; and six-axis animated robots remain explicit extensions.
 
 ## Relevant locations
 
@@ -222,12 +228,15 @@ Milestones 1–14 are complete as functional vertical slices. CAN cable arms are
 - Physical CAN topology: `src/main/java/dev/eigenworks/networking/world/`
 - CAN Cable/Node adapters: `src/main/java/dev/eigenworks/block/entity/CanCableBlockEntity.java` and `CanNodeBlockEntity.java`
 - Physical CAN guide: `docs/PHYSICAL_CAN.md`
+- Parameter schema core: `src/main/java/dev/eigenworks/config/EngineeringParameter.java` and `ValidatedParameterSet.java`
+- Motor Rig menu/screen: `src/main/java/dev/eigenworks/control/MotorRigMenu.java` and `client/screen/MotorRigScreen.java`
+- Updated control guide: `docs/CONTROL.md`
 
 ## Exact next tasks
 
-1. Define one reusable validated server-owned parameter-edit protocol and menu abstraction.
-2. Add the first editable screen for Motor Rig PID gains and target angle.
-3. Extend the same pattern to matrix, PLC I/O, and advanced-console parameters.
+1. Add a bounded grid editor for Mathematics Workstation vector/matrix operands.
+2. Add PLC I/O monitoring and editable scan/program controls using the same server-owned menu pattern.
+3. Add Advanced Console parameter selection for CAN bitrate, impairment settings, and IK damping.
 4. Integrate capacitor/inductor companion stamps and bounded nonlinear diode iteration into general MNA.
 5. Add articulated multi-block rendering and general 6-DOF robot topology.
 

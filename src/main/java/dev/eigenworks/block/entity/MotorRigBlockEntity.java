@@ -4,6 +4,7 @@ import java.util.List;
 
 import dev.eigenworks.control.MotorPositionController;
 import dev.eigenworks.control.PidSnapshot;
+import dev.eigenworks.control.MotorRigMenu;
 import dev.eigenworks.digital.DigitalPortDirection;
 import dev.eigenworks.digital.world.DigitalDeviceAddress;
 import dev.eigenworks.digital.world.DigitalInputBinding;
@@ -18,13 +19,19 @@ import dev.eigenworks.simulation.LoadedSimulationDevice;
 import dev.eigenworks.simulation.SimulationContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 /** Playable PWM motor plant with optional protected closed-loop position control. */
-public final class MotorRigBlockEntity extends BlockEntity implements LoadedSimulationDevice, WorldDigitalDevice {
+public final class MotorRigBlockEntity extends BlockEntity implements LoadedSimulationDevice, WorldDigitalDevice, MenuProvider {
 	public enum ControlMode { DIRECT_PWM, POSITION_90_DEGREES }
 
 	private static final long PERIOD_MICROS = 5_000;
@@ -85,6 +92,9 @@ public final class MotorRigBlockEntity extends BlockEntity implements LoadedSimu
 	public long encoderCounts() { return assembly.encoderCounts(); }
 	public ControlMode controlMode() { return controlMode; }
 	public PidSnapshot controllerSnapshot() { return positionController.snapshot(); }
+	public MotorPositionController positionController() { return positionController; }
+	public void adjustControllerParameter(int index, int direction) { positionController.adjustParameter(index, direction); setChanged(); }
+	public void resetControllerParameters() { positionController.resetParameters(); setChanged(); }
 	public void toggleControlMode() {
 		controlMode = controlMode == ControlMode.DIRECT_PWM ? ControlMode.POSITION_90_DEGREES : ControlMode.DIRECT_PWM;
 		positionController.reset();
@@ -97,6 +107,24 @@ public final class MotorRigBlockEntity extends BlockEntity implements LoadedSimu
 		commandCode = 128;
 		publishedCounts = 0;
 		setChanged();
+	}
+	public boolean stillValid(Player player) { return level != null && level.getBlockEntity(worldPosition) == this && player.distanceToSqr(worldPosition.getX() + .5, worldPosition.getY() + .5, worldPosition.getZ() + .5) <= 64; }
+	@Override public Component getDisplayName() { return Component.translatable("screen.eigenworks.motor_rig"); }
+	@Override public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) { return new MotorRigMenu(id, this); }
+	public ContainerData menuData() {
+		return new ContainerData() {
+			@Override public int get(int index) {
+				PidSnapshot snapshot = positionController.snapshot();
+				return switch (index) {
+					case 0, 1, 2, 3 -> scaled(positionController.parameterValue(index), 1_000);
+					case 4 -> controlMode.ordinal(); case 5 -> scaled(assembly.outputAngle(), 1_000); case 6 -> scaled(snapshot.error(), 1_000); case 7 -> scaled(snapshot.output(), 1_000);
+					case 8 -> scaled(snapshot.proportional(), 1_000); case 9 -> scaled(snapshot.integral(), 1_000); case 10 -> scaled(snapshot.derivative(), 1_000);
+					case 11 -> scaled(assembly.driver().outputVoltage(), 100); case 12 -> scaled(assembly.motor().currentAmperes(), 100); default -> 0;
+				};
+			}
+			@Override public void set(int index, int value) { }
+			@Override public int getCount() { return MotorRigMenu.DATA_COUNT; }
+		};
 	}
 
 	@Override public void bindDigitalNetwork(ServerLevel level, DigitalWorldNetwork network) {
@@ -143,6 +171,10 @@ public final class MotorRigBlockEntity extends BlockEntity implements LoadedSimu
 		publishedCounts = input.getLongOr("counts", 0);
 		int mode = Math.clamp(input.getIntOr("control_mode", 0), 0, ControlMode.values().length - 1);
 		controlMode = ControlMode.values()[mode];
+		try {
+			positionController.configure(input.getDoubleOr("pid_kp", 2.4), input.getDoubleOr("pid_ki", 0.7),
+					input.getDoubleOr("pid_kd", 0.16), input.getDoubleOr("pid_target", Math.PI / 2));
+		} catch (IllegalArgumentException exception) { positionController.resetParameters(); }
 		commandSource = DigitalLinkStorage.read(input, "command_source");
 	}
 	@Override protected void saveAdditional(ValueOutput output) {
@@ -154,6 +186,8 @@ public final class MotorRigBlockEntity extends BlockEntity implements LoadedSimu
 		output.putDouble("position", assembly.motor().angularPositionRadians());
 		output.putLong("counts", publishedCounts);
 		output.putInt("control_mode", controlMode.ordinal());
+		output.putDouble("pid_kp", positionController.kp()); output.putDouble("pid_ki", positionController.ki());
+		output.putDouble("pid_kd", positionController.kd()); output.putDouble("pid_target", positionController.targetRadians());
 		DigitalLinkStorage.write(output, "command_source", commandSource);
 	}
 
@@ -166,4 +200,5 @@ public final class MotorRigBlockEntity extends BlockEntity implements LoadedSimu
 	private static void requireCommand(String port) {
 		if (!COMMAND.name().equals(port)) throw new IllegalArgumentException("Unknown motor input: " + port);
 	}
+	private static int scaled(double value, double scale) { if (!Double.isFinite(value)) return 0; double result = value * scale; return (int) Math.clamp(Math.round(result), Integer.MIN_VALUE, Integer.MAX_VALUE); }
 }

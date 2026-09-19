@@ -2,6 +2,7 @@ package dev.eigenworks.client;
 
 import dev.eigenworks.client.screen.ComputerDebuggerScreen;
 import dev.eigenworks.client.screen.OscilloscopeScreen;
+import dev.eigenworks.client.screen.MotorRigScreen;
 import dev.eigenworks.registry.ModMenus;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -12,5 +13,6 @@ public final class EigenWorksClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		MenuScreens.register(ModMenus.COMPUTER, ComputerDebuggerScreen::new);
 		MenuScreens.register(ModMenus.OSCILLOSCOPE, OscilloscopeScreen::new);
+		MenuScreens.register(ModMenus.MOTOR_RIG, MotorRigScreen::new);
 	}
 }
