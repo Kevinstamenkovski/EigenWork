@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 4 — computer architecture, assembler, and Demo A.
+Milestone 5 — MCU, GPIO, timers, ADC, and PWM.
 
 ## Last completed milestone
 
-Milestone 3 — playable digital logic devices and explicit world wiring.
+Milestone 4 — programmable Eigen-8 computer, assembler, debugger, and Demo A.
 
 ## Completed systems
 
@@ -36,6 +36,18 @@ Milestone 3 — playable digital logic devices and explicit world wiring.
 - Bounded event-queue propagation with cross-dimension rejection and an oscillating-loop safety guard.
 - Fabric server GameTests covering all device block entities, linking-tool interaction, propagation, and serialization round trips.
 - Block items, models, recipes, loot tables, localization, and creative entries for all Milestone 3 devices and the linking tool.
+- Frozen Eigen-8 ISA with eight registers, 16-bit PC/SP, Z/N/C/V flags, documented byte encoding, logical cycle costs, stack, calls, signed branches, I/O ports, and interrupts.
+- Mathematically tested 8-bit ALU including independent unsigned carry/no-borrow and signed overflow behavior.
+- Byte-addressed 64 KiB RAM, immutable ROM, and explicit guarded memory-bus mappings.
+- Complete fetch/decode/execute path for NOP, LOAD, STORE, MOV, PUSH, POP, ADD, SUB, MUL, DIV, MOD, AND, OR, XOR, NOT, SHL, SHR, CMP, JMP, JE, JNE, JG, JL, CALL, RET, IN, OUT, INT, and HALT.
+- Stable CPU faults for illegal instructions/registers, divide-by-zero, invalid memory, I/O exceptions, and invalid state.
+- Two-pass Eigen-8 assembler with labels, numeric constants, comments, decimal/hex/binary literals, source maps, bounds checking, and line-numbered diagnostics.
+- Placeable persistent Eigen-8 Computer block registered with the central server scheduler at 50 ms and a bounded 1,000-cycle update budget.
+- Safe in-game programming from Book and Quill or Written Book pages; assembly always runs server-side and failed source never replaces the installed program.
+- Server-authoritative synchronized debugger screen with live registers, PC, SP, flags, status, logical cycle count, next opcode, Demo A memory output, and Run/Pause/Reset/Step controls.
+- Full Computer persistence for source, 64 KiB RAM, registers, PC/SP, flags, status, and execution counters.
+- Demo A assembly program performs real CPU instructions for `25 + 17`, stores `42` at `0x0020`, and exposes it visibly in the debugger.
+- Computer block item, localization, model, loot table, mining tag, creative entry, and survival recipe.
 
 ## Partially implemented systems
 
@@ -43,6 +55,7 @@ Milestone 3 — playable digital logic devices and explicit world wiring.
 - The Engineering Test Bench is a one-shot digital diagnostic, not a configurable workstation yet.
 - Device configuration currently uses compact block interactions and chat diagnostics rather than dedicated GUIs.
 - Digital links are functional and persistent but do not yet render physical cable geometry.
+- The debugger intentionally exposes a compact bounded snapshot rather than a full editable 64 KiB memory grid; richer memory/source views remain future UI work.
 
 ## Known bugs and failing tests
 
@@ -53,11 +66,11 @@ Milestone 3 — playable digital logic devices and explicit world wiring.
 ## Build and Minecraft status
 
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
-- Unit tests: 37 passing tests covering configuration, scheduler behavior, signals, all required gates, clock edges and validation, register/counter restoration, diagnostic results, pure and world-network propagation, width validation, disconnects, bounded cyclic propagation, and topology caching.
-- Minecraft GameTests: all 5 required tests pass (four EigenWorks tests plus the framework test), covering block creation, player linking-tool use, clock-to-counter propagation, and serialization of clock/counter/gate/register state and links.
-- `./gradlew runClient`: completed cleanly with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0.
-- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1591 recipes without EigenWorks datapack errors, created every digital block entity, exercised the Digital Linking Tool through a mock player, propagated a rising edge, and round-tripped persistent state. All required tests passed.
-- Latest client regression (2026-09-19): EigenWorks initialized, all assets reloaded without missing-model or missing-texture warnings, 1591 recipes loaded, and the existing development world began an integrated-server launch. The client was then stopped manually; no screen capture or desktop input was used.
+- Unit tests: 50 passing tests. Computer coverage includes ALU flags, RAM/ROM/bus behavior, assembler syntax and every frozen mnemonic, Demo A, memory/stack/logic operations, calls, signed branches, port I/O, interrupts, stepping, and CPU faults, in addition to all prior simulation/signal/digital tests.
+- Minecraft GameTests: all 6 required tests pass (five EigenWorks tests plus the framework test), including placed Computer assembly, central-scheduler execution of Demo A, HALT/result checks, and source/RAM serialization alongside all prior digital gameplay tests.
+- `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1592 recipes without EigenWorks datapack errors, executed all digital tests plus scheduled Computer Demo A and persistence. All 6 required tests passed.
+- Latest client regression (2026-09-19): EigenWorks initialized and completed resource reload with the Computer model and client-side debugger registration present; no missing-model, missing-texture, or EigenWorks exception was logged. The client was then stopped manually; no screen capture or desktop input was used, so the debugger's rendered appearance was not visually inspected.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
 - Produced JAR: `build/libs/eigenworks-0.1.0.jar`.
@@ -72,7 +85,7 @@ Milestone 3 — playable digital logic devices and explicit world wiring.
 
 ## Temporary limitations
 
-Milestone 3 is complete as a functional but visually simple digital layer. Links are represented logically rather than by rendered cable blocks, and device setup uses chat interactions rather than GUIs. CPU, electrical, control, instrumentation, and robotics gameplay is not claimed.
+Milestone 4 is complete as a functional educational computer. The current Computer uses unified RAM rather than separately placeable CPU/RAM/ROM components; its debugger is intentionally compact and books are the source editor. MCU peripherals, electrical, control, instrumentation, and robotics gameplay are not claimed.
 
 ## Relevant locations
 
@@ -88,13 +101,18 @@ Milestone 3 is complete as a functional but visually simple digital layer. Links
 - Digital device adapters: `src/main/java/dev/eigenworks/block/` and `src/main/java/dev/eigenworks/block/entity/`
 - World digital networking: `src/main/java/dev/eigenworks/digital/world/`
 - Minecraft GameTests: `src/gametest/`
+- CPU, ALU, ISA, memory, and assembler: `src/main/java/dev/eigenworks/computer/`
+- Computer Minecraft adapter: `src/main/java/dev/eigenworks/block/ComputerBlock.java` and `block/entity/ComputerBlockEntity.java`
+- Computer debugger client: `src/main/java/dev/eigenworks/client/screen/ComputerDebuggerScreen.java`
+- ISA reference: `docs/EIGEN8_ISA.md`
+- Demo A source: `examples/demo_a.asm`
 
 ## Exact next tasks
 
-1. Freeze and document the educational 8-bit instruction encoding, operand formats, flag rules, and cycle costs.
-2. Implement and test ALU carry and signed overflow for ADD and SUB.
-3. Implement byte-addressed RAM and read-only ROM.
-4. Build the first fetch/decode/execute CPU path toward Demo A (`25 + 17 = 42`).
+1. Freeze the MCU peripheral register/port map around the existing Eigen-8 I/O interface.
+2. Implement direction-controlled digital GPIO and bridge it to explicit digital network ports.
+3. Implement cycle-accounted timers with interrupt generation.
+4. Implement and test ADC quantization/range/conversion delay and PWM frequency/duty/enable.
 
 ## Commands
 

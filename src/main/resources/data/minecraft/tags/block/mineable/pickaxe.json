@@ -5,6 +5,7 @@
     "eigenworks:digital_clock",
     "eigenworks:digital_counter",
     "eigenworks:digital_gate",
-    "eigenworks:digital_register"
+    "eigenworks:digital_register",
+    "eigenworks:computer"
   ]
 }

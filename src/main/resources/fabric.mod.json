@@ -8,7 +8,8 @@
   "license": "MIT",
   "environment": "*",
   "entrypoints": {
-    "main": ["dev.eigenworks.EigenWorks"]
+    "main": ["dev.eigenworks.EigenWorks"],
+    "client": ["dev.eigenworks.client.EigenWorksClient"]
   },
   "depends": {
     "fabricloader": ">=0.19.5",
@@ -17,4 +18,3 @@
     "fabric-api": ">=0.160.0+26.2"
   }
 }
-

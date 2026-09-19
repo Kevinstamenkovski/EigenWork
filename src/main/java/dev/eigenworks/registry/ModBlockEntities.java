@@ -5,6 +5,7 @@ import dev.eigenworks.block.entity.DigitalClockBlockEntity;
 import dev.eigenworks.block.entity.DigitalCounterBlockEntity;
 import dev.eigenworks.block.entity.DigitalGateBlockEntity;
 import dev.eigenworks.block.entity.DigitalRegisterBlockEntity;
+import dev.eigenworks.block.entity.ComputerBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -28,6 +29,10 @@ public final class ModBlockEntities {
 			BuiltInRegistries.BLOCK_ENTITY_TYPE,
 			EigenWorks.id("digital_register"),
 			FabricBlockEntityTypeBuilder.create(DigitalRegisterBlockEntity::new, ModBlocks.DIGITAL_REGISTER).build());
+	public static final BlockEntityType<ComputerBlockEntity> COMPUTER = Registry.register(
+			BuiltInRegistries.BLOCK_ENTITY_TYPE,
+			EigenWorks.id("computer"),
+			FabricBlockEntityTypeBuilder.create(ComputerBlockEntity::new, ModBlocks.COMPUTER).build());
 
 	private ModBlockEntities() {
 	}

@@ -1,0 +1,8 @@
+; EigenWorks Demo A: 25 + 17 = 42
+.equ RESULT, 0x0020
+
+LOAD R0, 25
+LOAD R1, 17
+ADD R2, R0, R1
+STORE [RESULT], R2
+HALT

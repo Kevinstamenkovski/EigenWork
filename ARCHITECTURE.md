@@ -9,7 +9,9 @@
 - `dev.eigenworks.digital`: width-safe combinational logic, logical clocks, sequential devices, and cached digital topology.
 - `dev.eigenworks.digital.world`: block-device ports, persistent endpoints, player linking, and per-server cached world topology.
 - `dev.eigenworks.block` and `dev.eigenworks.block.entity`: thin Minecraft adapters and persistent device state over engineering models.
-- Future packages follow subsystem ownership: `digital`, `computer`, `embedded`, `electrical`, `control`, `instrumentation`, `mechanical`, `robotics`, `automation`, `networking`, and `gui`.
+- `dev.eigenworks.computer`: pure Eigen-8 memory, ALU, CPU, ISA, assembler, and synchronized debugger menu.
+- `dev.eigenworks.client`: client-only screens over server-owned menu data.
+- Future packages follow subsystem ownership: `embedded`, `electrical`, `control`, `instrumentation`, `mechanical`, `robotics`, `automation`, and `networking`.
 
 Minecraft blocks and block entities are adapters. Mathematical and engineering behavior belongs in pure Java objects with no dependency on client rendering or world traversal.
 
@@ -47,9 +49,17 @@ The Engineering Test Bench queues a one-shot scheduler device; on the following 
 
 SI units are used internally and one Minecraft block equals one metre. Angles are radians. Numerical entry points reject non-finite values, invalid dimensions, singular systems, and unsafe timesteps with explicit diagnostics rather than propagating NaN or crashing the server.
 
-## Planned computer architecture
+## Computer architecture
 
-The first CPU is an educational 8-bit machine with eight general registers, PC, SP, Z/N/C/V flags, byte-addressed memory, interrupts, and documented instruction costs. Memory-mapped I/O is preferred. The assembler produces validated bytecode and source mappings; the CPU consumes logical cycle budgets rather than simulating physical GHz clocks.
+Eigen-8 is an educational accumulator-independent 8-bit machine with eight general registers, a 16-bit PC and descending SP, Z/N/C/V flags, 64 KiB byte-addressed memory, a 256-port I/O boundary, a big-endian interrupt vector table, and fixed logical instruction costs. Its frozen encoding is documented in `docs/EIGEN8_ISA.md`. The pure CPU executes atomic instructions against a cycle budget rather than simulating physical GHz edges. Illegal instructions/registers, divide-by-zero, memory faults, I/O exceptions, and invalid state become observable CPU faults instead of escaping into the server tick.
+
+`RamMemory` and `RomMemory` implement one unsigned-byte abstraction. `MemoryBus` maps explicit non-overlapping regions and faults on holes. The placed computer currently uses one 64 KiB RAM image; the bus abstraction permits later separate ROM, flash, and memory-mapped devices without changing the CPU.
+
+`Eigen8Assembler` performs two passes. The first fixes label addresses and instruction sizes; the second resolves symbols and emits bytecode plus an address-to-source-line map. It supports labels, numeric constants, comments, decimal/hex/binary literals, bracketed memory operands, and source-located diagnostics. A failed assembly never replaces installed RAM.
+
+`ComputerBlockEntity` is the server-side adapter. It registers with the central scheduler at a 50 ms logical period and grants at most 1,000 cycles per update. Programs are loaded from writable or signed Minecraft books, limited to 32,000 source characters, assembled on the logical server, and start paused. RAM, source, registers, PC, SP, flags, status, and accounting counters survive block-entity serialization; RAM is packed four bytes per serialized integer.
+
+The slotless `ComputerMenu` synchronizes a bounded debugger snapshot. Run, pause, reset, and single-step requests travel through vanilla menu-button packets and are validated/applied on the server. The client screen only renders the synchronized state and never computes CPU results. Demo A stores its visible result at `0x0020`.
 
 ## Planned electrical, control, and robotics architecture
 
@@ -57,4 +67,4 @@ Circuits use a guarded Modified Nodal Analysis core. Motors use the documented c
 
 ## GUI networking
 
-GUI edits are validated server-side. The server publishes bounded snapshots at a configurable visual update rate. Oscilloscope and debugger histories use capped ring buffers; packets never mirror entire unbounded histories.
+GUI edits are validated server-side. The Eigen-8 debugger uses vanilla container-data synchronization for a fixed-size snapshot and menu button packets for controls; it never sends the 64 KiB RAM image to the client. Future oscilloscope and debugger histories use capped ring buffers and bounded visual update rates; packets never mirror entire unbounded histories.

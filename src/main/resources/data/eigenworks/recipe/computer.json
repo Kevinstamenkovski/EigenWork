@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": ["CRC", "RQR", "CIC"],
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "R": "minecraft:redstone",
+    "Q": "minecraft:quartz",
+    "I": "minecraft:iron_ingot"
+  },
+  "result": { "id": "eigenworks:computer", "count": 1 }
+}

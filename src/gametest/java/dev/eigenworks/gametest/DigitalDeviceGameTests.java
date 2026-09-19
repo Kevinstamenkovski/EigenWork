@@ -7,6 +7,8 @@ import dev.eigenworks.block.entity.DigitalClockBlockEntity;
 import dev.eigenworks.block.entity.DigitalCounterBlockEntity;
 import dev.eigenworks.block.entity.DigitalGateBlockEntity;
 import dev.eigenworks.block.entity.DigitalRegisterBlockEntity;
+import dev.eigenworks.block.entity.ComputerBlockEntity;
+import dev.eigenworks.computer.cpu.CpuStatus;
 import dev.eigenworks.digital.DigitalGateOperation;
 import dev.eigenworks.digital.world.DigitalWorldNetwork;
 import dev.eigenworks.registry.ModBlocks;
@@ -112,6 +114,33 @@ public final class DigitalDeviceGameTests implements CustomTestMethodInvoker {
 		helper.assertValueEqual(0xFFL, restoredGate.outputValue(), "Restored gate output");
 		helper.assertValueEqual(77L, restoredRegister.value(), "Restored register value");
 		helper.succeed();
+	}
+
+	@GameTest
+	public void computerExecutesAndPersistsDemoAOnTheServerScheduler(GameTestHelper helper) {
+		BlockPos computerPos = new BlockPos(3, 1, 1);
+		helper.setBlock(computerPos, ModBlocks.COMPUTER);
+		ComputerBlockEntity computer = helper.getBlockEntity(computerPos, ComputerBlockEntity.class);
+		String source = """
+			.equ RESULT, 0x0020
+			LOAD R0, 25
+			LOAD R1, 17
+			ADD R2, R0, R1
+			STORE [RESULT], R2
+			HALT
+			""";
+		helper.assertTrue(computer.assembleAndLoad(source).successful(), "Demo A source must assemble in Minecraft");
+		computer.runCpu();
+		helper.runAfterDelay(3, () -> {
+			helper.assertValueEqual(CpuStatus.HALTED, computer.cpu().status(), "Scheduled CPU status");
+			helper.assertValueEqual(42, computer.memoryValue(ComputerBlockEntity.DEMO_RESULT_ADDRESS),
+					"Demo A result in RAM");
+			ComputerBlockEntity restored = roundTrip(helper, computer, ComputerBlockEntity.class);
+			helper.assertValueEqual(42, restored.memoryValue(ComputerBlockEntity.DEMO_RESULT_ADDRESS),
+					"Persisted Demo A result");
+			helper.assertValueEqual(source, restored.programSource(), "Persisted assembly source");
+			helper.succeed();
+		});
 	}
 
 	@Override

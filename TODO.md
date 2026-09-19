@@ -39,16 +39,28 @@
 
 ## Milestone 4 — Computer and Demo A
 
-- [ ] Freeze and document 8-bit opcode encoding, operands, flags, and cycle costs.
-- [ ] Implement ALU carry and signed overflow for ADD and SUB.
-- [ ] Implement byte-addressed RAM and read-only ROM.
-- [ ] Implement CPU fetch/decode/execute, stack, branches, calls, I/O, interrupts, and faults.
-- [ ] Implement assembler labels, constants, comments, source locations, and diagnostics.
-- [ ] Build Demo A program computing 25 + 17 and visibly expose 42.
+- [x] Freeze and document 8-bit opcode encoding, operands, flags, and cycle costs.
+- [x] Implement ALU carry and signed overflow for ADD and SUB.
+- [x] Implement byte-addressed RAM, read-only ROM, and an explicit memory bus.
+- [x] Implement CPU fetch/decode/execute, stack, branches, calls, I/O, interrupts, and faults.
+- [x] Implement assembler labels, constants, comments, source locations, and diagnostics.
+- [x] Add a persistent scheduler-backed Computer block and book-based program loading.
+- [x] Add a synchronized debugger with run, pause, reset, step, registers, flags, PC/SP, and Demo A result.
+- [x] Build Demo A program computing 25 + 17 and visibly expose 42 at RAM address `0x0020`.
+
+## Milestone 5 — Embedded systems
+
+- [ ] Define the MCU register map for GPIO, ADC, PWM, timers, UART, SPI, and I2C.
+- [ ] Refactor or adapt Eigen-8 port I/O into server-owned peripheral registers.
+- [ ] Implement digital GPIO direction/input/output and connect it to digital networks.
+- [ ] Implement timer cycle accounting and interrupt generation.
+- [ ] Implement ADC range, bit depth, quantization, sampling rate, and conversion delay.
+- [ ] Implement PWM frequency, duty cycle, enable, and timestamped output.
+- [ ] Add missed-deadline accounting for bounded MCU instruction budgets.
+- [ ] Add a placeable persistent MCU with programming and diagnostics.
 
 ## Later milestones
 
-- [ ] Milestone 5: MCU, GPIO, timer, ADC quantization, and PWM timing.
 - [ ] Milestone 6: inspector, oscilloscope ring buffers, and safe CSV logger.
 - [ ] Milestone 7: MNA circuit core, motor driver, DC motor, encoder, and gearbox.
 - [ ] Milestone 8: protected discrete PID and motor-position Demos B/C.

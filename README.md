@@ -2,7 +2,7 @@
 
 EigenWorks is a Fabric mod for Minecraft Java Edition 26.2 that grows into a coherent engineering sandbox: signals, real programmable computers, embedded control, electrical and motor models, instrumentation, robotics, and industrial automation.
 
-The current playable baseline includes an **Engineering Test Bench**, scheduled **Digital Clock**, persistent **8-bit Digital Counter**, configurable **8-bit Digital Gate**, edge-triggered **8-bit Digital Register**, and **Digital Linking Tool**. Underneath them, the server-authoritative deterministic scheduler, typed latency-aware signals, and cached digital world network are implemented and tested inside Minecraft.
+The current playable baseline includes an **Engineering Test Bench**, scheduled digital devices, a **Digital Linking Tool**, and a real programmable **Eigen-8 Computer**. Underneath them, the server-authoritative deterministic scheduler, typed latency-aware signals, cached digital world network, assembler, ALU, CPU, RAM/ROM, stack, branches, I/O, interrupts, and guarded CPU faults are implemented and tested inside Minecraft.
 
 Empty-hand right-click the Test Bench to queue a server-side digital diagnostic. On the next engineering simulation tick it computes `0xC AND 0xA` through the real gate implementation, clocks a counter, and reports both results in chat.
 
@@ -17,6 +17,16 @@ Use the Digital Clock with an empty hand to enable or disable it; sneak-use cycl
 5. Sneak-use the linking tool on an input device to remove its first connection.
 
 Connections are stored on input block entities and survive serialization. The server rebuilds a cached adjacency map only after devices load, unload, connect, or disconnect; it never searches the world every tick. No cable geometry is rendered yet.
+
+## Building and programming a CPU
+
+1. Craft or take an **Eigen-8 Computer** from the Functional Blocks creative tab and place it.
+2. Put Eigen-8 assembly in a Book and Quill (one source file may span pages).
+3. Use the book on the Computer. The server assembles it and reports either the byte count or an exact source-line error.
+4. Empty-hand use the Computer to open its debugger.
+5. Use **Run**, **Pause**, **Reset**, or **Step**. Registers, PC, SP, flags, logical cycle count, next opcode, and `memory[0x0020]` update from server-authoritative state.
+
+Demo A is provided at [`examples/demo_a.asm`](examples/demo_a.asm). Entering that program and pressing Run performs the actual instruction sequence `25 + 17`, stores `42` at address `0x0020`, and shows `42` in green in the debugger. The complete encoding, cycle costs, flag behavior, assembler grammar, interrupt table, and fault behavior are documented in [`docs/EIGEN8_ISA.md`](docs/EIGEN8_ISA.md).
 
 ## Requirements
 
@@ -49,7 +59,7 @@ Create a world and open the Functional Blocks creative tab for the blocks. The D
 
 ## Engineering guides
 
-The first digital circuit is documented above. CPU construction, assembly, MCU, motor-control, PID, oscilloscope, robotics, and PLC guides will be added as their corresponding playable milestones land. Incomplete systems are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
+The first digital circuit and first CPU program are documented above. MCU, motor-control, PID, oscilloscope, robotics, and PLC guides will be added as their corresponding playable milestones land. Incomplete systems are tracked explicitly in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) and [TODO.md](TODO.md).
 
 ## Development
 

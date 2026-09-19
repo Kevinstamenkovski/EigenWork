@@ -15,5 +15,8 @@
   "message.eigenworks.link_selected": "Selected output %s (%s bit). Use the tool on a compatible input device.",
   "message.eigenworks.link_connected": "Connected output %s to input %s (%s bit).",
   "message.eigenworks.link_disconnected": "Disconnected digital input %s.",
-  "message.eigenworks.link_error": "Digital link error: %s"
+  "message.eigenworks.link_error": "Digital link error: %s",
+  "block.eigenworks.computer": "Eigen-8 Computer",
+  "screen.eigenworks.computer": "Eigen-8 CPU Debugger",
+  "message.eigenworks.computer_assembled": "Eigen-8 assembled %s bytes. Open the debugger to run it."
 }

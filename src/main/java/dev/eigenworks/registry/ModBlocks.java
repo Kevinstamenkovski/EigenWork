@@ -7,6 +7,7 @@ import dev.eigenworks.block.DigitalClockBlock;
 import dev.eigenworks.block.DigitalCounterBlock;
 import dev.eigenworks.block.DigitalGateBlock;
 import dev.eigenworks.block.DigitalRegisterBlock;
+import dev.eigenworks.block.ComputerBlock;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -44,6 +45,10 @@ public final class ModBlocks {
 			ModBlockItemIds.DIGITAL_REGISTER,
 			DigitalRegisterBlock::new,
 			deviceProperties());
+	public static final Block COMPUTER = register(
+			ModBlockItemIds.COMPUTER,
+			ComputerBlock::new,
+			deviceProperties());
 
 	private ModBlocks() {
 	}
@@ -74,6 +79,7 @@ public final class ModBlocks {
 					entries.accept(DIGITAL_COUNTER.asItem());
 					entries.accept(DIGITAL_GATE.asItem());
 					entries.accept(DIGITAL_REGISTER.asItem());
+					entries.accept(COMPUTER.asItem());
 				});
 	}
 
