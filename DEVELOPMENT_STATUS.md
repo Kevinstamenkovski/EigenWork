@@ -2,11 +2,11 @@
 
 ## Current milestone
 
-Milestone 19 — distributable release workflow and final regression.
+Maintenance — all planned milestones are complete; EigenWorks 0.2.0 is release-ready.
 
 ## Last completed milestone
 
-Milestone 18 — articulated multi-block six-axis robotics.
+Milestone 19 — distributable release workflow and final regression.
 
 ## Completed systems
 
@@ -137,6 +137,10 @@ Milestone 18 — articulated multi-block six-axis robotics.
 - Loaded-only face-adjacent robot joint registry with dirty topology caching, unique ordered axis validation, and six-axis bounds.
 - Placeable persistent Articulated Robot Joint Modules with server-authoritative 90-degree controls, inspector diagnostics, recipe, loot, and custom geometry.
 - Client block-entity rendering rotates each module's steel link arm from synchronized authoritative joint state.
+- GitHub Actions Java 25 build workflow running unit tests, Minecraft GameTests, and distributable validation on pushes and pull requests.
+- Tag-gated release workflow that requires `vX.Y.Z` to match the project version and publishes only the installable JAR.
+- Reproducible release verifier checking embedded Fabric metadata, required classes/assets/data, sources artifact, and SHA-256.
+- Versioned compatibility matrix, upgrade procedure, and changelog for EigenWorks 0.2.0.
 
 ## Partially implemented systems
 
@@ -165,12 +169,12 @@ Milestone 18 — articulated multi-block six-axis robotics.
 - `./gradlew build`: passes under Temurin 25.0.4.1 (2026-09-19).
 - Unit tests: 122 passing tests. New coverage validates six-axis DH forward kinematics, geometric Jacobians, dimension bounds, and non-finite joint rejection.
 - Minecraft GameTests: all 20 required tests pass (nineteen EigenWorks tests plus the framework test), including six-block robot topology, articulation, cache reuse, and persistence.
-- `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.1.0; it was stopped manually after resource reload.
-- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1603 recipes without EigenWorks datapack errors, executed all prior systems plus server-validated Motor Rig configuration/persistence. All 18 required tests passed.
+- `./gradlew runClient`: launched successfully with Minecraft 26.2, Fabric Loader 0.19.5, Fabric API 0.160.0+26.2, and EigenWorks 0.2.0; it was stopped manually after resource reload.
+- Latest server gameplay regression (2026-09-19): Fabric GameTest launched Minecraft 26.2, loaded 1604 recipes without EigenWorks datapack errors, and executed all systems. All 20 required tests passed.
 - Latest client regression (2026-09-19): EigenWorks initialized with the articulated joint renderer and completed resource reload without missing-model/texture or EigenWorks exceptions. The client was then stopped manually; no desktop input was used, so a placed moving joint was not visually inspected in-world.
 - Gameplay: created a creative world, received a correctly named/rendered Engineering Test Bench, placed it through the authoritative server at `(121, 64, 104)`, saved the world, and exited cleanly. The temporary model uses the copper block texture by design.
 - The only runtime errors were expected Mojang account/Realms 401 responses from the unauthenticated Fabric development user; no EigenWorks exception occurred.
-- Produced JAR: `build/libs/eigenworks-0.1.0.jar`.
+- Produced JAR: `build/libs/eigenworks-0.2.0.jar`; final clean-build SHA-256: `045daa2821e028899fd1fe00eaad9168a804ce414823c3407be6798d0c641064`.
 
 ## Architectural decisions
 
@@ -182,7 +186,7 @@ Milestone 18 — articulated multi-block six-axis robotics.
 
 ## Temporary limitations
 
-Milestones 1–18 are complete as functional vertical slices. Editors use bounded action packets instead of trusting client numeric input. Eigen-8 CAN I/O, controlled-source/transistor circuit models, and general six-axis IK remain explicit extensions.
+Milestones 1–19 are complete as functional vertical slices. Editors use bounded action packets instead of trusting client numeric input. Eigen-8 CAN I/O, controlled-source/transistor circuit models, and general six-axis IK remain explicit future extensions rather than release blockers.
 
 ## Relevant locations
 
@@ -249,10 +253,9 @@ Milestones 1–18 are complete as functional vertical slices. Editors use bounde
 
 ## Exact next tasks
 
-1. Add CI build and tagged-release artifact workflows using Java 25.
-2. Add a compatibility matrix and reproducible release verification script.
-3. Run the final unit, GameTest, build, JAR-content, and client-launch regression.
-4. Publish the stable milestone commit and document the exact release artifact.
+1. Optionally create and push tag `v0.2.0` when a public GitHub Release is desired; the workflow will publish the verified JAR.
+2. Visually inspect a placed articulated joint in a normal client world and tune presentation if desired.
+3. Choose the next extension from the documented limitations before beginning a new milestone.
 
 ## Commands
 

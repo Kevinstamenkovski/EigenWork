@@ -84,7 +84,7 @@ Place **Configurable CAN Node** blocks and join them with thin **CAN Cable** seg
 ./gradlew runClient
 ```
 
-The installable JAR is written to `build/libs/eigenworks-0.1.0.jar`. The `-sources` JAR is for development and should not be installed.
+The installable JAR is written to `build/libs/eigenworks-0.2.0.jar`. The `-sources` JAR is for development and should not be installed. `./scripts/verify-release.sh` performs the complete build, checks embedded compatibility metadata/assets, and prints the release SHA-256.
 
 Gradle automatically selects an installed JDK 25 or downloads a compatible toolchain through the Foojay resolver. The Gradle launcher itself requires Java 17 or newer.
 
@@ -92,7 +92,7 @@ Gradle automatically selects an installed JDK 25 or downloads a compatible toolc
 
 1. Install Fabric Loader for Minecraft 26.2.
 2. Install Fabric API 0.160.0+26.2 in `.minecraft/mods/`.
-3. Copy `build/libs/eigenworks-0.1.0.jar` into `.minecraft/mods/`.
+3. Copy `build/libs/eigenworks-0.2.0.jar` into `.minecraft/mods/`.
 4. Launch the Minecraft 26.2 Fabric profile.
 
 ## First launch
@@ -106,6 +106,8 @@ The first digital circuit, CPU program, MCU motor-control loop, PID response, os
 ## Development
 
 The code separates Minecraft adapters from pure engineering simulation classes so numerical behavior can be tested without launching Minecraft. Read [AGENTS.md](AGENTS.md), [ARCHITECTURE.md](ARCHITECTURE.md), and [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) before making substantial changes.
+
+Every push and pull request runs the Gradle build, unit tests, Minecraft GameTests, and release-JAR validation in GitHub Actions. A tag matching the project version (for example `v0.2.0`) runs the same checks and publishes the installable JAR as a GitHub Release. See [the compatibility matrix](docs/COMPATIBILITY.md) and [changelog](CHANGELOG.md).
 
 ## License
 
